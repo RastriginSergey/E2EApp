@@ -67,7 +67,7 @@
     LOG_DEBUG("%s clientRef: %s", self.conversation.uuid.UTF8String, self.clientRef.UTF8String);
     
     self.clientRef = [self.conversation joinClientRef:^(NSError * _Nullable error, NXMMember * _Nullable member) {
-        if (error{
+        if (error) {
             [NXMBlocksHelper runWithError:error completion:completionHandler]; // TODO: error;
             return;
         }
