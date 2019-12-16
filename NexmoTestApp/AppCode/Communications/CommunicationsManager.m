@@ -180,7 +180,7 @@
     self.client = NXMClient.shared;
 
     [self.client setDelegate:self];
-    [self.client loginWithAuthToken:@"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBsaWNhdGlvbl9pZCI6ImYxYTVmNmZhLTdkNzQtNGI5Ny1iZGY0LTRlY2FhZThlODUxZSIsInN1YiI6InRlc3R1c2VyMTIiLCJpc3MiOiJLb3N0YXMiLCJhY2wiOnsicGF0aHMiOnt9fSwianRpIjoiMTU3NjUwNzA4NzE2NSIsImV4cCI6MTg5MTg2NzA4NywiaWF0IjoxNTc2NTA3MDg3LjAsIm5iZiI6MTU3NjUwNzA4Ny4wfQ.ie5TegO6u94bLpUomk4zG_MQhz99KQH3WL-gT0-sTmHwjuhoKcGNbE_AQd135DQMm3soUy4U-OaGSemGoBtqzsCkZrt-soUV3Yw53FS3Fo7FkYlwNQy1c9xT1MVFudSKNbbPWSzRT89IMZMg0WS01S5-1M0XISWvNlY7Xbv-jwZXfsueRV-ObBE3zCKcBTIvNO_aOBkeRhrFTCAtIFxKzLlYs7ukJofHegUfOZ0YE7R01Z_LTMzWo9A3VTLT_ZSVbrvZeX2Uyy-Ej4WlpsOViTOqhDpOsh-Edce8cWPKVfZNtp-mFxajlGcr_jCr7JvK_P108o0gXUjt5EfFgsAsBQ"];
+    [self.client loginWithAuthToken:userInfo.csUserToken];
 }
 
 @end
