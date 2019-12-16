@@ -67,7 +67,7 @@
     LOG_DEBUG("%s clientRef: %s", self.conversation.uuid.UTF8String, self.clientRef.UTF8String);
     
     self.clientRef = [self.conversation joinClientRef:^(NSError * _Nullable error, NXMMember * _Nullable member) {
-        if (error || !member) {
+        if (error{
             [NXMBlocksHelper runWithError:error completion:completionHandler]; // TODO: error;
             return;
         }
@@ -85,7 +85,14 @@
         return;
     }
 
-    [self hangup];
+    [self.conversation leave:^(NSError * _Nullable error) {
+        if (error) {
+            [NXMBlocksHelper runWithError:error completion:completionHandler]; // TODO: error;
+            return;
+        }
+        
+        [NXMBlocksHelper runWithError:nil completion:completionHandler];
+    }];
 }
 
 - (void)addCallMemberWithUsername:(NSString *)username completionHandler:(NXMErrorCallback _Nullable)completionHandler {

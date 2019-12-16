@@ -57,31 +57,6 @@
     XCTAssertEqual(result, XCTWaiterResultCompleted);
 }
 
-- (void)testAnswerFailedNoMember {
-    id conversationMock = OCMClassMock([NXMConversation class]);
-    OCMExpect([conversationMock joinClientRef:([OCMArg invokeBlockWithArgs:[NSNull null], [NSNull null], nil])]);
-    
-    XCTestExpectation *expectation = [[XCTestExpectation alloc] initWithDescription:@"testAnswerFailedNoMember"];
-    
-    NXMCall *call = [[NXMCall alloc] initWithConversation:conversationMock];
-    [call answer:^(NSError * _Nullable error) {
-        if (error) {
-            [expectation fulfill];
-            XCTAssertEqual(error.code, NXMErrorCodeUnknown);
-            return;
-        }
-        
-        XCTFail(@"answer should fail");
-    }];
-    
-    XCTWaiterResult result = [XCTWaiter waitForExpectations:@[expectation] timeout:1];
-    
-    [conversationMock verify];
-    [conversationMock stopMocking];
-    
-    XCTAssertEqual(result, XCTWaiterResultCompleted);
-}
-
 - (void)testAnswerFailedError {
     id conversationMock = OCMClassMock([NXMConversation class]);
     OCMExpect([conversationMock joinClientRef:([OCMArg invokeBlockWithArgs:[[NSError alloc] initWithDomain:NXMErrorDomain code:NXMErrorCodeUnknown userInfo:nil], [NSNull null], nil])]);
@@ -91,8 +66,8 @@
     NXMCall *call = [[NXMCall alloc] initWithConversation:conversationMock];
     [call answer:^(NSError * _Nullable error) {
         if (error) {
-            [expectation fulfill];
             XCTAssertEqual(error.code, NXMErrorCodeUnknown);
+            [expectation fulfill];
             return;
         }
         
