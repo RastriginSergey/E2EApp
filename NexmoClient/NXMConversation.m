@@ -78,6 +78,7 @@
 #pragma mark EventQueueDelegate
 
 - (void)handleEvent:(NXMEvent*_Nonnull)event {
+    
     if(![NSThread isMainThread]){
         dispatch_async(dispatch_get_main_queue(), ^{
             [self handleEvent:event];
@@ -85,6 +86,8 @@
         return;
     }
     
+    LOG_DEBUG("%s %s", self.uuid.UTF8String, event.description.UTF8String);
+
     [self.conversationMembersController handleEvent:event];
     
     switch (event.type) {
@@ -143,6 +146,7 @@
 }
 
 - (void)conversationExpired {
+    LOG_DEBUG(self.uuid.UTF8String);
     [self.conversationMembersController conversationExpired];
     if([self.delegate respondsToSelector:@selector(conversationExpired)]) {
         [self.delegate conversation:self didReceive:[[NSError alloc] initWithDomain:NXMErrorDomain code:NXMErrorCodeConversationExpired userInfo:nil]];
@@ -153,6 +157,8 @@
 
 #pragma mark members
 - (void)join:(void (^_Nullable)(NSError * _Nullable error, NXMMember * _Nullable member))completion {
+    LOG_DEBUG(self.uuid.UTF8String);
+    
     [self joinMemberWithUsername:self.currentUser.name completion:^(NSError * _Nullable error, NXMMember * _Nullable member) {
         [NXMBlocksHelper runWithError:error value:member completion:completion];
     }];
@@ -160,6 +166,7 @@
 
 - (void)joinMemberWithUsername:(nonnull NSString *)username
                   completion:(void (^_Nullable)(NSError * _Nullable error, NXMMember * _Nullable member))completion {
+    LOG_DEBUG("%s username: %s", self.uuid.UTF8String, username.UTF8String);
     [self.stitchContext.coreClient joinToConversation:self.uuid
                                            withUsername:username
                                             onSuccess:^(NSObject * _Nullable object) {
@@ -172,11 +179,15 @@
 }
 
 - (void)leave:(void (^_Nullable)(NSError * _Nullable error))completion {
+    LOG_DEBUG(self.uuid.UTF8String);
+
     [self kickMemberWithMemberId:self.myMember.memberUuid completion:completion];
 }
 
 
 - (void)kickMemberWithMemberId:(nonnull NSString *)memberId completion:(void (^_Nullable)(NSError * _Nullable error))completion {
+    LOG_DEBUG("%s memberId: %s", self.uuid.UTF8String, memberId.UTF8String);
+    
     [self.stitchContext.coreClient deleteMember:memberId
                          fromConversationWithId:self.uuid
                                       onSuccess:^(NSString * _Nullable value) {
@@ -192,6 +203,8 @@
 - (void)sendCustomWithEvent:(nonnull NSString *)customType
                    data:(nonnull NSDictionary *)data
              completionHandler:(void (^_Nullable)(NSError * _Nullable error))completion {
+    LOG_DEBUG("%s customType: %s", self.uuid.UTF8String, customType.UTF8String);
+    
     NSError *validityError = [self validateMyMemberJoined];
     if (validityError) {
         [NXMBlocksHelper runWithError:validityError completion:completion];
@@ -213,6 +226,7 @@
 }
 
 - (void)sendDTMF:(NSString *)dtmf  completion:(void (^_Nullable)(NSError * _Nullable error))completion {
+    LOG_DEBUG("%s dtmf: %s", self.uuid.UTF8String, dtmf.UTF8String);
     NSError *validityError = [self validateMyMemberJoined];
     if (validityError) {
         [NXMBlocksHelper runWithError:validityError completion:completion];
@@ -233,7 +247,7 @@
 }
 
 -(void)sendText:(nonnull NSString *)text completionHandler:(void (^_Nullable)(NSError * _Nullable error))completion {
-    
+    LOG_DEBUG("%s dtmf: %s", self.uuid.UTF8String, text.UTF8String);
     NSError *validityError = [self validateMyMemberJoined];
     if (validityError) {
         [NXMBlocksHelper runWithError:validityError completion:completion];
@@ -253,7 +267,9 @@
 }
 
 
--(void)sendAttachmentWithType:(NXMAttachmentType)attachmentType name:(nonnull NSString *)name data:(nonnull NSData *)data  completionHandler:(void (^_Nullable)(NSError * _Nullable error))completion {
+-(void)sendAttachmentWithType:(NXMAttachmentType)attachmentType name:(nonnull NSString *)name data:(nonnull NSData *)data
+            completionHandler:(void (^_Nullable)(NSError * _Nullable error))completion {
+    LOG_DEBUG("%s name: %s", self.uuid.UTF8String, name.UTF8String);
     NSError *validityError = [self validateMyMemberJoined];
     if (validityError) {
         [NXMBlocksHelper runWithError:validityError completion:completion];
@@ -262,7 +278,7 @@
     }
     
     if(attachmentType != NXMAttachmentTypeImage) {
-        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeNotImplemented andUserInfo:nil] completion:completion];
+        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeNotImplemented] completion:completion];
 
         return;
     }
@@ -278,7 +294,7 @@
 
 - (void)sendMarkSeenMessage:(NSInteger)messageId
             completionHandler:(void (^_Nullable)(NSError * _Nullable error))completion{
-    
+    LOG_DEBUG("%s name: %d", self.uuid.UTF8String, messageId);
     NSError *validityError = [self validateMyMemberJoined];
     if (validityError) {
         [NXMBlocksHelper runWithError:validityError completion:completion];
@@ -298,6 +314,7 @@
 }
 
 - (void)sendStartTyping:(void (^_Nullable)(NSError * _Nullable error))completion {
+    LOG_DEBUG(self.uuid.UTF8String);
     NSError *validityError = [self validateMyMemberJoined];
     if (validityError) {
         [NXMBlocksHelper runWithError:validityError completion:completion];
@@ -310,6 +327,7 @@
 }
 
 - (void)sendStopTyping:(void (^_Nullable)(NSError * _Nullable error))completion {
+    LOG_DEBUG(self.uuid.UTF8String);
     NSError *validityError = [self validateMyMemberJoined];
     if (validityError) {
         [NXMBlocksHelper runWithError:validityError completion:completion];
@@ -323,6 +341,7 @@
 #pragma mark internal
 
 - (nonnull NSString *)joinClientRef:(void (^_Nullable)(NSError * _Nullable error, NXMMember * _Nullable member))completionHandler {
+    LOG_DEBUG(self.uuid.UTF8String);
     return [self.stitchContext.coreClient joinToConversation:self.uuid
                                                 withUsername:self.currentUser.name
                                                    onSuccess:^(NSObject * _Nullable object) {
@@ -335,6 +354,8 @@
 
 - (void)inviteMemberWithUsername:(nonnull NSString *)username
                       completion:(void (^_Nullable)(NSError * _Nullable error))completion {
+    LOG_DEBUG("%s username: %s", self.uuid.UTF8String, username.UTF8String);
+
     [self.stitchContext.coreClient inviteToConversation:self.uuid
                                            withUsername:username
                                               withMedia:NO
@@ -349,6 +370,9 @@
 
 - (void)inviteMemberWithUsername:(nonnull NSString *)username withMedia:(bool)withMedia
                     completion:(void (^_Nullable)(NSError * _Nullable error, NXMMember * _Nullable member))completion {
+    LOG_DEBUG("%s username: %s, media: %d", self.uuid.UTF8String, username.UTF8String, withMedia);
+
+
     [self.stitchContext.coreClient inviteToConversation:self.uuid withUsername:username withMedia:withMedia
                                               onSuccess:^(NSObject * _Nullable object) {
                                                     [NXMBlocksHelper runWithError:nil value:object completion:completion];
@@ -361,6 +385,7 @@
 
 - (void)inviteToConversationWithPhoneNumber:(NSString*)phoneNumber
                                  completion:(void (^_Nullable)(NSError * _Nullable error, NSString * _Nullable knockingId))completion {
+    LOG_DEBUG("%s phoneNumber: %s", self.uuid.UTF8String, phoneNumber.UTF8String);
     [self.stitchContext.coreClient inviteToConversation:self.stitchContext.currentUser.name withPhoneNumber:phoneNumber
                                               onSuccess:^(NSString * _Nullable value) {
                                                   [NXMBlocksHelper runWithError:nil value:value completion:completion];
@@ -370,6 +395,7 @@
 }
 
 - (void)enableMedia {
+    LOG_DEBUG(self.uuid.UTF8String);
     [self.stitchContext.coreClient enableMedia:self.uuid memberId:self.myMember.memberUuid];
 }
 
@@ -384,6 +410,7 @@
 }
 
 - (void)mute:(BOOL)isMuted {
+    LOG_DEBUG("%s muted:%d", self.uuid.UTF8String, isMuted);
     if (isMuted) {
         [self.stitchContext.coreClient suspendMyMedia:NXMMediaTypeAudio inConversation:self.uuid];
         return;
@@ -397,6 +424,8 @@
 }
 
 - (void)getEvents:(void (^_Nullable)(NSError * _Nullable error, NSArray<NXMEvent *> *))completionHandler; {
+    LOG_DEBUG(self.uuid.UTF8String);
+
     __weak typeof(self) weakSelf = self;
     [self.stitchContext.coreClient getEventsInConversation:self.uuid
                                                  onSuccess:^(NSMutableArray<NXMEvent *> * _Nullable events) {
@@ -421,7 +450,7 @@
         return nil;
     }
     
-    return [NXMErrors nxmErrorWithErrorCode:NXMErrorCodeNotAMemberOfTheConversation andUserInfo:nil];
+    return [NXMErrors nxmErrorWithErrorCode:NXMErrorCodeNotAMemberOfTheConversation];
 }
 
 - (NSError *)validateDTMF:dtmf {
@@ -435,7 +464,7 @@
     if (numberOfMatches > 0){
         return nil;
     }
-    return [NXMErrors nxmErrorWithErrorCode:NXMErrorCodeDTMFIllegal andUserInfo:nil];
+    return [NXMErrors nxmErrorWithErrorCode:NXMErrorCodeDTMFIllegal];
 }
 
 #pragma member controller delegate

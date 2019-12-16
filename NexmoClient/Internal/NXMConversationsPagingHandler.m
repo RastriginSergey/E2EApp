@@ -36,7 +36,7 @@ static NSString *const ON_MAIN_THREAD_EXCEPTION_REASON = @"This method can't be 
                                          order:order
                                      onSuccess:^(NXMConversationIdsPage * _Nullable page) {
                                          if (!page) {
-                                             completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil], nil);
+                                             completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown], nil);
                                              return;
                                          }
 
@@ -57,7 +57,7 @@ static NSString *const ON_MAIN_THREAD_EXCEPTION_REASON = @"This method can't be 
     [coreClient getConversationIdsPageForURL:url
                                    onSuccess:^(NXMConversationIdsPage * _Nullable page) {
                                        if (!page) {
-                                           completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil], nil);
+                                           completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown], nil);
                                            return;
                                        }
                                        [weakSelf getConversationsPageFromConversationIdsPage:page
@@ -78,7 +78,7 @@ static NSString *const ON_MAIN_THREAD_EXCEPTION_REASON = @"This method can't be 
                                                                                  conversationsPagingProxy:self
                                                                                             conversations:conversations];
                             if (!resultPage) {
-                                completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil], nil);
+                                completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown], nil);
                                 return;
                             }
 

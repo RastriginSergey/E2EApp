@@ -162,7 +162,7 @@
 
 - (void)sendSDP:(NSString*)sdp andMediaInfo:(MRTCMediaInfo *)mediaInfo andType:(MRTCMediaNetworkSdpType)type andUuid:(NSString *)uuid completionHandler:(void (^)(NSString *, NSError *, const NSString *))completionHandler {
     if(!self.delegate) {
-        completionHandler(nil, [NXMErrors nxmErrorWithErrorCode:NXMErrorCodeMissingDelegate andUserInfo:nil], uuid);
+        completionHandler(nil, [NXMErrors nxmErrorWithErrorCode:NXMErrorCodeMissingDelegate], uuid);
         return;
     }
     
@@ -176,7 +176,7 @@
 - (void)terminateRtcIdWithMediaInfo:(MRTCMediaInfo *)mediaInfo rtcId:(NSString *)rtcId uuid:(NSString *)uuid completionHandler:(void (^)(NSError *, NSString *))completionHandler {
     
     if(!self.delegate) {
-        completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeMissingDelegate andUserInfo:nil], uuid);
+        completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeMissingDelegate], uuid);
         return;
     }
     

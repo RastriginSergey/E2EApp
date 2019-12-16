@@ -240,7 +240,8 @@ static dispatch_once_t _onceToken = 0;
                                                         if(completion) {
                                                             [weakSelf getConversationWithUuid:value completionHandler:^(NSError * _Nullable error, NXMConversation * _Nullable conversation){
                                                                 if(!conversation) {
-                                                                    NSError *wrappingError = [NXMErrors nxmErrorWithErrorCode:NXMErrorCodeConversationRetrievalFailed andUserInfo:@{NSUnderlyingErrorKey: error}];
+                                                                    NSError *wrappingError = [NXMErrors nxmErrorWithErrorCode:NXMErrorCodeConversationRetrievalFailed andUserInfo:@{NSLocalizedDescriptionKey:[NXMErrors nxmErrorCodeToString:NXMErrorCodeConversationRetrievalFailed],
+                                                                                                                                                                    NSUnderlyingErrorKey: error}];
                                                                     
                                                                     [NXMBlocksHelper runWithError:wrappingError value:nil completion:completion];
                                                                     return;
@@ -306,7 +307,7 @@ static dispatch_once_t _onceToken = 0;
                                                }
                                            }];
                                        } else {
-                                           [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil]
+                                           [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown]
                                                         value:nil
                                                    completion:completion];
 

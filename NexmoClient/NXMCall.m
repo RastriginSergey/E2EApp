@@ -64,52 +64,42 @@
 }
 
 - (void)answer:(NXMErrorCallback _Nullable)completionHandler {
-    LOG_DEBUG("");
+    LOG_DEBUG("%s clientRef: %s", self.conversation.uuid.UTF8String, self.clientRef.UTF8String);
     
     self.clientRef = [self.conversation joinClientRef:^(NSError * _Nullable error, NXMMember * _Nullable member) {
         if (error || !member) {
-            [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil]
-                           completion:completionHandler]; // TODO: error;
+            [NXMBlocksHelper runWithError:error completion:completionHandler]; // TODO: error;
             return;
         }
         
         [NXMBlocksHelper runWithError:nil completion:completionHandler];
     }];
-    
-    LOG_DEBUG("answer with client ref %s", [self.clientRef UTF8String]);
 }
 
 - (void)reject:(NXMErrorCallback _Nullable)completionHandler {
-    LOG_DEBUG("");
+    LOG_DEBUG(self.conversation.uuid.UTF8String);
     
     if (self.myCallMember.status != NXMCallMemberStatusRinging) {
-        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil]
+        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown]
                            completion:completionHandler]; // TODO: error;
         return;
     }
 
-    [self.conversation leave:^(NSError * _Nullable error) {
-        if (error) {
-            [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil]
-                               completion:completionHandler]; // TODO: error;
-            return;
-        }
-        
-        [NXMBlocksHelper runWithError:nil completion:completionHandler];
-    }];
+    [self hangup];
 }
 
 - (void)addCallMemberWithUsername:(NSString *)username completionHandler:(NXMErrorCallback _Nullable)completionHandler {
+    LOG_DEBUG("%s username: %s", self.conversation.uuid.UTF8String, username.UTF8String);
     if (username == self.conversation.myMember.user.name){
         
-        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil]
+        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown]
                            completion:completionHandler]; // TODO: error;
 
         return;
     }
     
     if ([self isCallDone]) {
-        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil]
+        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown]
                            completion:completionHandler]; // TODO: error;
 
         return;
@@ -121,16 +111,18 @@
             return;
         }
         
-        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil]
+        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown]
                            completion:completionHandler]; // TODO: error;
     }];
 
 }
 
 - (void)addCallMemberWithNumber:(NSString *)number completionHandler:(NXMErrorCallback _Nullable)completionHandler {
+    LOG_DEBUG("%s username: %s", self.conversation.uuid.UTF8String, number.UTF8String);
+
     if ([self isCallDone]) {
         
-        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil]
+        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown]
                            completion:completionHandler]; // TODO: error;
 
         return;
@@ -142,36 +134,40 @@
             return;
         }
         
-        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil]
+        [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown]
                            completion:completionHandler]; // TODO: error;
     }];
 }
 
 - (void)sendDTMF:(NSString *)dtmf {
-    LOG_DEBUG([dtmf UTF8String]);
+    LOG_DEBUG("%s dtmf: %s", self.conversation.uuid.UTF8String, dtmf.UTF8String);
 
     if ([self isCallDone]) {
         return;
     }
     
+    __weak typeof(self) weakSelf = self;
     [self.conversation sendDTMF:dtmf completion:^(NSError * _Nullable error) {
-        
+        [weakSelf.delegate call:self didReceive:error];
     }];
 }
 
 #pragma mark - callProxy
 
 - (void)hangup:(NXMCallMember *)callMember {
-    LOG_DEBUG([callMember.description UTF8String]);
+    LOG_DEBUG("%s callMember: %s", self.conversation.uuid.UTF8String, callMember.description.UTF8String);
+
     if (callMember != self.myCallMember) {
         // TODO: error
         return;
     }
     
     [self.conversation disableMedia];
+    __weak typeof(self) weakSelf = self;
     [self.conversation kickMemberWithMemberId:callMember.memberId completion:^(NSError * _Nullable error) {
         if (error) {
             LOG_ERROR("hangup kick failed:%s",[error.description UTF8String]);
+            [weakSelf.delegate call:self didReceive:error];
         }
     }];
 }
@@ -181,7 +177,7 @@
 }
 
 - (void)mute:(NXMCallMember *)callMember isMuted:(BOOL)isMuted {
-    LOG_DEBUG("%s %i", [callMember.description UTF8String], isMuted);
+    LOG_DEBUG("%s callmember:%s isMuted:%i", self.conversation.uuid.UTF8String, [callMember.description UTF8String], isMuted);
     if ([self isCallDone]) { return; }
     
     if (![callMember.memberId isEqualToString:self.myCallMember.memberId]) {
@@ -196,6 +192,8 @@
 }
 
 - (void)hangup {
+    LOG_DEBUG(self.conversation.uuid.UTF8String);
+
     if ([self isCallDone]) { return; }
 
     [self.myCallMember hangup];
@@ -204,14 +202,18 @@
 #pragma mark - callProxy
 
 - (void)didUpdate:(nonnull NXMCallMember *)callMember status:(NXMCallMemberStatus)status {
+    LOG_DEBUG("%s callMemberId:%s %d", self.conversation.uuid.UTF8String, callMember.memberId, status);
+
     if (callMember == self.myCallMember &&
         callMember.status == NXMCallMemberStatusCompleted) {
         
+        __weak typeof(self) weakSelf = self;
         [self.conversation leave:^(NSError * _Nullable error) {
-            // TODO:
+            if (error) {
+                [weakSelf.delegate call:self didReceive:error];
+            }
         }];
     }
-    
     
     [self.delegate call:self didUpdate:callMember withStatus:status];
 }
@@ -225,7 +227,8 @@
 - (void)conversation:(nonnull NXMConversation *)conversation
      didUpdateMember:(nonnull NXMMember *)member
             withType:(NXMMemberUpdateType)type {
-    LOG_DEBUG([member.description UTF8String]);
+    LOG_DEBUG("%s member:%s", self.conversation.uuid.UTF8String, member.description.UTF8String);
+
     NXMCallMember *callMember = [self findOrAddCallMember:member];
     
     if (type == NXMMemberUpdateTypeState &&
@@ -239,7 +242,7 @@
 }
 
 - (void)conversation:(nonnull NXMConversation *)conversation didReceiveDTMFEvent:(nonnull NXMDTMFEvent *)event {
-    LOG_DEBUG("%s %s", [conversation.uuid UTF8String], [event.digit UTF8String]);
+    LOG_DEBUG("%s dtmfEvent:%s", [conversation.uuid UTF8String], [event.digit UTF8String]);
     if ([self.delegate respondsToSelector:@selector(call:didReceive:fromCallMember:)]) {
         [self.delegate call:self
                  didReceive:event.digit
@@ -248,9 +251,9 @@
 }
 
 
-
-
 - (void)conversationExpired {
+    LOG_DEBUG(self.conversation.uuid.UTF8String);
+
     [self.myCallMember hangup];
 }
 

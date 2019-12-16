@@ -9,7 +9,9 @@
 #import "NXMErrors.h"
 
 @interface NXMErrors : NSObject
-+ (NSError *)nxmErrorWithErrorCode:(NXMErrorCode)errorCode andUserInfo:(NSDictionary<NSErrorUserInfoKey,id> *)userInfo;
++ (NSError *)nxmErrorWithErrorCode:(NXMErrorCode)errorCode
+                       andUserInfo:(NSDictionary<NSErrorUserInfoKey,id> *)userInfo;
++ (NSString *)nxmErrorCodeToString:(NXMErrorCode)code;
 + (NSError *)nxmErrorWithErrorCode:(NXMErrorCode)errorCode;
 @end
 

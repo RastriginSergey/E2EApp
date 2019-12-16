@@ -382,7 +382,7 @@ fromConversationWithId:(nonnull NSString *)conversationId
            onSuccess:(NXMSuccessCallback _Nullable)onSuccess
              onError:(NXMErrorCallback _Nullable)onError {
     if(![self isSupportedMediaType:mediaType]) {
-        onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeMediaNotSupported andUserInfo:nil]);
+        onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeMediaNotSupported]);
     }
     NXMSuspendResumeMediaRequest *mediaRequest = [[NXMSuspendResumeMediaRequest alloc] initWithConversationId:conversationId fromMemberId:fromMemberId toMemberId:memberId rtcId:nil mediaType:mediaType];
     [self.network suspendMediaWithMediaRequest:mediaRequest onSuccess:onSuccess onError:onError];
@@ -395,7 +395,7 @@ fromConversationWithId:(nonnull NSString *)conversationId
           onSuccess:(NXMSuccessCallback _Nullable)onSuccess
             onError:(NXMErrorCallback _Nullable)onError {
     if(![self isSupportedMediaType:mediaType]) {
-        onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeMediaNotSupported andUserInfo:nil]);
+        onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeMediaNotSupported]);
     }
     NXMSuspendResumeMediaRequest *mediaRequest = [[NXMSuspendResumeMediaRequest alloc] initWithConversationId:conversationId fromMemberId:fromMemberId toMemberId:memberId rtcId:nil mediaType:mediaType];
     [self.network resumeMediaWithMediaRequest:mediaRequest onSuccess:onSuccess onError:onError];
