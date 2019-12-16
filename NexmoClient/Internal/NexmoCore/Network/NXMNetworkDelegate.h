@@ -9,6 +9,7 @@
 #import "NXMCoreEvents.h"
 #import "NXMSipEvent.h"
 #import "NXMRtcAnswerEvent.h"
+#import "NXMErrors.h"
 
 @protocol NXMNetworkDelegate
 
@@ -48,5 +49,6 @@
 - (void)DTMFEvent:(nonnull NXMDTMFEvent *)dtmfEvent;
 - (void)legStatus:(nonnull NXMLegStatusEvent *)legEvent;
 
+- (void)onError:(NXMErrorCode)errorCode;
 
 @end

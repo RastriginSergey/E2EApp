@@ -63,6 +63,7 @@ static dispatch_once_t _onceToken = 0;
         [self.stitchContext setDelegate:self];
          
         [self.stitchContext.eventsDispatcher.notificationCenter addObserver:self selector:@selector(onMemberEvent:) name:kNXMEventsDispatcherNotificationMember object:nil];
+        
         self.clientRefToCallCallback = [NSMutableDictionary new];
         self.conversationToLastEvent = [NSMutableDictionary new];
         self.syncConversationToLastEvent = [NSObject new];
@@ -172,6 +173,12 @@ static dispatch_once_t _onceToken = 0;
     [self.stitchContext.coreClient logout];
 }
 
+#pragma StitchContext delegate
+- (void)onError:(NXMErrorCode)errorCode {
+    [self.delegate client:self didReceiveError:[NXMErrors nxmErrorWithErrorCode:errorCode]];
+}
+
+
 - (void)connectionStatusChanged:(NXMConnectionStatus)status reason:(NXMConnectionStatusReason)reason {
     LOG_DEBUG("status %ld reason %ld", status, reason);
     NSError *setUpCleanUpError = nil;
@@ -203,7 +210,7 @@ static dispatch_once_t _onceToken = 0;
     LOG_DEBUG([converesationId UTF8String]);
     if (![self isConnected]){
         LOG_DEBUG("SDK disconnected" );
-        completion([NXMErrors disconnectedError], nil);
+        completion([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeSDKDisconnected], nil);
         return;
     }
     
@@ -224,7 +231,7 @@ static dispatch_once_t _onceToken = 0;
 
     if (![self isConnected]){
         LOG_DEBUG("SDK disconnected" );
-        completion([NXMErrors disconnectedError], nil);
+        completion([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeSDKDisconnected], nil);
         return;
     }
     __weak NXMClient *weakSelf = self;
@@ -233,7 +240,8 @@ static dispatch_once_t _onceToken = 0;
                                                         if(completion) {
                                                             [weakSelf getConversationWithUuid:value completionHandler:^(NSError * _Nullable error, NXMConversation * _Nullable conversation){
                                                                 if(!conversation) {
-                                                                    NSError *wrappingError = [NXMErrors nxmErrorWithErrorCode:NXMErrorCodeConversationRetrievalFailed andUserInfo:@{NSUnderlyingErrorKey: error}];
+                                                                    NSError *wrappingError = [NXMErrors nxmErrorWithErrorCode:NXMErrorCodeConversationRetrievalFailed andUserInfo:@{NSLocalizedDescriptionKey:[NXMErrors nxmErrorCodeToString:NXMErrorCodeConversationRetrievalFailed],
+                                                                                                                                                                    NSUnderlyingErrorKey: error}];
                                                                     
                                                                     [NXMBlocksHelper runWithError:wrappingError value:nil completion:completion];
                                                                     return;
@@ -299,7 +307,7 @@ static dispatch_once_t _onceToken = 0;
                                                }
                                            }];
                                        } else {
-                                           [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown andUserInfo:nil]
+                                           [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown]
                                                         value:nil
                                                    completion:completion];
 
@@ -333,7 +341,7 @@ static dispatch_once_t _onceToken = 0;
     LOG_DEBUG([[callees description] UTF8String]);
     if (![self isConnected]){
         LOG_DEBUG("SDK disconnected" );
-        completionHandler([NXMErrors disconnectedError], nil);
+        completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeSDKDisconnected], nil);
         return;
     }
     switch (callHandler) {
@@ -357,7 +365,7 @@ static dispatch_once_t _onceToken = 0;
     LOG_DEBUG("%s %s %d", [[NSString alloc] initWithData:pushKitToken encoding:NSUTF8StringEncoding],  [[NSString alloc] initWithData:userNotificationToken encoding:NSUTF8StringEncoding], isSandbox);
     if (![self isConnected]){
         LOG_DEBUG("SDK disconnected" );
-        completionHandler([NXMErrors disconnectedError]);
+        completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeSDKDisconnected]);
         return;
     }
     
@@ -378,7 +386,7 @@ static dispatch_once_t _onceToken = 0;
 
     if (![self isConnected]){
         LOG_DEBUG("SDK disconnected");
-        completionHandler([NXMErrors disconnectedError]);
+        completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeSDKDisconnected]);
         return;
     }
     [self.stitchContext.coreClient disablePushNotificationsWithOnSuccess:^{
@@ -403,7 +411,7 @@ static dispatch_once_t _onceToken = 0;
     
     if (![self isConnected]){
         LOG_DEBUG("SDK disconnected");
-        completionHandler([NXMErrors disconnectedError]);
+        completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeSDKDisconnected]);
         return;
     }
     
@@ -416,7 +424,6 @@ static dispatch_once_t _onceToken = 0;
 }
 
 #pragma mark - notification center
-
 
 - (void)onMemberEvent:(NSNotification* )notification {
     LOG_DEBUG([notification.name UTF8String]);

@@ -60,7 +60,7 @@
     completionHandler:(void (^)(NSError * _Nullable, NXMConversationsPage * _Nullable))completionHandler {
 
     if (!newPageURL) {
-        completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeConversationsPageNotFound andUserInfo:nil], nil);
+        completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeConversationsPageNotFound], nil);
         return;
     }
 

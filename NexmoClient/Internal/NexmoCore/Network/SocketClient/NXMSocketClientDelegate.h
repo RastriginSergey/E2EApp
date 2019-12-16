@@ -9,6 +9,7 @@
 #import "NXMCoreEvents.h"
 #import "NXMSipEvent.h"
 #import "NXMRtcAnswerEvent.h"
+#import "NXMErrors.h"
 
 @protocol NXMSocketClientDelegate
 
@@ -44,5 +45,7 @@
 - (void)sipHangup:(nonnull NXMSipEvent *)sipEvent;
 - (void)sipStatus:(nonnull NXMSipEvent *)sipEvent;
 - (void)legStatus:(nonnull NXMLegStatusEvent *)legEvent;
+
+- (void)onError:(NXMErrorCode)errorCode;
 
 @end

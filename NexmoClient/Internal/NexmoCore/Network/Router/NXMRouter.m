@@ -983,7 +983,7 @@ completionBlock:(void (^_Nullable)(NSError * _Nullable error, NXMUser * _Nullabl
         
         // TODO: make this more robust
         if (((NSHTTPURLResponse *)response).statusCode == 413) {
-            responseBlock([NXMErrors nxmErrorWithErrorCode:NXMErrorCodePayloadTooBig andUserInfo:nil], nil);
+            responseBlock([NXMErrors nxmErrorWithErrorCode:NXMErrorCodePayloadTooBig], nil);
             return;
         }
         

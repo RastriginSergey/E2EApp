@@ -7,12 +7,14 @@
 
 #import "NXMCoreEvents.h"
 #import "NXMSipEvent.h"
+#import "NXMErrors.h"
 
 @protocol NXMCoreDelegate
 
 #pragma mark - user status
 
 - (void)connectionStatusChanged:(NXMConnectionStatus)status reason:(NXMConnectionStatusReason)reason;
+- (void)onError:(NXMErrorCode)errorCode;
 
 @optional
 #pragma mark - member events

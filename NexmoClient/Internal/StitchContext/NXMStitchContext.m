@@ -131,6 +131,11 @@
     [self.eventsDispatcher customEvent:customEvent];
 }
 
+- (void)onError:(NXMErrorCode)errorCode {
+    [self.stitchContextDelegate onError:errorCode];
+}
+
+
 
 
 @end

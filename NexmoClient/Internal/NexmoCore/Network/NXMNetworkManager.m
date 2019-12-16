@@ -233,7 +233,7 @@
         case NXMMediaTypeVideo:
         default:{
             LOG_ERROR("mediaType %ld is not supported",(long)mediaRequest.mediaType);
-            onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeMediaNotSupported andUserInfo:nil]);
+            onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeMediaNotSupported]);
         }
     }
 }
@@ -248,7 +248,7 @@
         case NXMMediaTypeVideo:
         default:{
             LOG_ERROR("mediaType %ld is not supported", (long)mediaRequest.mediaType);
-            onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeMediaNotSupported andUserInfo:nil]);
+            onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeMediaNotSupported]);
         }
     }
 }
@@ -363,7 +363,9 @@
     [self.delegate customEvent:customEvent];
 }
 
-
+- (void)onError:(NXMErrorCode)errorCode {
+    [self.delegate onError:errorCode];
+}
 
 
 @end

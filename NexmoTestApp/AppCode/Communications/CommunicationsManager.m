@@ -136,7 +136,8 @@
 }
 
 - (void)client:(nonnull NXMClient *)client didReceiveError:(nonnull NSError *)error {
-    
+    [NTALogger info:[NSString stringWithFormat:@"Communications Manager - Nexmo Client Error %@", error.description]];
+
 }
 
 
