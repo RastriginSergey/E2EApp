@@ -455,7 +455,7 @@
             self.uuid,
             self.name,
             self.displayName,
-            self.lastEventId,
+            (long)self.lastEventId,
             self.creationDate,
             self.myMember,
             self.allMembers];

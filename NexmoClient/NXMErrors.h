@@ -48,7 +48,7 @@ typedef NS_ENUM(NSInteger, NXMErrorCode) {
     NXMErrorCodeMediaBadRequest,
     NXMErrorCodeMediaInternalError,
     
-    NXMErrorCodePushNotAStitchPush,
+    NXMErrorCodePushNotANexmoPush,
     NXMErrorCodePushParsingFailed,
     
     NXMErrorCodeNotImplemented,

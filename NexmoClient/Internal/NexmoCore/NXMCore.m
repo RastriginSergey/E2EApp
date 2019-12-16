@@ -93,7 +93,7 @@
 - (void)processNexmoPushWithUserInfo:(nonnull NSDictionary *)userInfo onSuccess:(NXMSuccessCallbackWithEvent _Nullable)onSuccess onError:(NXMErrorCallback _Nullable)onError {
     if(![self isNexmoPushWithUserInfo:userInfo]) {
         if(onError) {
-            onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodePushNotAStitchPush andUserInfo:nil]);
+            onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodePushNotANexmoPush]);
             return;
         }
     }
@@ -101,7 +101,7 @@
     NXMEvent *parsedEvent = [self.pushParser parseStitchPushEventWithUserInfo:userInfo];
     if(!parsedEvent) {
         if(onError) {
-            onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodePushParsingFailed andUserInfo:nil]);
+            onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodePushParsingFailed]);
         }
         return;
     }
@@ -402,6 +402,10 @@ fromConversationWithId:(nonnull NSString *)conversationId
 }
 
 #pragma mark - NXMNetworkDelegate
+
+- (void)onError:(NXMErrorCode)errorCode {
+    [self.delegate onError:errorCode];
+}
 
 - (NSString *)authToken {
     return self.token;

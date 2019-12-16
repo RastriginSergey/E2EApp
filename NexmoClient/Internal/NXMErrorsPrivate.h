@@ -10,7 +10,6 @@
 
 @interface NXMErrors : NSObject
 + (NSError *)nxmErrorWithErrorCode:(NXMErrorCode)errorCode andUserInfo:(NSDictionary<NSErrorUserInfoKey,id> *)userInfo;
-
-+ (NSError *)disconnectedError;
++ (NSError *)nxmErrorWithErrorCode:(NXMErrorCode)errorCode;
 @end
 

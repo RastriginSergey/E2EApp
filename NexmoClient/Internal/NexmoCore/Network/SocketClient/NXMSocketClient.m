@@ -322,7 +322,8 @@
     __weak NXMSocketClient *weakSelf = self;
     
     [self.socket on:kNXMSocketEventBadPermission callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-        LOG_ERROR("socket BadPermission");
+        LOG_ERROR("socket kNXMSocketEventBadPermission");
+        [weakSelf.delegate onError:NXMErrorCodeEventBadPermission];
     }];
 
     [self.socket on:kNXMSocketEventInvalidEvent callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {

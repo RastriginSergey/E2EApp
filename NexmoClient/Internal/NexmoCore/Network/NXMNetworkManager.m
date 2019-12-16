@@ -363,7 +363,9 @@
     [self.delegate customEvent:customEvent];
 }
 
-
+- (void)onError:(NXMErrorCode)errorCode {
+    [self.delegate onError:errorCode];
+}
 
 
 @end
