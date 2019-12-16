@@ -407,12 +407,6 @@ static dispatch_once_t _onceToken = 0;
         return;
     }
     
-    
-    NSNumber* sequenceId = [[NSNumber alloc] initWithLong:[userInfo[@"nexmo"][@"id"] longValue]];
-    NSString* conversationId = userInfo[@"nexmo"][@"conversation_id"];
-    
-    if ([self tryUpdateConversationSequenceId:sequenceId conversationId:conversationId]) { return;}
-    
     [self.stitchContext.coreClient processNexmoPushWithUserInfo:userInfo onSuccess:^(NXMEvent * _Nullable event) {
         [NXMBlocksHelper runWithError:nil completion:completionHandler];
     } onError:^(NSError * _Nullable error) {
