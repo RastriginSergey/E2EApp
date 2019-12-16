@@ -211,5 +211,5 @@ typedef NS_ENUM(NSInteger, NXMAttachmentType) {
 /*!
  * @brief get all conversation events
  */
-- (void)getEvents:(void (^_Nullable)(NSError * _Nullable error, NSArray<NXMEvent *> * _Nonnull))completionHandler;
+- (void)getEvents:(void (^_Nullable)(NSError * _Nullable error, NSArray<NXMEvent *> * _Nullable events))completionHandler;
 @end

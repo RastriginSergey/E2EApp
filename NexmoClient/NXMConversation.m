@@ -13,6 +13,7 @@
 #import "NXMErrorsPrivate.h"
 #import "NXMConversationMembersController.h"
 #import "NXMLoggerInternal.h"
+#import "NXMEventInternal.h"
 
 
 @interface NXMConversation () <NXMConversationEventsQueueDelegate,NXMConversationMembersControllerDelegate>
@@ -396,11 +397,16 @@
 }
 
 - (void)getEvents:(void (^_Nullable)(NSError * _Nullable error, NSArray<NXMEvent *> *))completionHandler; {
+    __weak typeof(self) weakSelf = self;
     [self.stitchContext.coreClient getEventsInConversation:self.uuid
                                                  onSuccess:^(NSMutableArray<NXMEvent *> * _Nullable events) {
+                                                     for (NXMEvent *event in events) {
+                                                         NXMMember * member = [weakSelf.conversationMembersController memberForMemberId:event.fromMemberId];
+                                                         [event updateFromMember:member];
+                                                     }
                                                      completionHandler(nil, events);
                                                  } onError:^(NSError * _Nullable error) {
-                                                     completionHandler(error, nil);
+                                                     completionHandler(error, @[]);
                                                  }];
 }
 
