@@ -6,6 +6,8 @@
 //
 
 #import "NXMUtils.h"
+#import <sys/utsname.h>
+
 
 //@interface NXMUtils ()
 
@@ -38,6 +40,13 @@ static NSString * const NexmoDeviceUuidKey = @"NexmoClientDeviceUuid";
     }
     
     return deviceUuid;
+}
+
++ (NSString *)deviceMachineName {
+    struct utsname systemInfo;
+    uname(&systemInfo);
+        
+    return [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
 }
 
 

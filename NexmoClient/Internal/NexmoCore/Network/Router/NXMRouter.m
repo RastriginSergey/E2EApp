@@ -58,9 +58,12 @@ static NSString * const MEMBERS_REMOVE_URL_FORMAT = @"%@beta/conversations/%@/me
     if (self = [super init]) {
         self.baseUrl = host;
         self.ipsURL = ipsURL;
-        self.agentDescription = [NSString stringWithFormat:@"iOS %@ %@",
+
+        self.agentDescription = [NSString stringWithFormat:@"NexmoClientSDK/%@ iOS (%@ %@ %@)",
+                                 [[NSBundle bundleForClass:[self class]] objectForInfoDictionaryKey: @"CFBundleShortVersionString"],
+                                 [UIDevice currentDevice].systemName,
                                  [UIDevice currentDevice].systemVersion,
-                                 [UIDevice currentDevice].model];
+                                 [NXMUtils deviceMachineName]];
     }
     
     return self;

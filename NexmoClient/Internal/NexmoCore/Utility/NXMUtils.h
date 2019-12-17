@@ -13,4 +13,6 @@
 + (NSDate *)dateFromISOString:(NSString *)isoString;
 
 + (NSString *)nexmoDeviceId;
+
++ (NSString *)deviceMachineName;
 @end
