@@ -8,12 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import <NexmoClient/NexmoClient.h>
+#import <PushKit/PushKit.h>
 
 #import "CommunicationsManagerDefine.h"
 
 @interface CommunicationsManager : NSObject <NXMClientDelegate>
 
 @property (nonatomic, nonnull, readonly) NXMClient *client;
+@property (nonatomic, nonnull) NSMutableArray<PKPushPayload *> *unprocessedPushPayloads;
+
 + (nonnull CommunicationsManager *)sharedInstance;
 
 + (nonnull NSString *)statusReasonToString:(NXMConnectionStatusReason)status;

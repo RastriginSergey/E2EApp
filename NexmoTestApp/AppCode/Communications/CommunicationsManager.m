@@ -34,7 +34,9 @@
 
 #pragma mark - init
 - (instancetype)init {
-    if(self = [super init]) {        
+    if(self = [super init]) {
+        self.unprocessedPushPayloads = [NSMutableArray new];
+
         //notifications
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(NTADidLoginWithNSNotification:) name:kNTALoginHandlerNotificationNameUserDidLogin object:nil];
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(NTADidLogoutWithNSNotification:) name:kNTALoginHandlerNotificationNameUserDidLogout object:nil];
@@ -102,11 +104,30 @@
 #pragma mark - post notifications
 
 - (void)didChangeConnectionStatus:(NXMConnectionStatus)connectionStatus WithReason:(NXMConnectionStatusReason)reason {
+    if (connectionStatus == NXMConnectionStatusConnected) {
+        [self handleUnprocessedPushNotifications];
+    }
     NSDictionary *userInfo = @{
                                kNTACommunicationsManagerNotificationKeyConnectionStatus:@(connectionStatus),
                                kNTACommunicationsManagerNotificationKeyConnectionStatusReason: @(reason)
                                };
     [NSNotificationCenter.defaultCenter postNotificationName:kNTACommunicationsManagerNotificationNameConnectionStatus object:nil userInfo:userInfo];
+}
+
+- (void)handleUnprocessedPushNotifications {
+    for (PKPushPayload *payload in self.unprocessedPushPayloads) {
+        [self handlePushNotificationWithUserInfo:payload.dictionaryPayload];
+    }
+    [self.unprocessedPushPayloads removeAllObjects];
+}
+
+- (void)handlePushNotificationWithUserInfo:(NSDictionary *)userInfo {
+    [NTALogger info:@"Handeling nexmo voip push"];
+    [CommunicationsManager.sharedInstance processClientPushWithUserInfo:userInfo completion:^(NSError * _Nullable error) {
+        if(error) {
+            [NTALogger errorWithFormat:@"Error processing nexmo push: %@", error];
+        }
+    }];
 }
 
 - (void)didgetIncomingCall:(NXMCall *)call {
