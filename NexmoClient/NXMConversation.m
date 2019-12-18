@@ -14,6 +14,7 @@
 #import "NXMConversationMembersController.h"
 #import "NXMLoggerInternal.h"
 #import "NXMEventInternal.h"
+#import "NXMMemberEventPrivate.h"
 
 
 @interface NXMConversation () <NXMConversationEventsQueueDelegate,NXMConversationMembersControllerDelegate>
@@ -428,15 +429,19 @@
 
     __weak typeof(self) weakSelf = self;
     [self.stitchContext.coreClient getEventsInConversation:self.uuid
-                                                 onSuccess:^(NSMutableArray<NXMEvent *> * _Nullable events) {
-                                                     for (NXMEvent *event in events) {
-                                                         NXMMember * member = [weakSelf.conversationMembersController memberForMemberId:event.fromMemberId];
-                                                         [event updateFromMember:member];
-                                                     }
-                                                     completionHandler(nil, events);
-                                                 } onError:^(NSError * _Nullable error) {
-                                                     completionHandler(error, @[]);
-                                                 }];
+             onSuccess:^(NSMutableArray<NXMEvent *> * _Nullable events) {
+                 for (NXMEvent *event in events) {
+                     NSString *memberId = event.type != NXMEventTypeMember ?
+                                            event.fromMemberId :
+                                            ((NXMMemberEvent * )event).memberId;
+                     NXMMember * member = [weakSelf.conversationMembersController memberForMemberId:memberId];
+                     
+                     [event updateFromMember:member];
+                 }
+                 completionHandler(nil, events);
+             } onError:^(NSError * _Nullable error) {
+                 completionHandler(error, @[]);
+             }];
 }
 
 #pragma mark - Private Methods
