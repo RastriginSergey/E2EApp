@@ -435,9 +435,9 @@
                      
                      [event updateFromMember:member];
                      
-                     if (event.type == NXMMemberEvent) {
-                         NXMMemberEvent *memberEvent = event;
-                         [memberEvent updateMember:memberEvent.memberId];
+                     if (event.type == NXMEventTypeMember) {
+                         NXMMemberEvent *memberEvent = (NXMMemberEvent *)event;
+                         [memberEvent updateMember:[weakSelf.conversationMembersController memberForMemberId:memberEvent.memberId]];
                      }
                  }
                  completionHandler(nil, events);
