@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 1.2.4 - 2019-12-18
 
 ### Fixed.
-- Calling `conversation.getEvents` returned an `NXMMemberEvent` with the field `fromMember` set to `nil`
+- Calling `conversation.getEvents` returned an `NXMMemberEvent` with the field `member` set to `nil`
 
 ---
 

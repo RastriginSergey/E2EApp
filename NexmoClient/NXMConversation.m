@@ -431,12 +431,14 @@
     [self.stitchContext.coreClient getEventsInConversation:self.uuid
              onSuccess:^(NSMutableArray<NXMEvent *> * _Nullable events) {
                  for (NXMEvent *event in events) {
-                     NSString *memberId = event.type != NXMEventTypeMember ?
-                                            event.fromMemberId :
-                                            ((NXMMemberEvent * )event).memberId;
-                     NXMMember * member = [weakSelf.conversationMembersController memberForMemberId:memberId];
+                     NXMMember * member = [weakSelf.conversationMembersController memberForMemberId:event.fromMemberId];
                      
                      [event updateFromMember:member];
+                     
+                     if (event.type == NXMMemberEvent) {
+                         NXMMemberEvent *memberEvent = event;
+                         [memberEvent updateMember:memberEvent.memberId];
+                     }
                  }
                  completionHandler(nil, events);
              } onError:^(NSError * _Nullable error) {
