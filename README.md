@@ -13,7 +13,7 @@ With a set of features including IP-IP calls, IP-PSTN/PSTN-IP calls, chat messag
 - [License](#License)
 
 ### Contributing
-Please read our [contributing guidelines](https://github.com/Vonage/nexmo-sdk-ios/blob/master/CONTRIBUTING.md) prior to submitting a Pull Request.
+Please read our [contributing guidelines](https://github.com/Vonage/nexmo-sdk-ios/blob/develop/CONTRIBUTING.md) prior to submitting a Pull Request.
 
 ### Setup
 Download repository, open project file **NXMiOSSDK.xcodeproj**
@@ -44,8 +44,9 @@ NexmoClient uses a number of projects to work properly:
 
 #### Architecture
 <p align="center">
-    <img src="https://github.com/vonage/nexmo-sdk-ios/blob/develop/Utils/SDKArchitectureDiagram.png" title="Class diagram">
+    <img src="https://github.com/vonage/nexmo-sdk-ios/blob/develop/Utils/SDKDiagram.png" title="Class diagram">
 </p>
+
 #### SDK High level class diagram
 <p align="center">
     <img src="https://github.com/vonage/nexmo-sdk-ios/blob/develop/Utils/SDKClassDiagram.png" title="Class diagram">
