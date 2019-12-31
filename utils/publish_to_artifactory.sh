@@ -27,7 +27,7 @@ fi
 ./create_docs.sh $PLIST_VERSION
 
 pushd $PWD/../Output/Debug
-cp -R ../../LICENSE ../../README.md ../../docs .
+cp -R ../../LICENSE ../../Utils/README.md ../../docs .
 zip --symlinks -r -9 NexmoClient.zip NexmoClient.framework LICENSE README.md docs
 rm -rf LICENSE README.md docs
 
@@ -42,7 +42,7 @@ popd
 
 pushd $PWD/../Output/Release
 
-cp -R ../../LICENSE ../../README.md ../../docs .
+cp -R ../../LICENSE ../../Utils/README.md ../../docs .
 zip --symlinks -r -9 NexmoClient.zip NexmoClient.framework LICENSE README.md docs
 rm -rf LICENSE README.md docs
 
