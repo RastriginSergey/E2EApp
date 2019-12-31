@@ -25,16 +25,16 @@ Choose **NexmoClient** traget and press build.
 
 #### Structure
 Here is a description of the main files and folders in the root of out repository:
-**NXMiOSSDK.xcodeproj** - is the main project which contains all of our targets. 
-**NexmoClient** - framework target which contains all of Nexmo client SDK source code. 
-**NexmoClient/info.plist** -  build settings (like version number) which used for NexmoClient SDK.
-**NexmoClientTests** - test target that contains all of nexmo client SDK unit tests.
-**NexmoTestApp** - application target in objC which used for internal testing for the SDK. 
-**NexmoSwifttApp** - application target in Swift which used for internal testing for the SDK. 
-**Makefile** - NexmoClient target makefile.
-**Utils** - scripts and tools used by our build process.
-**Frameworks** - NexmoClient dependencies, .
-**Output** - NexmoClient target output.
+* **NXMiOSSDK.xcodeproj** - is the main project which contains all of our targets. 
+* **NexmoClient** - framework target which contains all of Nexmo client SDK source code. 
+* **NexmoClient/info.plist** -  build settings (like version number) which used for NexmoClient SDK.
+* **NexmoClientTests** - test target that contains all of nexmo client SDK unit tests.
+* **NexmoTestApp** - application target in objC which used for internal testing for the SDK. 
+* **NexmoSwifttApp** - application target in Swift which used for internal testing for the SDK. 
+* **Makefile** - NexmoClient target makefile.
+* **Utils** - scripts and tools used by our build process.
+* **Frameworks** - NexmoClient dependencies, .
+* **Output** - NexmoClient target output.
 
 #### Dependencies
 NexmoClient uses a number of projects to work properly:
