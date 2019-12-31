@@ -14,10 +14,10 @@ You need to explicitly add the team as reviewers, After the pull request is crea
 Only admin can merge pull request without someone to review it.
 
 ## Branch Structure
-**master** - latest public release branch. We encourage merge here to keep its history.
-**develop** - stable development branch. We encourage squashing here to keep its history nice and neat
-**release** - release branch. We release our SDK only from here. Contributing directly to this branch (and by merging from develop) should be used for hot-fixes.
-**feature/CSI_{NUM}_topic** - this is the naming scheme we use for private branches.
+* **master** - latest public release branch. We encourage merge here to keep its history.
+* **develop** - stable development branch. We encourage squashing here to keep its history nice and neat
+* **release** - release branch. We release our SDK only from here. Contributing directly to this branch (and by merging from develop) should be used for hot-fixes.
+* **feature/CSI_{NUM}_topic** - this is the naming scheme we use for private branches.
 Repository Structure
 
 >When using .gitignore, we prefer using as much specific files as possible. For example, to ignore auto generated files in a project, create a .gitignore in your project's directory, rather than editing the one in the repository's root. This way when we move project folders from place to place nothing breaks.

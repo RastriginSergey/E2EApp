@@ -13,7 +13,7 @@ With a set of features including IP-IP calls, IP-PSTN/PSTN-IP calls, chat messag
 - [License](#License)
 
 ### Contributing
-Please read our [contributing guidelines](https://github.com/Vonage/nexmo-sdk-ios/blob/develop/CONTRIBUTING.md) prior to submitting a Pull Request.
+Please read our [contributing guidelines](https://github.com/Vonage/nexmo-sdk-ios/blob/develop/CONTRIBUTE.md) prior to submitting a Pull Request.
 
 ### Setup
 Download repository, open project file **NXMiOSSDK.xcodeproj**
