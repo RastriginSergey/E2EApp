@@ -40,11 +40,6 @@
         //notifications
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(NTADidLoginWithNSNotification:) name:kNTALoginHandlerNotificationNameUserDidLogin object:nil];
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(NTADidLogoutWithNSNotification:) name:kNTALoginHandlerNotificationNameUserDidLogout object:nil];
-        
-        if (NTALoginHandler.currentUser) {
-            [self setupClientWithUser:NTALoginHandler.currentUser];
-            [self login];
-        }
     }
     return self;
 }
@@ -167,23 +162,26 @@
 #pragma mark - LoginHandler notifications
 - (void)NTADidLoginWithNSNotification:(NSNotification *)note {
     NTAUserInfo *user = note.userInfo[kNTALoginHandlerNotificationKeyUser];
-    [self setupClientWithUser:user];
+    [self setupClientWithUserToken:user.csUserToken];
 }
 
 - (void)NTADidLogoutWithNSNotification:(NSNotification *)note {
     [self logout];
 }
 
-- (void)login {
-    //[self.client loginWithAuthToken:(NSString *)authToken];
+- (void)loginWithUserToken:(NSString *)userToken {
+    [self setupClientWithUserToken:userToken];
 }
 
 - (void)logout {
     [self.client logout];
 }
 
-- (void)setupClientWithUser:(NTAUserInfo *)userInfo {
+- (void)setupClientWithUserToken:(NSString *)userToken {
     if(self.client) { //TODO: this is because creating two clients without holding reference to both creates crashes in miniRTC. change after it is fixed
+        
+        [self.client loginWithAuthToken:userToken];
+        
         return;
     }
     
@@ -201,7 +199,7 @@
     self.client = NXMClient.shared;
 
     [self.client setDelegate:self];
-    [self.client loginWithAuthToken:userInfo.csUserToken];
+    [self.client loginWithAuthToken:userToken];
 }
 
 @end

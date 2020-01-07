@@ -70,7 +70,13 @@ static BOOL _registeredForNexmoPushNotifications;
         }
     }
     
-    [self loginWithUserName:user.name andPassword:user.password completion:completion];
+    [self loginWithUserName:user.name andPassword:user.password completion:^(NSError * _Nullable error, NTAUserInfo *userInfo) {
+        completion(error, userInfo);
+    
+        if (!error && userInfo.csUserToken) {
+            [CommunicationsManager.sharedInstance loginWithUserToken:userInfo.csUserToken];
+        }
+    }];
 }
 
 + (void)loginWithUserName:(NSString *)userName andPassword:(NSString *)password completion:(void(^_Nullable)(NSError * _Nullable error, NTAUserInfo *userInfo))completion {

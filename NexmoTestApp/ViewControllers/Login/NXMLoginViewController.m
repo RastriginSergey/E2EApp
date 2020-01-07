@@ -11,6 +11,7 @@
 #import "MainTabViewController.h"
 #import "DialerViewController.h"
 #import "ConversationsTableViewController.h"
+#import "CommunicationsManager.h"
 
 #import "NTAUserInfoProvider.h"
 #import "NTALoginHandler.h"
@@ -91,6 +92,10 @@
             [self hideInProgressView];
             [NTAAlertUtils displayAlertForController:weakSelf withTitle:@"Authentcation failed" andMessage:@"User name or password is incorrect"];
             return;
+        }
+        
+        if (userInfo.csUserToken) {
+            [CommunicationsManager.sharedInstance loginWithUserToken:userInfo.csUserToken];
         }
         
         [self didLogin];
