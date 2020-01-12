@@ -58,7 +58,7 @@
 - (NXMErrorCode)suspendMediaWithMediaId:(nonnull NSString *)conversationId andMediaType:(NXMMediaType)type {
     MRTCMediaType mrtcMediaType = [self mrtcMediaTypeWithNXMMediaType:type];
     if(mrtcMediaType == MRTCMediaTypeNone) {
-        LOG_ERROR("NXMMediaType [%li] is not supported",(long)type);
+        NXM_LOG_ERROR("NXMMediaType [%li] is not supported",(long)type);
         return NXMErrorCodeMediaNotSupported;
     }
     
@@ -69,7 +69,7 @@
 - (NXMErrorCode)resumeMediaWithMediaId:(nonnull NSString *)conversationId andMediaType:(NXMMediaType)type {
     MRTCMediaType mrtcMediaType = [self mrtcMediaTypeWithNXMMediaType:type];
     if(mrtcMediaType == MRTCMediaTypeNone) {
-        LOG_ERROR("NXMMediaType [%li] is not supported", (long)type);
+        NXM_LOG_ERROR("NXMMediaType [%li] is not supported", (long)type);
         return NXMErrorCodeMediaNotSupported;
     }
     
@@ -203,7 +203,7 @@
     
     NXMMediaType nxmMediaType = [self nxmMediaTypeWithMRTCMediaType:(MRTCMediaType)mediaType];
     if(nxmMediaType == NXMMediaTypeNone) {
-        LOG_ERROR("MRTCMediaType [%li] is not supported", (long)(MRTCMediaType)mediaType);
+        NXM_LOG_ERROR("MRTCMediaType [%li] is not supported", (long)(MRTCMediaType)mediaType);
         completionHandler(false, uuid);
         return;
     }
@@ -215,7 +215,7 @@
                                                                         onSuccess:^(void) {
                                                                             completionHandler(true, uuid);
                                                                         } onError:^(NSError * _Nullable error) {
-                                                                            LOG_ERROR("Error sending mute with error:  %@",error.description);
+                                                                            NXM_LOG_ERROR("Error sending mute with error:  %@",error.description);
                                                                             completionHandler(false,uuid);
                                                                         }];
 }
@@ -243,7 +243,7 @@
 }
 
 - (void)onErrorWithType:(NSString *)type andUuid:(NSString *)uuid andErrorDescription:(NSString *)description andData:(NSDictionary *)data {
-    LOG_DEBUG("%s", description);
+    NXM_LOG_DEBUG("%s", description);
 }
 
 @end

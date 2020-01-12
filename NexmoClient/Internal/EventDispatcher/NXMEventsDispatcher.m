@@ -132,6 +132,11 @@
     [self dispatchWithNotificationName:kNXMEventsDispatcherNotificationConnectionStatus andUserInfo:[NXMEventsDispatcherNotificationHelper<NXMEventsDispatcherConnectionStatusModel *> notificationUserInfoWithNotificationModel:model]];
 }
 
+- (void)onError:(NXMErrorCode)errorCode {
+    
+}
+
+
 
 
 @end

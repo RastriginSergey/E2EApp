@@ -51,7 +51,7 @@ static NSString *const ON_MAIN_THREAD_EXCEPTION_REASON = @"This method can't be 
 - (void)getConversationsPageForURL:(nonnull NSURL *)url
                  completionHandler:(void (^ _Nullable)(NSError * _Nullable, NXMConversationsPage * _Nullable))completionHandler {
 
-    LOG_DEBUG([NSString stringWithFormat: @"URL: %@", url.absoluteString].UTF8String);
+    NXM_LOG_DEBUG([NSString stringWithFormat: @"URL: %@", url.absoluteString].UTF8String);
     NXMCore *coreClient = self.stitchContext.coreClient;
     __weak typeof(self) weakSelf = self;
     [coreClient getConversationIdsPageForURL:url
@@ -94,7 +94,7 @@ static NSString *const ON_MAIN_THREAD_EXCEPTION_REASON = @"This method can't be 
                         onError:(void (^ _Nonnull)(NSError * _Nullable))onError {
 
     if (NSThread.isMainThread) {
-        LOG_DEBUG(ON_MAIN_THREAD_EXCEPTION_REASON.UTF8String);
+        NXM_LOG_DEBUG(ON_MAIN_THREAD_EXCEPTION_REASON.UTF8String);
     }
 
     __weak typeof(self) weakSelf = self;

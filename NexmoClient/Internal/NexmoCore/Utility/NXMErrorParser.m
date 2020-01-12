@@ -41,7 +41,7 @@ static NSDictionary<NSString *,NSNumber *> *csErrorToNXMCode;
 + (int) parseError:(nonnull NSDictionary*) data{
     
     NSString* errorCodeMsg = data[@"code"];
-    return csErrorToNXMCode[errorCodeMsg] ? csErrorToNXMCode[errorCodeMsg].integerValue : NXMErrorCodeUnknown;
+    return csErrorToNXMCode[errorCodeMsg] ? (int)csErrorToNXMCode[errorCodeMsg].integerValue : (int)NXMErrorCodeUnknown;
 }
 
 @end

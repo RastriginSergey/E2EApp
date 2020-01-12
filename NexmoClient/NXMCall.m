@@ -36,7 +36,7 @@
 @implementation NXMCall
 
 - (nullable instancetype)initWithConversation:(nonnull NXMConversation *)conversation {
-    LOG_DEBUG([conversation.uuid UTF8String]);
+    NXM_LOG_DEBUG([conversation.uuid UTF8String]);
     
     if (self = [super init]) {
         self.membersSyncToken = [NSObject new];
@@ -64,7 +64,7 @@
 }
 
 - (void)answer:(NXMErrorCallback _Nullable)completionHandler {
-    LOG_DEBUG("%s clientRef: %s", self.conversation.uuid.UTF8String, self.clientRef.UTF8String);
+    NXM_LOG_DEBUG("%s clientRef: %s", self.conversation.uuid.UTF8String, self.clientRef.UTF8String);
     
     self.clientRef = [self.conversation joinClientRef:^(NSError * _Nullable error, NXMMember * _Nullable member) {
         if (error) {
@@ -77,7 +77,7 @@
 }
 
 - (void)reject:(NXMErrorCallback _Nullable)completionHandler {
-    LOG_DEBUG(self.conversation.uuid.UTF8String);
+    NXM_LOG_DEBUG(self.conversation.uuid.UTF8String);
     
     if (self.myCallMember.status != NXMCallMemberStatusRinging) {
         [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown]
@@ -96,7 +96,7 @@
 }
 
 - (void)addCallMemberWithUsername:(NSString *)username completionHandler:(NXMErrorCallback _Nullable)completionHandler {
-    LOG_DEBUG("%s username: %s", self.conversation.uuid.UTF8String, username.UTF8String);
+    NXM_LOG_DEBUG("%s username: %s", self.conversation.uuid.UTF8String, username.UTF8String);
     if (username == self.conversation.myMember.user.name){
         
         [NXMBlocksHelper runWithError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown]
@@ -125,7 +125,7 @@
 }
 
 - (void)addCallMemberWithNumber:(NSString *)number completionHandler:(NXMErrorCallback _Nullable)completionHandler {
-    LOG_DEBUG("%s username: %s", self.conversation.uuid.UTF8String, number.UTF8String);
+    NXM_LOG_DEBUG("%s username: %s", self.conversation.uuid.UTF8String, number.UTF8String);
 
     if ([self isCallDone]) {
         
@@ -147,7 +147,7 @@
 }
 
 - (void)sendDTMF:(NSString *)dtmf {
-    LOG_DEBUG("%s dtmf: %s", self.conversation.uuid.UTF8String, dtmf.UTF8String);
+    NXM_LOG_DEBUG("%s dtmf: %s", self.conversation.uuid.UTF8String, dtmf.UTF8String);
 
     if ([self isCallDone]) {
         return;
@@ -162,7 +162,7 @@
 #pragma mark - callProxy
 
 - (void)hangup:(NXMCallMember *)callMember {
-    LOG_DEBUG("%s callMember: %s", self.conversation.uuid.UTF8String, callMember.description.UTF8String);
+    NXM_LOG_DEBUG("%s callMember: %s", self.conversation.uuid.UTF8String, callMember.description.UTF8String);
 
     if (callMember != self.myCallMember) {
         // TODO: error
@@ -173,7 +173,7 @@
     __weak typeof(self) weakSelf = self;
     [self.conversation kickMemberWithMemberId:callMember.memberId completion:^(NSError * _Nullable error) {
         if (error) {
-            LOG_ERROR("hangup kick failed:%s",[error.description UTF8String]);
+            NXM_LOG_ERROR("hangup kick failed:%s",[error.description UTF8String]);
             [weakSelf.delegate call:self didReceive:error];
         }
     }];
@@ -184,7 +184,7 @@
 }
 
 - (void)mute:(NXMCallMember *)callMember isMuted:(BOOL)isMuted {
-    LOG_DEBUG("%s callmember:%s isMuted:%i", self.conversation.uuid.UTF8String, [callMember.description UTF8String], isMuted);
+    NXM_LOG_DEBUG("%s callmember:%s isMuted:%i", self.conversation.uuid.UTF8String, [callMember.description UTF8String], isMuted);
     if ([self isCallDone]) { return; }
     
     if (![callMember.memberId isEqualToString:self.myCallMember.memberId]) {
@@ -199,7 +199,7 @@
 }
 
 - (void)hangup {
-    LOG_DEBUG(self.conversation.uuid.UTF8String);
+    NXM_LOG_DEBUG(self.conversation.uuid.UTF8String);
 
     if ([self isCallDone]) { return; }
 
@@ -209,7 +209,7 @@
 #pragma mark - callProxy
 
 - (void)didUpdate:(nonnull NXMCallMember *)callMember status:(NXMCallMemberStatus)status {
-    LOG_DEBUG("%s callMemberId:%s %d", self.conversation.uuid.UTF8String, callMember.memberId, status);
+    NXM_LOG_DEBUG("%s callMemberId:%s %d", self.conversation.uuid.UTF8String, callMember.memberId, status);
 
     if (callMember == self.myCallMember &&
         callMember.status == NXMCallMemberStatusCompleted) {
@@ -234,7 +234,7 @@
 - (void)conversation:(nonnull NXMConversation *)conversation
      didUpdateMember:(nonnull NXMMember *)member
             withType:(NXMMemberUpdateType)type {
-    LOG_DEBUG("%s member:%s", self.conversation.uuid.UTF8String, member.description.UTF8String);
+    NXM_LOG_DEBUG("%s member:%s", self.conversation.uuid.UTF8String, member.description.UTF8String);
 
     NXMCallMember *callMember = [self findOrAddCallMember:member];
     
@@ -249,7 +249,7 @@
 }
 
 - (void)conversation:(nonnull NXMConversation *)conversation didReceiveDTMFEvent:(nonnull NXMDTMFEvent *)event {
-    LOG_DEBUG("%s dtmfEvent:%s", [conversation.uuid UTF8String], [event.digit UTF8String]);
+    NXM_LOG_DEBUG("%s dtmfEvent:%s", [conversation.uuid UTF8String], [event.digit UTF8String]);
     if ([self.delegate respondsToSelector:@selector(call:didReceive:fromCallMember:)]) {
         [self.delegate call:self
                  didReceive:event.digit
@@ -259,7 +259,7 @@
 
 
 - (void)conversationExpired {
-    LOG_DEBUG(self.conversation.uuid.UTF8String);
+    NXM_LOG_DEBUG(self.conversation.uuid.UTF8String);
 
     [self.myCallMember hangup];
 }

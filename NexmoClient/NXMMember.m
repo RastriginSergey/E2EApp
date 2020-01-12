@@ -94,7 +94,7 @@
 
 
 - (void)updateChannelWithLeg:(NXMLeg *)leg {
-    LOG_DEBUG([leg.description UTF8String]);
+    NXM_LOG_DEBUG([leg.description UTF8String]);
     [self.channel addLeg:leg];
 
 }
@@ -119,13 +119,13 @@
 }
 
 - (void)updateExpired {
-    LOG_DEBUG([self.memberUuid UTF8String]);
+    NXM_LOG_DEBUG([self.memberUuid UTF8String]);
     self.state = NXMMemberStateLeft;
     
     NXMLeg *leg = self.channel.leg;
     if (!leg ||
         leg.status == NXMLegStatusCompleted) {
-        LOG_ERROR("NXMMember %s updateExpired no relevant leg %s", [self.memberUuid UTF8String], [leg.uuid UTF8String]);
+        NXM_LOG_ERROR("NXMMember %s updateExpired no relevant leg %s", [self.memberUuid UTF8String], [leg.uuid UTF8String]);
 
         return;
     }

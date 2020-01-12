@@ -6,7 +6,7 @@
 //
 
 #import "NXMLoggerInternal.h"
-#define NXMDD_LEGACY_MACROS 1 // Logger
+
 
 @interface NXMLogger()
 
@@ -47,3 +47,4 @@
 }
 
 @end
+

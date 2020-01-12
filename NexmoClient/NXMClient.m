@@ -47,15 +47,15 @@ static NXMClient * _sharedInstance = nil;
 static dispatch_once_t _onceToken = 0;
 
 - (nonnull instancetype)initWithConfiguration:(nonnull NXMClientConfig *)configuration {
-    LOG_DEBUG("--------------------- Nexmo Client-----------------------");
-    LOG_DEBUG("::::    :::  ::::::::::  :::    :::  ::::    ::::    ::::::::");
-    LOG_DEBUG(":+:+:   :+:  :+:         :+:    :+:  +:+:+: :+:+:+  :+:    :+:");
-    LOG_DEBUG(":+:+:+  +:+  +:+          +:+  +:+   +:+ +:+:+ +:+  +:+    +:+");
-    LOG_DEBUG("+#+ +:+ +#+  +#++:++#      +#++:+    +#+  +:+  +#+  +#+    +:+");
-    LOG_DEBUG("+#+  +#+#+#  +#+          +#+  +#+   +#+       +#+  +#+    +#+");
-    LOG_DEBUG("#+#   #+#+#  #+#         #+#    #+#  #+#       #+#  #+#    #+#");
-    LOG_DEBUG("###    ####  ##########  ###    ###  ###       ###   ########");
-    LOG_DEBUG("--------------------- Nexmo Client-----------------------");
+    NXM_LOG_DEBUG("--------------------- Nexmo Client-----------------------");
+    NXM_LOG_DEBUG("::::    :::  ::::::::::  :::    :::  ::::    ::::    ::::::::");
+    NXM_LOG_DEBUG(":+:+:   :+:  :+:         :+:    :+:  +:+:+: :+:+:+  :+:    :+:");
+    NXM_LOG_DEBUG(":+:+:+  +:+  +:+          +:+  +:+   +:+ +:+:+ +:+  +:+    +:+");
+    NXM_LOG_DEBUG("+#+ +:+ +#+  +#++:++#      +#++:+    +#+  +:+  +#+  +#+    +:+");
+    NXM_LOG_DEBUG("+#+  +#+#+#  +#+          +#+  +#+   +#+       +#+  +#+    +#+");
+    NXM_LOG_DEBUG("#+#   #+#+#  #+#         #+#    #+#  #+#       #+#  #+#    #+#");
+    NXM_LOG_DEBUG("###    ####  ##########  ###    ###  ###       ###   ########");
+    NXM_LOG_DEBUG("--------------------- Nexmo Client-----------------------");
     
     if(self = [super init]) {
         self.stitchContext = [[NXMStitchContext alloc] initWithCoreClient:[[NXMCore alloc] initWithToken:@""
@@ -138,9 +138,9 @@ static dispatch_once_t _onceToken = 0;
 }
 
 -(void)loginWithAuthToken:(NSString *)authToken {
-    LOG_DEBUG("" );
+    NXM_LOG_DEBUG("" );
     if(!self.delegate) {
-        LOG_ERROR("login called without setting delegate");
+        NXM_LOG_ERROR("login called without setting delegate");
     }
     self.stitchContext.coreClient.token = authToken;
     [self.stitchContext.coreClient login];
@@ -148,13 +148,13 @@ static dispatch_once_t _onceToken = 0;
 }
 
 -(void)updateAuthToken:(nonnull NSString *)authToken {
-    LOG_DEBUG([authToken UTF8String]);
+    NXM_LOG_DEBUG([authToken UTF8String]);
 
     [self.stitchContext.coreClient refreshAuthToken:authToken];
 }
 
 -(void)logout {
-    LOG_DEBUG("" );
+    NXM_LOG_DEBUG("" );
 
     if (self.connectionStatus == NXMConnectionStatusDisconnected) {
         return;
@@ -165,7 +165,7 @@ static dispatch_once_t _onceToken = 0;
     //TODO: decide if disable should be required before logout, or maybe it should be
     [self disablePushNotifications:^(NSError * _Nullable error) {
         if(error) {
-            LOG_ERROR("failed disabling push during logout with error: %s", [error.description UTF8String]);
+            NXM_LOG_ERROR("failed disabling push during logout with error: %s", [error.description UTF8String]);
             return;
         }
     }];
@@ -180,7 +180,7 @@ static dispatch_once_t _onceToken = 0;
 
 
 - (void)connectionStatusChanged:(NXMConnectionStatus)status reason:(NXMConnectionStatusReason)reason {
-    LOG_DEBUG("status %ld reason %ld", status, reason);
+    NXM_LOG_DEBUG("status %ld reason %ld", status, reason);
     NSError *setUpCleanUpError = nil;
     switch (self.connectionStatus) {
         case NXMConnectionStatusDisconnected:
@@ -207,9 +207,9 @@ static dispatch_once_t _onceToken = 0;
 
 -(void)getConversationWithUuid:(nonnull NSString *)converesationId
                   completionHandler:(void(^_Nullable)(NSError * _Nullable error, NXMConversation * _Nullable conversation))completion {
-    LOG_DEBUG([converesationId UTF8String]);
+    NXM_LOG_DEBUG([converesationId UTF8String]);
     if (![self isConnected]){
-        LOG_DEBUG("SDK disconnected" );
+        NXM_LOG_DEBUG("SDK disconnected" );
         completion([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeSDKDisconnected], nil);
         return;
     }
@@ -227,10 +227,10 @@ static dispatch_once_t _onceToken = 0;
     }
 
 -(void)createConversationWithName:(nonnull NSString *)name completionHandler:(void(^_Nullable)(NSError * _Nullable error, NXMConversation * _Nullable conversation))completion {
-    LOG_DEBUG("" );
+    NXM_LOG_DEBUG("" );
 
     if (![self isConnected]){
-        LOG_DEBUG("SDK disconnected" );
+        NXM_LOG_DEBUG("SDK disconnected" );
         completion([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeSDKDisconnected], nil);
         return;
     }
@@ -261,7 +261,7 @@ static dispatch_once_t _onceToken = 0;
                                order:(NXMPageOrder)order
                    completionHandler:(void (^)(NSError * _Nullable, NXMConversationsPage * _Nullable))completionHandler {
     NSString *userId = self.user.uuid;
-    LOG_DEBUG([NSString stringWithFormat: @"UserID: %@; Page size: %@", userId, @(size).stringValue].UTF8String);
+    NXM_LOG_DEBUG([NSString stringWithFormat: @"UserID: %@; Page size: %@", userId, @(size).stringValue].UTF8String);
     [self.conversationsPagingHandler getConversationsPageWithSize:size
                                                             order:order
                                                            userId:userId
@@ -271,7 +271,7 @@ static dispatch_once_t _onceToken = 0;
 - (void)addPendingClientReference:(nonnull NSString*)clientRef
                      delegate:(id<NXMCallDelegate>)delegate
                    completion:(void(^_Nullable)(NSError * _Nullable error, NXMCall * _Nullable call))completion{
-    LOG_DEBUG([clientRef UTF8String]);
+    NXM_LOG_DEBUG([clientRef UTF8String]);
 
     NXMClientRefCallObj *clientRefObj = [NXMClientRefCallObj new];
     clientRefObj.complition = completion;
@@ -281,7 +281,7 @@ static dispatch_once_t _onceToken = 0;
 - (void)startIpCall:(nonnull NSString *)callee
             delegate:(id<NXMCallDelegate>)delegate
           completion:(void(^_Nullable)(NSError * _Nullable error, NXMCall * _Nullable call))completion {
-    LOG_DEBUG([callee UTF8String]);
+    NXM_LOG_DEBUG([callee UTF8String]);
     __weak NXMClient *weakSelf = self;
     __weak NXMCore *weakCore = self.stitchContext.coreClient;
     [weakCore createConversationWithName:[NSString stringWithFormat:@"%@%@", NXMCallPrefix, [[NSUUID UUID] UUIDString]]
@@ -323,13 +323,13 @@ static dispatch_once_t _onceToken = 0;
 - (void)startServerCall:(nonnull NSString *)callee
             delegate:(id<NXMCallDelegate>)delegate
           completion:(void(^_Nullable)(NSError * _Nullable error, NXMCall * _Nullable call))completion {
-    LOG_DEBUG([callee UTF8String]);
+    NXM_LOG_DEBUG([callee UTF8String]);
 
     
     NSString *clientRef = [self.stitchContext.coreClient inviteToConversation:self.user.name withPhoneNumber:callee onSuccess:^(NSString * _Nullable value) {
             //if (value)
     } onError:^(NSError * _Nullable error) {
-        LOG_ERROR("startServerCall falied %s", [error.description UTF8String]);
+        NXM_LOG_ERROR("startServerCall falied %s", [error.description UTF8String]);
     }];
     
     [self addPendingClientReference:clientRef delegate:delegate completion:completion];
@@ -338,9 +338,9 @@ static dispatch_once_t _onceToken = 0;
 - (void)call:(nonnull NSString *)callees
            callHandler:(NXMCallHandler)callHandler
          completionHandler:(void (^ _Nullable)(NSError * _Nullable, NXMCall * _Nullable))completionHandler {
-    LOG_DEBUG([[callees description] UTF8String]);
+    NXM_LOG_DEBUG([[callees description] UTF8String]);
     if (![self isConnected]){
-        LOG_DEBUG("SDK disconnected" );
+        NXM_LOG_DEBUG("SDK disconnected" );
         completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeSDKDisconnected], nil);
         return;
     }
@@ -362,9 +362,9 @@ static dispatch_once_t _onceToken = 0;
                           userNotificationToken:(nullable NSData *)userNotificationToken
                                       isSandbox:(BOOL)isSandbox
                               completionHandler:(void(^_Nullable)(NSError * _Nullable error))completionHandler {
-    LOG_DEBUG("%s %s %d", [[NSString alloc] initWithData:pushKitToken encoding:NSUTF8StringEncoding],  [[NSString alloc] initWithData:userNotificationToken encoding:NSUTF8StringEncoding], isSandbox);
+    NXM_LOG_DEBUG("%s %s %d", [[NSString alloc] initWithData:pushKitToken encoding:NSUTF8StringEncoding],  [[NSString alloc] initWithData:userNotificationToken encoding:NSUTF8StringEncoding], isSandbox);
     if (![self isConnected]){
-        LOG_DEBUG("SDK disconnected" );
+        NXM_LOG_DEBUG("SDK disconnected" );
         completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeSDKDisconnected]);
         return;
     }
@@ -373,44 +373,44 @@ static dispatch_once_t _onceToken = 0;
                                                      userNotificationToken:userNotificationToken
                                                                  isSandbox:isSandbox
                                                                  onSuccess:^{
-        LOG_DEBUG("Nexmo push notifications enabled" );
+        NXM_LOG_DEBUG("Nexmo push notifications enabled" );
         [NXMBlocksHelper runWithError:nil completion:completionHandler];
     } onError:^(NSError * _Nullable error) {
-        LOG_ERROR("Nexmo push notifications enabling failed with error: %s", [error.description UTF8String]);
+        NXM_LOG_ERROR("Nexmo push notifications enabling failed with error: %s", [error.description UTF8String]);
         [NXMBlocksHelper runWithError:error completion:completionHandler];
     }];
 }
 
 - (void)disablePushNotifications:(void(^_Nullable)(NSError * _Nullable error))completionHandler {
-    LOG_DEBUG("" );
+    NXM_LOG_DEBUG("" );
 
     if (![self isConnected]){
-        LOG_DEBUG("SDK disconnected");
+        NXM_LOG_DEBUG("SDK disconnected");
         completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeSDKDisconnected]);
         return;
     }
     [self.stitchContext.coreClient disablePushNotificationsWithOnSuccess:^{
-        LOG_DEBUG("Nexmo push notifications disabled" );
+        NXM_LOG_DEBUG("Nexmo push notifications disabled" );
         [NXMBlocksHelper runWithError:nil completion:completionHandler];
     } onError:^(NSError * _Nullable error) {
-        LOG_ERROR("Nexmo push notifications disabling failed with error: %s", [error.description UTF8String]);
+        NXM_LOG_ERROR("Nexmo push notifications disabling failed with error: %s", [error.description UTF8String]);
         [NXMBlocksHelper runWithError:error completion:completionHandler];
     }];
 
 }
 
 - (BOOL)isNexmoPushWithUserInfo:(nonnull NSDictionary *)userInfo {
-    LOG_DEBUG([[userInfo description] UTF8String]);
+    NXM_LOG_DEBUG([[userInfo description] UTF8String]);
     
     return [self.stitchContext.coreClient isNexmoPushWithUserInfo:userInfo];
     
 }
 
 - (void)processNexmoPushWithUserInfo:(nonnull NSDictionary *)userInfo completionHandler:(void (^ _Nullable)(NSError * _Nullable))completionHandler {
-    LOG_DEBUG([[userInfo description] UTF8String]);
+    NXM_LOG_DEBUG([[userInfo description] UTF8String]);
     
     if (![self isConnected]){
-        LOG_DEBUG("SDK disconnected");
+        NXM_LOG_DEBUG("SDK disconnected");
         completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeSDKDisconnected]);
         return;
     }
@@ -418,7 +418,7 @@ static dispatch_once_t _onceToken = 0;
     [self.stitchContext.coreClient processNexmoPushWithUserInfo:userInfo onSuccess:^(NXMEvent * _Nullable event) {
         [NXMBlocksHelper runWithError:nil completion:completionHandler];
     } onError:^(NSError * _Nullable error) {
-        LOG_ERROR("Error processing nexmo push with error:%s", [error.description UTF8String]);
+        NXM_LOG_ERROR("Error processing nexmo push with error:%s", [error.description UTF8String]);
         [NXMBlocksHelper runWithError:error completion:completionHandler];
     }];
 }
@@ -426,10 +426,10 @@ static dispatch_once_t _onceToken = 0;
 #pragma mark - notification center
 
 - (void)onMemberEvent:(NSNotification* )notification {
-    LOG_DEBUG([notification.name UTF8String]);
+    NXM_LOG_DEBUG([notification.name UTF8String]);
     NXMMemberEvent* event = [NXMEventsDispatcherNotificationHelper<NXMMemberEvent *> nxmNotificationModelWithNotification:notification];
     
-    LOG_DEBUG([[event description] UTF8String]);
+    NXM_LOG_DEBUG([[event description] UTF8String]);
     
     if (![event.user.uuid isEqualToString:self.user.uuid]) { return; }
     
@@ -447,16 +447,16 @@ static dispatch_once_t _onceToken = 0;
         !event.knockingId &&
         !event.media.isEnabled) {
         if ([self.delegate respondsToSelector:@selector(client:didReceiveConversation:)]) {
-            LOG_DEBUG("got newConversation event" );
+            NXM_LOG_DEBUG("got newConversation event" );
             
             [self getConversationWithUuid:event.conversationUuid completionHandler:^(NSError * _Nullable error, NXMConversation * _Nullable conversation) {
                 if (error) {
-                    LOG_ERROR("get conversation failed %s", [error.description UTF8String]);
+                    NXM_LOG_ERROR("get conversation failed %s", [error.description UTF8String]);
                     return;
                 }
                 
                 if (!conversation) {
-                    LOG_ERROR("got empty conversation without error conversation id %s:", [event.conversationUuid UTF8String]);
+                    NXM_LOG_ERROR("got empty conversation without error conversation id %s:", [event.conversationUuid UTF8String]);
                 }
                 
                 
@@ -471,21 +471,21 @@ static dispatch_once_t _onceToken = 0;
     if (event.state == NXMMemberStateInvited && event.media.isEnabled) {
         if ([self.delegate respondsToSelector:@selector(client:didReceiveCall:)]) { // optimization
             
-            LOG_DEBUG("got member invited event with enable media" );
+            NXM_LOG_DEBUG("got member invited event with enable media" );
             
             [self getConversationWithUuid:event.conversationUuid completionHandler:^(NSError * _Nullable error, NXMConversation * _Nullable conversation) {
                 if (error) {
-                    LOG_ERROR("get conversation failed %s", [error.description UTF8String]);
+                    NXM_LOG_ERROR("get conversation failed %s", [error.description UTF8String]);
                     return;
                 }
 
                 if (!conversation){
-                    LOG_ERROR("got empty conversation without error conversation id %s:", [event.conversationUuid UTF8String]);
+                    NXM_LOG_ERROR("got empty conversation without error conversation id %s:", [event.conversationUuid UTF8String]);
                 }
 
                 if (![conversation.displayName hasPrefix:NXMCallPrefix] && // IP-IP CS
                         event.fromMemberId) { // IP-IP VAPI
-                    LOG_ERROR("member invited event with media enabled without call perfix" );
+                    NXM_LOG_ERROR("member invited event with media enabled without call perfix" );
                     return;
                 }
 
@@ -498,20 +498,20 @@ static dispatch_once_t _onceToken = 0;
     }
     //Out going server call
     if (event.state == NXMMemberStateJoined && event.clientRef){
-        LOG_DEBUG("got member JOINED event with clientRef" );
+        NXM_LOG_DEBUG("got member JOINED event with clientRef" );
         
         [self getConversationWithUuid:event.conversationUuid completionHandler:^(NSError * _Nullable error, NXMConversation * _Nullable conversation) {
             if (error) {
-                 LOG_ERROR("got empty conversation without error conversation id %s:", [event.conversationUuid UTF8String]);
+                 NXM_LOG_ERROR("got empty conversation without error conversation id %s:", [event.conversationUuid UTF8String]);
                 return;
             }
             
             if (!conversation){
-                LOG_ERROR("got empty conversation without error conversation id %s:", [event.conversationUuid UTF8String]);
+                NXM_LOG_ERROR("got empty conversation without error conversation id %s:", [event.conversationUuid UTF8String]);
             }
             
             if (event.clientRef && self.clientRefToCallCallback[event.clientRef]){
-                LOG_DEBUG("processing clientRef");
+                NXM_LOG_DEBUG("processing clientRef");
                 NXMClientRefCallObj *obj = self.clientRefToCallCallback[event.clientRef];
                 [conversation enableMedia];
                 [self.clientRefToCallCallback removeObjectForKey:event.clientRef];
@@ -519,7 +519,7 @@ static dispatch_once_t _onceToken = 0;
                 NXMCall * call = [[NXMCall alloc] initWithConversation:conversation];
                 obj.complition(nil, call);
             } else {
-                LOG_ERROR("got member event with clientRef that client doesn't have");
+                NXM_LOG_ERROR("got member event with clientRef that client doesn't have");
                 //TODO: check if this is a valid state for a call
                 //this could happened if we get the member events before cs return the knocking id
                 //to prevent drop calls we use the Incoming IP call
@@ -532,13 +532,13 @@ static dispatch_once_t _onceToken = 0;
 #pragma mark - private
 
 - (BOOL)setUpWithErrorPtr:(NSError **)errorPtr {
-    LOG_DEBUG("" );
+    NXM_LOG_DEBUG("" );
     //TODO: set up, set error and return false if problematic
     return YES;
 }
 
 - (BOOL)cleanUpWithErrorPtr:(NSError **)errorPtr {
-    LOG_DEBUG("" );
+    NXM_LOG_DEBUG("" );
     //TODO: clean up, set error and return false if problematic
     return YES;
 }

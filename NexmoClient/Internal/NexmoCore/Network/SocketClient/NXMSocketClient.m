@@ -183,7 +183,7 @@
 }
 
 - (void)socketDidConnect {
-    LOG_DEBUG("");
+    NXM_LOG_DEBUG("");
 
     //TODO: question - what happens if we try to log in while already logged in to the server for example after a reconnect?
     [self serverLogin];
@@ -197,23 +197,23 @@
     switch (self.socket.status) {
         case VPSocketIOClientStatusConnected:
             
-             LOG_DEBUG("socket connected"  );
+             NXM_LOG_DEBUG("socket connected"  );
             [self socketDidConnect];
             break;
         case VPSocketIOClientStatusNotConnected:
-             LOG_DEBUG("socket not connected"  );
+             NXM_LOG_DEBUG("socket not connected"  );
             [self didSocketDisconnect];
             break;
         case VPSocketIOClientStatusDisconnected:
-             LOG_DEBUG("socket disconnected"  );
+             NXM_LOG_DEBUG("socket disconnected"  );
             [self didSocketDisconnect];
             break;
         case VPSocketIOClientStatusConnecting: //TODO: support reporting reconnect? or keep it boolean
-             LOG_DEBUG("socket connecting"  );
+             NXM_LOG_DEBUG("socket connecting"  );
             [self updateConnetionStatus:NXMConnectionStatusConnecting reason:NXMConnectionStatusReasonUnknown];
             break;
         case VPSocketIOClientStatusOpened:
-             LOG_DEBUG("socket opened"  );
+             NXM_LOG_DEBUG("socket opened"  );
             break;
     }
 }
@@ -277,7 +277,7 @@
 }
 
 - (void)didServerLogout {
-     LOG_DEBUG("did server logout"  );
+     NXM_LOG_DEBUG("did server logout"  );
     self.token = nil;
     
     [self updateConnetionStatus:NXMConnectionStatusDisconnected reason:NXMConnectionStatusReasonLogout];
@@ -314,7 +314,7 @@
     }];
 
     [self.socket on:kSocketEventError callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-        LOG_ERROR([kSocketEventError UTF8String]);
+        NXM_LOG_ERROR([kSocketEventError UTF8String]);
     }];
 }
 
@@ -322,16 +322,16 @@
     __weak NXMSocketClient *weakSelf = self;
     
     [self.socket on:kNXMSocketEventBadPermission callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-        LOG_ERROR("socket kNXMSocketEventBadPermission");
+        NXM_LOG_ERROR("socket kNXMSocketEventBadPermission");
         [weakSelf.delegate onError:NXMErrorCodeEventBadPermission];
     }];
 
     [self.socket on:kNXMSocketEventInvalidEvent callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-        LOG_ERROR("socket kNXMSocketEventInvalidEvent"  );
+        NXM_LOG_ERROR("socket kNXMSocketEventInvalidEvent"  );
     }];
     
     [self.socket on:kNXMSocketEventUserNotFound callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-        LOG_ERROR("socket kNXMSocketEventUserNotFound"  );
+        NXM_LOG_ERROR("socket kNXMSocketEventUserNotFound"  );
         [weakSelf didFailLoginWithError:NXMErrorCodeUserNotFound];
     }];
 }
@@ -340,47 +340,47 @@
     __weak NXMSocketClient *weakSelf = self;
 
     [self.socket on:kNXMSocketEventLoginSuccess callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("$$--------Socket Login Success-------------$$");
+         NXM_LOG_DEBUG("$$--------Socket Login Success-------------$$");
         [weakSelf didServerLoginWithData:data];
     }];
     
     [self.socket on:kNXMSocketEventSessionLogoutSuccess callback:^(NSString *event, NSArray *array, VPSocketAckEmitter *emitter) {
-        LOG_DEBUG("$$--------Socket Session Logout--------$$");
+        NXM_LOG_DEBUG("$$--------Socket Session Logout--------$$");
         [weakSelf didServerLogout];
     }];
     
     [self.socket on:kNXMSocketEventSessionTerminated callback:^(NSString *event, NSArray *array, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("$$--------Socket Session Terminated--------$$");
+         NXM_LOG_DEBUG("$$--------Socket Session Terminated--------$$");
         [weakSelf didServerLogout];
     }];
     
     [self.socket on:kNXMSocketEventSessionInvalid callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-        LOG_ERROR("socket kNXMSocketEventSessionInvalid"  );
+        NXM_LOG_ERROR("socket kNXMSocketEventSessionInvalid"  );
         [weakSelf didFailLoginWithError:NXMErrorCodeSessionInvalid];
     }];
     
     [self.socket on:kNXMSocketEventSessionErrorInvalid callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-        LOG_ERROR("socket kNXMSocketEventSessionErrorInvalid"  );
+        NXM_LOG_ERROR("socket kNXMSocketEventSessionErrorInvalid"  );
         [weakSelf didFailLoginWithError:NXMErrorCodeSessionInvalid];
     }];
     
     [self.socket on:kNXMSocketEventMaxOpenedSessions callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-        LOG_ERROR("socket kNXMSocketEventMaxOpenedSessions"  );
+        NXM_LOG_ERROR("socket kNXMSocketEventMaxOpenedSessions"  );
         [weakSelf didFailLoginWithError:NXMErrorCodeMaxOpenedSessions];
     }];
     
     [self.socket on:kNXMSocketEventInvalidToken callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-        LOG_ERROR("socket kNXMSocketEventInvalidToken"  );
+        NXM_LOG_ERROR("socket kNXMSocketEventInvalidToken"  );
         [weakSelf didFailLoginWithError:NXMErrorCodeTokenInvalid]; //TODO: check if this might happen without meaning a logout
     }];
     
     [self.socket on:kNXMSocketEventExpiredToken callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-        LOG_ERROR("socket kNXMSocketEventExpiredToken"  );
+        NXM_LOG_ERROR("socket kNXMSocketEventExpiredToken"  );
         [weakSelf didFailLoginWithError:NXMErrorCodeTokenExpired]; //TODO: check if this might happen without meaning a logout
     }];
     
     [self.socket on:kNXMSocketEventRefreshTokenDone callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventRefreshTokenDone"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventRefreshTokenDone"  );
         [weakSelf.delegate connectionStatusChanged:NXMConnectionStatusConnected reason:NXMConnectionStatusReasonTokenRefreshed];
     }];
 }
@@ -389,18 +389,18 @@
     __weak NXMSocketClient *weakSelf = self;
 
     [self.socket on:kNXMSocketEventMemberJoined callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventMemberJoined"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventMemberJoined"  );
         [weakSelf onMemberJoined:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventMemberInvited callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventMemberInvited"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventMemberInvited"  );
         [weakSelf onMemberInvited:data emitter:emitter];
     }];
     
     
     [self.socket on:kNXMSocketEventMemberLeft callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventMemberLeft"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventMemberLeft"  );
         [weakSelf onMemberLeft:data emitter:emitter];
     }];
 }
@@ -409,52 +409,52 @@
     __weak NXMSocketClient *weakSelf = self;
 
     [self.socket on:kNXMSocketEventText callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventText"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventText"  );
         [weakSelf onTextRecevied:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventTextSuccess callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventTextSuccess"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventTextSuccess"  );
      //   [weakSelf onTextRecevied:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventMessageDelete callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventTextDelete"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventTextDelete"  );
         [weakSelf onMessageDeleted:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventTextSeen callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventTextSeen"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventTextSeen"  );
         [weakSelf onTextSeen:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventTextDelivered callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventTextDelivered"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventTextDelivered"  );
         [weakSelf onTextDelivered:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventImage callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventImage"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventImage"  );
         [weakSelf onImageRecevied:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventImageSeen callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventImageSeen"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventImageSeen"  );
         [weakSelf onImageSeen:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventImageDelivered callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventImageDelivered"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventImageDelivered"  );
         [weakSelf onImageDelivered:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventTypingOn callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventTypingOn"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventTypingOn"  );
         [weakSelf onTextTypingOn:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventTypingOff callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventTypingOff"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventTypingOff"  );
         [weakSelf onTextTypingOff:data emitter:emitter];
     }];
 }
@@ -463,33 +463,33 @@
     __weak NXMSocketClient *weakSelf = self;
 
     [self.socket on:kNXMSocketEventRtcAnswer callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("socket kNXMSocketEventRtcAnswer"  );
+         NXM_LOG_DEBUG("socket kNXMSocketEventRtcAnswer"  );
         [weakSelf onRTCAnswer:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventMemebrMedia callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("Socket kNXMSocketEventMemebrMedia"  );
+         NXM_LOG_DEBUG("Socket kNXMSocketEventMemebrMedia"  );
         [weakSelf onRTCMemberMedia:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventAudioMuteOn callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("Socket kNXMSocketEventAudioMuteOn"  );
+         NXM_LOG_DEBUG("Socket kNXMSocketEventAudioMuteOn"  );
         [weakSelf onRTCAudioMuteOn:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventAudioMuteOff callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("Socket kNXMSocketEventAudioMuteOff"  );
+         NXM_LOG_DEBUG("Socket kNXMSocketEventAudioMuteOff"  );
         [weakSelf onRTCAudioMuteOff:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventAudioDtmf callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("Socket kNXMSocketEventAudioDtmf"  );
+         NXM_LOG_DEBUG("Socket kNXMSocketEventAudioDtmf"  );
         [weakSelf onAudioDTMF:data emitter:emitter];
     }];
     
     // TODO: customEvent
     [self.socket onPrefix:kNXMEventCustom callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("Socket kNXMEventCustom"  );
+         NXM_LOG_DEBUG("Socket kNXMEventCustom"  );
         [weakSelf onCustomEvent:event data:data emitter:emitter];
     }];
 }
@@ -497,22 +497,22 @@
     __weak NXMSocketClient *weakSelf = self;
 
     [self.socket on:kNXMSocketEventSipRinging callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("Socket kNXMSocketEventSipRinging"  );
+         NXM_LOG_DEBUG("Socket kNXMSocketEventSipRinging"  );
         [weakSelf onSipRinging:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventSipAnswered callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("Socket kNXMSocketEventSipAnswered"  );
+         NXM_LOG_DEBUG("Socket kNXMSocketEventSipAnswered"  );
         [weakSelf onSipAnswered:data emitter:emitter];
     }];
 
     [self.socket on:kNXMSocketEventSipHangup callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("Socket kNXMSocketEventSipHangup"  );
+         NXM_LOG_DEBUG("Socket kNXMSocketEventSipHangup"  );
         [weakSelf onSipHangup:data emitter:emitter];
     }];
     
     [self.socket on:kNXMSocketEventSipStatus callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-         LOG_DEBUG("Socket kNXMSocketEventSipStatus"  );
+         NXM_LOG_DEBUG("Socket kNXMSocketEventSipStatus"  );
         [weakSelf onSipStatus:data emitter:emitter];
     }];
 }
@@ -521,7 +521,7 @@
     __weak NXMSocketClient *weakSelf = self;
     
     [self.socket on:kNXMSocketEventLegStatus callback:^(NSString *event, NSArray *data, VPSocketAckEmitter *emitter) {
-        LOG_DEBUG("Socket kNXMSocketEventSipRinging");
+        NXM_LOG_DEBUG("Socket kNXMSocketEventSipRinging");
         [weakSelf onLegStatus:data emitter:emitter];
     }];
 }
@@ -532,7 +532,7 @@
 
 #pragma mark members
 - (void)onMemberJoined:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     
     NSDictionary *json = data[0];
     NXMMemberEvent *memberEvent = [[NXMMemberEvent alloc] initWithConversationId:json[@"cid"]
@@ -548,7 +548,7 @@
 }
 
 - (void)onMemberInvited:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     
     NSDictionary *json = data[0];
     NXMMemberEvent *memberEvent = [[NXMMemberEvent alloc] initWithConversationId:json[@"cid"]
@@ -563,7 +563,7 @@
 }
 
 - (void)onMemberLeft:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     
     NSDictionary *json = data[0];
     NXMMemberEvent *memberEvent = [[NXMMemberEvent alloc] initWithConversationId:json[@"cid"]
@@ -581,7 +581,7 @@
 #pragma mark messages
 
 - (void)onCustomEvent:(NSString *)event data:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     
     NSDictionary *json = data[0];
     
@@ -593,7 +593,7 @@
 }
 
 - (void)onTextRecevied:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     
     NSDictionary *json = data[0];
     
@@ -610,7 +610,7 @@
 }
 
 - (void)onImageRecevied:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     
     NSDictionary *json = data[0];
     
@@ -646,7 +646,7 @@
 }
 
 - (void)onMessageDeleted:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     
     NSDictionary *json = data[0];
     
@@ -663,7 +663,7 @@
 }
 
 - (void)onTextSeen:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     
     NSDictionary *json = data[0];
     NXMMessageStatusEvent *statusEvent = [NXMMessageStatusEvent new];
@@ -679,7 +679,7 @@
 }
 
 - (void)onTextDelivered:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     
     NSDictionary *json = data[0];
     NXMMessageStatusEvent *statusEvent = [NXMMessageStatusEvent new];
@@ -696,7 +696,7 @@
 }
 
 - (void)onImageSeen:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     
     NSDictionary *json = data[0];
     NXMMessageStatusEvent *statusEvent = [NXMMessageStatusEvent new];
@@ -712,7 +712,7 @@
 }
 
 - (void)onImageDelivered:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     
     NSDictionary *json = data[0];
     NXMMessageStatusEvent *statusEvent = [NXMMessageStatusEvent new];
@@ -729,7 +729,7 @@
 
 #pragma mark typing
 - (void)onTextTypingOn:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     NSDictionary *json = data[0];
     
     NXMTextTypingEvent *textTypingEvent = [NXMTextTypingEvent new];
@@ -744,7 +744,7 @@
 }
 
 - (void)onTextTypingOff:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     NSDictionary *json = data[0];
     
     NXMTextTypingEvent *textTypingEvent = [NXMTextTypingEvent new];
@@ -760,7 +760,7 @@
 #pragma mark media sip
 
 - (void)onSipRinging:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     NSDictionary *json = data[0];
     NXMSipEvent * sipEvent = [self fillSipEventFromJson:json];
     sipEvent.status = NXMSipEventRinging;
@@ -768,7 +768,7 @@
     [self.delegate sipRinging:sipEvent];
 }
 - (void)onSipAnswered:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     NSDictionary *json = data[0];
     NXMSipEvent * sipEvent = [self fillSipEventFromJson:json];
     sipEvent.status = NXMSipEventAnswered;
@@ -776,7 +776,7 @@
     [self.delegate sipAnswered:sipEvent];
 }
 - (void)onSipHangup:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     NSDictionary *json = data[0];
     NXMSipEvent * sipEvent = [self fillSipEventFromJson:json];
     sipEvent.status = NXMSipEventHangup;
@@ -784,7 +784,7 @@
     [self.delegate sipHangup:sipEvent];
 }
 - (void)onSipStatus:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     NSDictionary *json = data[0];
     NXMSipEvent * sipEvent = [self fillSipEventFromJson:json];
     sipEvent.status = NXMSipEventStatus;
@@ -793,7 +793,7 @@
 }
 
 - (void)onLegStatus:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     NSDictionary *json = data[0];
     
     NXMLegStatusEvent * legStatusEvent= [[NXMLegStatusEvent alloc]
@@ -816,7 +816,7 @@
 #pragma mark media rtc
 
 - (void)onRTCAnswer:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     
     NSDictionary *json = data[0];
     
@@ -832,7 +832,7 @@
 
 
 - (void)onRTCTerminate:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     // TODO:
     // should we use it? should we use member media?
     //    {
@@ -848,7 +848,7 @@
 }
 
 - (void)onRTCMemberMedia:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     NSDictionary *json = data[0];
     
     NXMMediaEvent *mediaEvent = [NXMMediaEvent new];
@@ -865,7 +865,7 @@
 }
 
 - (void)onRTCAudioMuteOn:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     NSDictionary *json = data[0];
     
     NXMMediaSuspendEvent *mediaEvent = [NXMMediaSuspendEvent new];
@@ -883,7 +883,7 @@
 }
 
 - (void)onRTCAudioMuteOff:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     NSDictionary *json = data[0];
     
     NXMMediaSuspendEvent *mediaEvent = [NXMMediaSuspendEvent new];
@@ -901,7 +901,7 @@
 }
 
 - (void)onAudioDTMF:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
-    LOG_DEBUG([data.description UTF8String]);
+    NXM_LOG_DEBUG([data.description UTF8String]);
     NSDictionary *json = data[0];
     
     NXMDTMFEvent *event = [[NXMDTMFEvent alloc] initWithDigit:json[@"body"][@"digit"]

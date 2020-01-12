@@ -120,7 +120,7 @@
 #pragma private
 
 - (void)memberUpdated {
-    LOG_DEBUG([self.description UTF8String]);
+    NXM_LOG_DEBUG([self.description UTF8String]);
     
     BOOL isMuteChanged = false;
     if (self.isMuted != self.member.media.isSuspended) {
@@ -128,7 +128,7 @@
         isMuteChanged = true;
     }
     
-    LOG_DEBUG("NXMCallMember member status prev %ld current %ld", (long)self.currentStatus, (long)self.status);
+    NXM_LOG_DEBUG("NXMCallMember member status prev %ld current %ld", (long)self.currentStatus, (long)self.status);
 
 
     if (self.currentStatus != self.status) {

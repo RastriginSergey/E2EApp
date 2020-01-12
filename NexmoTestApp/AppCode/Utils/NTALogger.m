@@ -13,19 +13,19 @@
 @implementation NTALogger
 
 + (void)error:(nonnull NSString *)message {
-    LOG_ERROR([message UTF8String]);
+    NXM_LOG_ERROR([message UTF8String]);
 }
 
 + (void)warning:(nonnull NSString *)message {
-    LOG_ERROR([message UTF8String]);
+    NXM_LOG_ERROR([message UTF8String]);
 }
 
 + (void)info:(nonnull NSString *)message {
-    LOG_INFO([message UTF8String]);
+    NXM_LOG_INFO([message UTF8String]);
 }
 
 + (void)debug:(nonnull NSString *)message {
-    LOG_DEBUG([message UTF8String]);
+    NXM_LOG_DEBUG([message UTF8String]);
 }
 
 

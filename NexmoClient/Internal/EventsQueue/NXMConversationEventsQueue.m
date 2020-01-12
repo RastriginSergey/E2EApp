@@ -91,7 +91,7 @@ const unsigned int MAX_PAGE_EVENTS=60;
 
 #pragma mark - Dispatch Handlers
 - (void)handleDispatchedConnectionStatusWithNotification:(NSNotification *)notification {
-    LOG_DEBUG([[NSString stringWithFormat:@"%@ %@", notification.name, notification.userInfo] UTF8String]);
+    NXM_LOG_DEBUG([[NSString stringWithFormat:@"%@ %@", notification.name, notification.userInfo] UTF8String]);
     
     NXMEventsDispatcherConnectionStatusModel *connectionStatusModel = [NXMEventsDispatcherNotificationHelper<NXMEventsDispatcherConnectionStatusModel *> nxmNotificationModelWithNotification:notification];
     
@@ -103,7 +103,7 @@ const unsigned int MAX_PAGE_EVENTS=60;
 
 - (void)handleDispatchedEventWithNotification:(NSNotification *)notification {
     NXMEvent *event = [NXMEventsDispatcherNotificationHelper<NXMEvent *> nxmNotificationModelWithNotification:notification];
-    LOG_DEBUG("<%p> %s", self, [event.description UTF8String]);
+    NXM_LOG_DEBUG("<%p> %s", self, [event.description UTF8String]);
     __weak NXMConversationEventsQueue *weakSelf = self;
     [self.operationQueue addOperationWithBlock:^{
         [weakSelf handleDispatchedEvent: event];
@@ -111,7 +111,7 @@ const unsigned int MAX_PAGE_EVENTS=60;
 }
 
 - (void)handleDispatchedConnectionStatus:(NXMConnectionStatus)connectionStatus {
-    LOG_DEBUG("<%p> %i", self, connectionStatus);
+    NXM_LOG_DEBUG("<%p> %i", self, connectionStatus);
     if(connectionStatus != NXMConnectionStatusConnected) {
         return;
     }
@@ -120,7 +120,7 @@ const unsigned int MAX_PAGE_EVENTS=60;
 }
 
 - (void)handleDispatchedEvent:(NXMEvent*)event{
-    LOG_DEBUG("<%p> %s", self, [event.description UTF8String]);
+    NXM_LOG_DEBUG("<%p> %s", self, [event.description UTF8String]);
     if(![event.conversationUuid isEqualToString:self.conversationId]){
         return;
     }
@@ -132,14 +132,14 @@ const unsigned int MAX_PAGE_EVENTS=60;
 #pragma mark - Process Queued Events
 
 - (void)processNextEvent{
-    LOG_DEBUG("<%p>", self);
+    NXM_LOG_DEBUG("<%p>", self);
     NXMEvent *event = self.eventsQueue.firstObject;
     if(event == nil){
         [self finishHandleEventsSequence];
         return;
     }
     
-    LOG_DEBUG("<%p> Processing #%li of type %li, syncingFrom: %li, currentHandled: %li, maxQueried: %li", self, event.uuid, event.type, self.sequenceIdSyncingFrom, self.currentHandledSequenceId, self.highestQueriedSequenceId);
+    NXM_LOG_DEBUG("<%p> Processing #%li of type %li, syncingFrom: %li, currentHandled: %li, maxQueried: %li", self, event.uuid, event.type, self.sequenceIdSyncingFrom, self.currentHandledSequenceId, self.highestQueriedSequenceId);
     
     if(event.uuid < self.sequenceIdSyncingFrom) {
         [self doneProcessingEvent:event];
@@ -155,18 +155,18 @@ const unsigned int MAX_PAGE_EVENTS=60;
 }
 
 - (BOOL)isMissingEventsWithNextEvent:(NXMEvent *)event {
-    LOG_DEBUG("<%p> %i", self, event.uuid);
+    NXM_LOG_DEBUG("<%p> %i", self, event.uuid);
     return event.uuid > self.currentHandledSequenceId + 1 && event.uuid > self.highestQueriedSequenceId + 1;
 }
 
 - (void)handleEvent:(NXMEvent*)event {
-    LOG_DEBUG([event.description UTF8String]);
+    NXM_LOG_DEBUG([event.description UTF8String]);
     BOOL shouldHandleEvent = event.uuid > self.currentHandledSequenceId ||
                              event.type == NXMEventTypeMessageStatus;
     
     if(shouldHandleEvent &&
        [self.delegate respondsToSelector:@selector(handleEvent:)]) {
-        LOG_DEBUG("<%p> Handeling #%li of type %li", self, event.uuid, event.type);
+        NXM_LOG_DEBUG("<%p> Handeling #%li of type %li", self, event.uuid, event.type);
         [self.delegate handleEvent:event];
     }
     
@@ -178,7 +178,7 @@ const unsigned int MAX_PAGE_EVENTS=60;
 }
 
 -(void)doneProcessingEvent:(NXMEvent*)event{
-    LOG_DEBUG("<%p> %s", self,[event.description UTF8String]);
+    NXM_LOG_DEBUG("<%p> %s", self,[event.description UTF8String]);
     [self.eventsQueue removeObject:event];
     [self processNextEvent];
 }
@@ -192,7 +192,7 @@ const unsigned int MAX_PAGE_EVENTS=60;
 #pragma mark - Query Event Sequence
 
 - (void)queryEventsFromServerUpToLastEvent {
-    LOG_DEBUG("<%p> %s", self, "Querying events up to last event" );
+    NXM_LOG_DEBUG("<%p> %s", self, "Querying events up to last event" );
     __weak NXMConversationEventsQueue *weakSelf = self;
     [self.stitchContext.coreClient getLatestEventInConversation:self.conversationId onSuccess:^(NXMEvent * _Nullable event) {
         [self.operationQueue addOperationWithBlock:^{
@@ -202,14 +202,14 @@ const unsigned int MAX_PAGE_EVENTS=60;
         // PATCH!! FIX on conversation deleted. this code stops the events queue FOREVER.
         // when we will add retry mechanism this code will be moved.
         if (error.code == NXMErrorCodeConversationNotFound) {
-            LOG_DEBUG("ConversationEventsQueue NXMErrorCodeConversationNotFound %s", [error.description UTF8String]);
+            NXM_LOG_DEBUG("ConversationEventsQueue NXMErrorCodeConversationNotFound %s", [error.description UTF8String]);
             [self.delegate conversationExpired];
             
             return;
         }
         
         [weakSelf.operationQueue addOperationWithBlock:^{
-             LOG_ERROR("ConversationEventsQueue failed querying events from server with error: %s" , [error.description UTF8String]);
+             NXM_LOG_ERROR("ConversationEventsQueue failed querying events from server with error: %s" , [error.description UTF8String]);
             [self endProcessingRequest];
             return;
             //TODO: handle specific errors in case that we want handle next events
@@ -219,7 +219,7 @@ const unsigned int MAX_PAGE_EVENTS=60;
 }
 
 - (void)queryEventsFromServerUpToEndId:(NSNumber *)endId {
-    LOG_DEBUG("<%p> %i", self, endId);
+    NXM_LOG_DEBUG("<%p> %i", self, endId);
     [self startProcessingRequest];
     __weak NXMConversationEventsQueue *weakSelf = self;
     //Check that the request dosn't ask for more then MAX_PAGE_EVENTS
@@ -242,14 +242,14 @@ const unsigned int MAX_PAGE_EVENTS=60;
         // PATCH!! FIX on conversation deleted. this code stops the events queue FOREVER.
         // when we will add retry mechanism this code will be moved.
         if (error.code == NXMErrorCodeConversationNotFound) {
-            LOG_DEBUG("ConversationEventsQueue NXMErrorCodeConversationNotFound %s" , [error.description UTF8String]);
+            NXM_LOG_DEBUG("ConversationEventsQueue NXMErrorCodeConversationNotFound %s" , [error.description UTF8String]);
             [self conversationExpired];
 
             return;
         }
         
         [weakSelf.operationQueue addOperationWithBlock:^{
-             LOG_ERROR("ConversationEventsQueue failed querying events from server with error: %s" , [error.description UTF8String]);
+             NXM_LOG_ERROR("ConversationEventsQueue failed querying events from server with error: %s" , [error.description UTF8String]);
             [self endProcessingRequest];
             return;
             //TODO: handle specific errors in case that we want handle next events
@@ -259,14 +259,14 @@ const unsigned int MAX_PAGE_EVENTS=60;
 }
 
 - (void)conversationExpired {
-    LOG_DEBUG("<%p>", self);
+    NXM_LOG_DEBUG("<%p>", self);
     NSArray *sortedEvents = [self.eventsQueue sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         return ((NXMEvent *)obj1).uuid < ((NXMEvent *)obj2).uuid ?
                 (NSComparisonResult)NSOrderedAscending :
                 (NSComparisonResult)NSOrderedDescending;
     }];
     
-    LOG_DEBUG("NXMConversationEventsQueue flush events %lu", (unsigned long)sortedEvents.count);
+    NXM_LOG_DEBUG("NXMConversationEventsQueue flush events %lu", (unsigned long)sortedEvents.count);
     
     for (NXMEvent *event in sortedEvents) {
         [self.delegate handleEvent:event];
@@ -277,12 +277,12 @@ const unsigned int MAX_PAGE_EVENTS=60;
 }
 
 - (void)startProcessingRequest {
-    LOG_DEBUG("");
+    NXM_LOG_DEBUG("");
     self.numOfProcessingRequests++;
 }
 
 - (void)endProcessingRequest {
-    LOG_DEBUG("");
+    NXM_LOG_DEBUG("");
     self.numOfProcessingRequests--;
     if(self.numOfProcessingRequests == 0) {
         [self processNextEvent];
@@ -290,33 +290,33 @@ const unsigned int MAX_PAGE_EVENTS=60;
 }
 
 - (void)updateHighestQueriedWithSequenceId:(NSInteger)sequenceId {
-    LOG_DEBUG("%i", sequenceId);
+    NXM_LOG_DEBUG("%i", sequenceId);
     if(sequenceId > self.highestQueriedSequenceId) {
         self.highestQueriedSequenceId = sequenceId;
     }
 }
 
 - (NSNumber *)handleGetEventResponse:(NSArray<NXMEvent*>*)events {
-    LOG_DEBUG([events.description UTF8String]);
+    NXM_LOG_DEBUG([events.description UTF8String]);
     NSArray<NXMEvent*> *sortedEventsArray = [self sortWithEvents:events];
     [self insertToEventsQueueWithEvents:sortedEventsArray];
     return [self highestEventIdWithSortedEvents:sortedEventsArray];
 }
 
 - (NSArray<NXMEvent*> *)sortWithEvents:(NSArray<NXMEvent*>*)events {
-    LOG_DEBUG([events.description UTF8String]);
+    NXM_LOG_DEBUG([events.description UTF8String]);
     NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"uuid" ascending:YES];
     return [events sortedArrayUsingDescriptors:@[sort]];
 }
 
 - (void)insertToEventsQueueWithEvents:(NSArray<NXMEvent*> *)events {
-    LOG_DEBUG([events.description UTF8String]);
+    NXM_LOG_DEBUG([events.description UTF8String]);
     NSIndexSet *indexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, events.count)];
     [self.eventsQueue insertObjects:events atIndexes:indexes];
 }
 
 - (nullable NSNumber *)highestEventIdWithSortedEvents:(NSArray<NXMEvent*> *)sortedEvents {
-    LOG_DEBUG([sortedEvents.description UTF8String]);
+    NXM_LOG_DEBUG([sortedEvents.description UTF8String]);
     NSNumber *highestEventId = nil;
     NXMEvent *highestEvent = sortedEvents.lastObject;
     

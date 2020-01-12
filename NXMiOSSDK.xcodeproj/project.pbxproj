@@ -10,7 +10,7 @@
 		0B24A81321CFD3A300FEE109 /* ServerCallCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0B24A81221CFD3A300FEE109 /* ServerCallCreator.m */; };
 		0B2E46B7238595600021DBDD /* users.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0B2E46B6238595600021DBDD /* users.plist */; };
 		0BA6D9252267324F0076334A /* NXMLegStatusEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 0BA6D9242267324F0076334A /* NXMLegStatusEvent.m */; };
-		0BAE012521F8BBE500EA2E56 /* ClientInfrastructures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAE012421F8BBE500EA2E56 /* ClientInfrastructures.framework */; };
+		0BAE012521F8BBE500EA2E56 /* ClientInfrastructures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BAE012421F8BBE500EA2E56 /* ClientInfrastructures.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		0BBC27062268B05B00ABC62A /* NXMLegStatusEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 0BA6D923226732290076334A /* NXMLegStatusEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0BBC27A622781DAC00ABC62A /* CocoaNXMLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BBC27A522781DAC00ABC62A /* CocoaNXMLumberjack.framework */; };
 		0BBC27AD2278568500ABC62A /* CocoaNXMLumberjack.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0BBC27A522781DAC00ABC62A /* CocoaNXMLumberjack.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -2142,6 +2142,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/Output/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
@@ -2174,7 +2175,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+				VALID_ARCHS = "$(ARCHS_STANDARD) x86_64 i386";
 			};
 			name = Debug;
 		};
@@ -2183,6 +2184,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/Output/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
@@ -2214,7 +2216,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 arm64e armv7 armv7s";
+				VALID_ARCHS = "$(ARCHS_STANDARD) x86_64 i386";
 			};
 			name = Release;
 		};
@@ -2287,6 +2289,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = NO;
 				CODE_SIGN_ENTITLEMENTS = NexmoTestApp/NexmoTestApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -2318,6 +2321,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = NO;
 				CODE_SIGN_ENTITLEMENTS = NexmoTestApp/NexmoTestApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -2369,7 +2373,7 @@
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = NO;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
@@ -2430,7 +2434,7 @@
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = NO;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;

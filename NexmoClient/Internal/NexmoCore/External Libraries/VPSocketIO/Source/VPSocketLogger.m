@@ -23,14 +23,14 @@
 -(void) log:(NSString*)message type:(NSString*)type
 {
     if(_log) {
-      LOG_VERBOSE([message UTF8String]);
+      NXM_LOG_VERBOSE([message UTF8String]);
     }
 }
 
 -(void) error:(NSString*)message type:(NSString*)type
 {
     if(_log) {
-        LOG_VERBOSE([message UTF8String]);
+        NXM_LOG_VERBOSE([message UTF8String]);
     }
 }
 

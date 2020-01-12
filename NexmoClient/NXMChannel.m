@@ -45,7 +45,7 @@
 }
 
 - (void)addLeg:(NXMLeg *)leg{
-    LOG_DEBUG([leg.description UTF8String]);
+    NXM_LOG_DEBUG([leg.description UTF8String]);
     [self.legs addObject:leg];
 }
 
