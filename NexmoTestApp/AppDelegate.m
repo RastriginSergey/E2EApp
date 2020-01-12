@@ -11,7 +11,7 @@
 #import "CommunicationsManager.h"
 #import "MainFlow.h"
 
-#import <AVFoundation/AVAudioSession.h>
+#import <AVFoundation/AVFoundation.h>
 #import <PushKit/PushKit.h>
 
 @interface AppDelegate () <PKPushRegistryDelegate>

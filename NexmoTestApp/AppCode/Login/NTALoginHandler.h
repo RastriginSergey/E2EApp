@@ -9,6 +9,7 @@
 #import "NTALoginHandlerDefine.h"
 #import "NTAUserInfo.h"
 
+NS_ASSUME_NONNULL_BEGIN
 
 @interface NTALoginHandler : NSObject
 
@@ -21,4 +22,6 @@
 + (void)logoutWithCompletion:(void(^_Nullable)(NSError * _Nullable error))completion;
 
 @end
+
+NS_ASSUME_NONNULL_END
 

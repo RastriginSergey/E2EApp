@@ -6,7 +6,7 @@
 //  Copyright © 2018 Vonage. All rights reserved.
 //
 
-#import <AVFoundation/AVAudioSession.h>
+#import <AVFoundation/AVFoundation.h>
 
 #import "CallViewController.h"
 #import "NTAUserInfo.h"

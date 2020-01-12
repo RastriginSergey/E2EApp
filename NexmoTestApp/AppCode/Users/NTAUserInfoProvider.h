@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "NTAUserInfo.h"
 
+NS_ASSUME_NONNULL_BEGIN
 @interface NTAUserInfoProvider : NSObject
 + (NTAUserInfo *)getDefaultUser;
 + (NTAUserInfo *)getRandomUserForTestGroup;
@@ -24,6 +25,7 @@
 
 + (NSString *)getUserNameForCSUserName:(nonnull NSString *)csUserName;
 + (NSString *)getUserDisplayNameForUserName:(NSString *)userName;
+NS_ASSUME_NONNULL_END
 @end
 
 
