@@ -3,6 +3,7 @@
 The source code must be in *objective c* language, also objects/enums/protocols/etc start with *NXM* prefix.
 
 Contribute to this repository by branching, and creating *pull requests* to merge you branch. Pull requests must satisfy a policy:
+* Pull Request name format - **[CSI-{NUM}] - SDK/TestApp/Test - description** 
 * Code review by a team member
 * Validation build must pass (runs code analysis and some unit tests)
 * Update **CHANGELOG.md** file
@@ -21,6 +22,12 @@ Only admin can merge pull request without someone to review it.
 Repository Structure
 
 >When using .gitignore, we prefer using as much specific files as possible. For example, to ignore auto generated files in a project, create a .gitignore in your project's directory, rather than editing the one in the repository's root. This way when we move project folders from place to place nothing breaks.
+
+## Logging
+1. Every SDK method should logged with: `NXM_LOG_DEBUG(important data and params)`.
+2. Every SDK error should logged with: `NXM_LOG_ERROR(important data and error.description)`.
+
+Currently the logger using c format (not objective c format) so you need to use it or UTF8String.
 
 ## Coding Style  
 * Most importantly, match the existing code style as much as possible.
