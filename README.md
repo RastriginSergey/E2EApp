@@ -38,9 +38,9 @@ Here is a description of the main files and folders in the root of out repositor
 
 #### Dependencies
 NexmoClient uses a number of projects to work properly:
-* [MiniRTC](https://github.com/Vonage/miniRTC) - Nexmo WebRTC wrapper
-* [NexmoClientInfrastructures](https://github.com/Vonage/NexmoClientInfrastructures) - NexmoClient and MiniRTC infrastructure framework, currently we use this framework for logging.
-* [CocoaNXMLumebrjack](https://github.com/Vonage/NexmoLumberjack) - Nexmo LubmerJack wrapper
+* [MiniRTC](https://github.com/Vonage/nexmoclient-mini-rtc) - Nexmo WebRTC wrapper
+* [NexmoClientInfrastructures](https://github.com/Vonage/nexmoclient-infrastructures) - NexmoClient and MiniRTC infrastructure framework, currently we use this framework for logging.
+* [CocoaNXMLumebrjack](https://github.com/Vonage/nexmoclient-lumberjack-ios) - Nexmo LubmerJack wrapper
 
 #### Architecture
 <p align="center">
