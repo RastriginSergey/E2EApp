@@ -1,22 +1,23 @@
 //
-//  ConversationsTableViewController.m
+//  EventsTableViewController.m
 //  NexmoTestApp
 //
+//  Created by Nicola Di Pol on 20/12/2019.
 //  Copyright © 2019 Vonage. All rights reserved.
 //
 
-#import "ConversationsTableViewController.h"
-#import "CommunicationsManager.h"
 #import "EventsTableViewController.h"
+#import "NXMHelper.h"
 
-static NSUInteger const CONVERSATIONS_PAGE_SIZE = 3;
-static NSString *const CONVERSATION_REUSE_ID = @"conversationReuseId";
-static NSString *const CONVERSATIONS_TITLE_FORMAT = @"Conversations [%@]";
+static NSUInteger const EVENTS_PAGE_SIZE = 2;
+static NSString *const EVENT_TYPE_FILTER = nil; // E.g.: @"text", @"image" etc.
+static NSString *const EVENT_REUSE_ID = @"eventReuseId";
+static NSString *const EVENTS_TITLE_FORMAT = @"Events [%@]";
 
-@interface ConversationsTableViewController ()
+@interface EventsTableViewController ()
 
 @property (nonatomic, assign) NXMPageOrder order;
-@property (nonatomic, nullable) NXMConversationsPage *conversationsPage;
+@property (nonatomic, nullable) NXMEventsPage *eventsPage;
 
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *previousPageButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *toggleOrderButton;
@@ -25,12 +26,13 @@ static NSString *const CONVERSATIONS_TITLE_FORMAT = @"Conversations [%@]";
 
 @end
 
-@implementation ConversationsTableViewController
+@implementation EventsTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     self.view.backgroundColor = UIColor.whiteColor;
+    self.tableView.allowsSelection = NO;
     UIView *tableViewFooter = [UIView new];
     tableViewFooter.backgroundColor = UIColor.whiteColor;
     self.tableView.tableFooterView = tableViewFooter;
@@ -43,15 +45,15 @@ static NSString *const CONVERSATIONS_TITLE_FORMAT = @"Conversations [%@]";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 
-    [self cleanAndGetConversationsPage];
+    [self cleanAndGetEventsPage];
 }
 
 - (IBAction)previousPageButtonPressed:(UIBarButtonItem *)sender {
-    if ([self.conversationsPage hasPreviousPage]) {
+    if ([self.eventsPage hasPreviousPage]) {
         [self showActivityIndicatorView];
 
-        __weak ConversationsTableViewController *weakSelf = self;
-        [self.conversationsPage previousPage:^(NSError * _Nullable error, NXMConversationsPage * _Nullable page) {
+        __weak EventsTableViewController *weakSelf = self;
+        [self.eventsPage previousPage:^(NSError * _Nullable error, NXMEventsPage * _Nullable page) {
             [weakSelf showPage:(error || !page) ? nil : page];
         }];
     } else {
@@ -61,15 +63,15 @@ static NSString *const CONVERSATIONS_TITLE_FORMAT = @"Conversations [%@]";
 
 - (IBAction)toggleOrderButtonPressed:(UIBarButtonItem *)sender {
     [self toggleOrder];
-    [self cleanAndGetConversationsPage];
+    [self cleanAndGetEventsPage];
 }
 
 - (IBAction)nextPageButtonPressed:(UIBarButtonItem *)sender {
-    if ([self.conversationsPage hasNextPage]) {
+    if ([self.eventsPage hasNextPage]) {
         [self showActivityIndicatorView];
 
         __weak typeof(self) weakSelf = self;
-        [self.conversationsPage nextPage:^(NSError * _Nullable error, NXMConversationsPage * _Nullable page) {
+        [self.eventsPage nextPage:^(NSError * _Nullable error, NXMEventsPage * _Nullable page) {
             [weakSelf showPage:(error || !page) ? nil : page];
         }];
     } else {
@@ -95,41 +97,40 @@ static NSString *const CONVERSATIONS_TITLE_FORMAT = @"Conversations [%@]";
     [self.activityIndicatorView removeFromSuperview];
 }
 
-- (void)getConversationsPage {
+- (void)getEventsPage {
     [self showActivityIndicatorView];
 
-    NXMClient *client = CommunicationsManager.sharedInstance.client;
-    __weak ConversationsTableViewController *weakSelf = self;
-    [client getConversationsPageWithSize:CONVERSATIONS_PAGE_SIZE
-                                   order:self.order
-                       completionHandler:^(NSError * _Nullable error, NXMConversationsPage * _Nullable page) {
-                           [weakSelf showPage:(error || !page) ? nil : page];
-                       }];
+    __weak EventsTableViewController *weakSelf = self;
+    [self.conversation getEventsPageWithSize:EVENTS_PAGE_SIZE
+                                       order:self.order
+                           completionHandler:^(NSError * _Nullable error, NXMEventsPage * _Nullable page) {
+                               [weakSelf showPage:(error || !page) ? nil : page];
+                           }];
 }
 
-- (void)cleanAndGetConversationsPage {
-    __weak ConversationsTableViewController *weakSelf = self;
+- (void)cleanAndGetEventsPage {
+    __weak EventsTableViewController *weakSelf = self;
     [self showPage:nil completion:^{
-        [weakSelf getConversationsPage];
+        [weakSelf getEventsPage];
     }];
 }
 
-- (void)showPage:(nullable NXMConversationsPage *)page {
+- (void)showPage:(nullable NXMEventsPage *)page {
     [self showPage:page completion:nil];
 }
 
-- (void)showPage:(nullable NXMConversationsPage *)page completion:(void(^_Nullable)(void))completion {
+- (void)showPage:(nullable NXMEventsPage *)page completion:(void(^_Nullable)(void))completion {
     NSString *orderString = self.order == NXMPageOrderAsc ? @"ASC" : @"DESC";
-    self.conversationsPage = page;
-    BOOL isThereAtLeastOneConversation = self.conversationsPage.conversations.count > 0;
-    __weak ConversationsTableViewController *weakSelf = self;
+    self.eventsPage = page;
+    BOOL isThereAtLeastOneEvent = self.eventsPage.events.count > 0;
+    __weak EventsTableViewController *weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-        weakSelf.navigationItem.title = [NSString stringWithFormat:CONVERSATIONS_TITLE_FORMAT, orderString];
+        weakSelf.navigationItem.title = [NSString stringWithFormat:EVENTS_TITLE_FORMAT, orderString];
         [weakSelf.tableView reloadData];
-        if (isThereAtLeastOneConversation) {
+        if (isThereAtLeastOneEvent) {
             [weakSelf.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                                  atScrollPosition:UITableViewScrollPositionTop
-                                          animated:YES];
+                                      atScrollPosition:UITableViewScrollPositionTop
+                                              animated:YES];
         }
 
         [weakSelf hideActivityIndicatorView];
@@ -146,35 +147,27 @@ static NSString *const CONVERSATIONS_TITLE_FORMAT = @"Conversations [%@]";
 
 #pragma mark - UITableViewDataSource
 
-- (NSInteger)numberOfSectionsInTableView: (UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
 - (NSInteger)tableView: (UITableView *)tableView numberOfRowsInSection: (NSInteger)section {
-    NSArray<NXMConversation *> *conversations = [self.conversationsPage conversations];
-    return conversations ? conversations.count : 0;
+    NSArray<NXMEvent *> *events = self.eventsPage.events;
+    return events ? events.count : 0;
 }
 
 - (UITableViewCell *)tableView: (UITableView *)tableView cellForRowAtIndexPath: (NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: CONVERSATION_REUSE_ID];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier: EVENT_REUSE_ID];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle: UITableViewCellStyleSubtitle
-                                      reuseIdentifier: CONVERSATION_REUSE_ID];
+                                      reuseIdentifier: EVENT_REUSE_ID];
     }
     cell.textLabel.numberOfLines = 0;
-    NXMConversation *conversation = [self.conversationsPage conversations][indexPath.row];
-    cell.textLabel.text = [NSString stringWithFormat:@"Name: %@\nID: %@",
-                           conversation.displayName ?: @"-",
-                           conversation.uuid ?: @"-"];
+    NXMEvent *event = self.eventsPage.events[indexPath.row];
+    NSString *eventTypeDescription = [NXMHelper descriptionForEventType:event.type];
+    cell.textLabel.text = [NSString stringWithFormat:@"ID: %li\nType: %@",
+                           (long)event.uuid, eventTypeDescription];
     return cell;
-}
-
-#pragma mark - UITableViewDelegate
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    EventsTableViewController *eventsTableViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"EventsTableViewController"];
-    eventsTableViewController.conversation = [self.conversationsPage conversations][indexPath.row];
-    [self.navigationController pushViewController:eventsTableViewController animated:YES];
 }
 
 @end

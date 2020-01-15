@@ -17,6 +17,9 @@
 #import "NXMMemberEventPrivate.h"
 
 
+static NSUInteger EVENTS_PAGE_DEFAULT_SIZE = 10;
+static NXMPageOrder EVENTS_PAGE_DEFAULT_ORDER = NXMPageOrderAsc;
+
 @interface NXMConversation () <NXMConversationEventsQueueDelegate,NXMConversationMembersControllerDelegate>
 @property (readwrite, nonatomic) NXMStitchContext *stitchContext;
 
@@ -424,26 +427,69 @@
     
 }
 
-- (void)getEvents:(void (^_Nullable)(NSError * _Nullable error, NSArray<NXMEvent *> *))completionHandler; {
-    NXM_LOG_DEBUG(self.uuid.UTF8String);
+#pragma mark - Get events page
+
+- (void)getEventsPage:(void (^)(NSError * _Nullable, NXMEventsPage * _Nullable))completionHandler {
+    [self getEventsPageWithSize:EVENTS_PAGE_DEFAULT_SIZE
+                          order:EVENTS_PAGE_DEFAULT_ORDER
+                      eventType:nil
+              completionHandler:completionHandler];
+}
+
+- (void)getEventsPageWithSize:(NSUInteger)size
+                        order:(NXMPageOrder)order
+            completionHandler:(void (^)(NSError * _Nullable, NXMEventsPage * _Nullable))completionHandler {
+    [self getEventsPageWithSize:size order:order eventType:nil completionHandler:completionHandler];
+}
+
+- (void)getEventsPageWithSize:(NSUInteger)size
+                        order:(NXMPageOrder)order
+                    eventType:(NSString *)eventType
+            completionHandler:(void (^)(NSError * _Nullable, NXMEventsPage * _Nullable))completionHandler {
+    NXM_LOG_DEBUG([NSString stringWithFormat:@"conversationUuid: %@, size = %lu, order = %@, eventType = %@, completionHandler %@",
+                   self.uuid,
+                   (unsigned long)size,
+                   order == NXMPageOrderAsc ? @"ASC" : @"DESC",
+                   eventType,
+                   completionHandler ? @"not nil" : @"nil"].UTF8String);
+
+    if (!completionHandler) {
+        return;
+    }
 
     __weak typeof(self) weakSelf = self;
-    [self.stitchContext.coreClient getEventsInConversation:self.uuid
-             onSuccess:^(NSMutableArray<NXMEvent *> * _Nullable events) {
-                 for (NXMEvent *event in events) {
-                     NXMMember * member = [weakSelf.conversationMembersController memberForMemberId:event.fromMemberId];
-                     
-                     [event updateFromMember:member];
-                     
-                     if (event.type == NXMEventTypeMember) {
-                         NXMMemberEvent *memberEvent = (NXMMemberEvent *)event;
-                         [memberEvent updateMember:[weakSelf.conversationMembersController memberForMemberId:memberEvent.memberId]];
-                     }
-                 }
-                 completionHandler(nil, events);
-             } onError:^(NSError * _Nullable error) {
-                 completionHandler(error, @[]);
-             }];
+    [self.stitchContext.coreClient getEventsPageWithSize:size
+                                                   order:order
+                                          conversationId:self.conversationDetails.conversationId
+                                               eventType:eventType
+                                       completionHandler:^(NSError * _Nullable error, NXMEventsPage * _Nullable page) {
+                                           if (error) {
+                                               NXM_LOG_ERROR([NSString stringWithFormat:@"conversationUuid: %@, NXMEventsPage failed: %@",
+                                                              self.uuid, error.description].UTF8String);
+                                               completionHandler(error, nil);
+                                               return;
+                                           }
+
+                                           if (!page) {
+                                               NXM_LOG_ERROR([NSString stringWithFormat:@"conversationUuid: %@, Empty NXMEventsPage received", self.uuid].UTF8String);
+                                               completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown], nil);
+                                               return;
+                                           }
+
+                                           [weakSelf updateMembersForPage:page];
+                                           completionHandler(nil, page);
+                                       }];
+}
+
+- (void)updateMembersForPage:(nonnull NXMEventsPage *)page {
+    for (NXMEvent *event in page.events) {
+        NXMMember *member = [self.conversationMembersController memberForMemberId:event.fromMemberId];
+        [event updateFromMember:member];
+        if (event.type == NXMEventTypeMember) {
+            NXMMemberEvent *memberEvent = (NXMMemberEvent *)event;
+            [memberEvent updateMember:[self.conversationMembersController memberForMemberId:memberEvent.memberId]];
+        }
+    }
 }
 
 #pragma mark - Private Methods

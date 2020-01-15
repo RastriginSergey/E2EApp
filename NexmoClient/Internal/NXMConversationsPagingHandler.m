@@ -48,9 +48,8 @@ static NSString *const ON_MAIN_THREAD_EXCEPTION_REASON = @"This method can't be 
                                        }];
 }
 
-- (void)getConversationsPageForURL:(nonnull NSURL *)url
-                 completionHandler:(void (^ _Nullable)(NSError * _Nullable, NXMConversationsPage * _Nullable))completionHandler {
-
+- (void)getConversationsPageForURL:(NSURL *)url
+                 completionHandler:(void (^)(NSError * _Nullable, NXMConversationsPage * _Nullable))completionHandler {
     NXM_LOG_DEBUG([NSString stringWithFormat: @"URL: %@", url.absoluteString].UTF8String);
     NXMCore *coreClient = self.stitchContext.coreClient;
     __weak typeof(self) weakSelf = self;
@@ -72,11 +71,10 @@ static NSString *const ON_MAIN_THREAD_EXCEPTION_REASON = @"This method can't be 
                                   completionHandler:(void (^)(NSError * _Nullable, NXMConversationsPage * _Nullable))completionHandler {
     [self getConversationsFromIds:page.conversationIds
                         onSuccess:^(NSArray<NXMConversation *> * _Nonnull conversations) {
-                            NXMConversationsPage *resultPage = [[NXMConversationsPage alloc] initWithSize:page.size
-                                                                                                    order:page.order
-                                                                                             pageResponse:page.pageResponse
-                                                                                 conversationsPagingProxy:self
-                                                                                            conversations:conversations];
+        NXMConversationsPage *resultPage = [[NXMConversationsPage alloc] initWithOrder:page.order
+                                                                          pageResponse:page.pageResponse
+                                                                           pagingProxy:self
+                                                                              elements:conversations];
                             if (!resultPage) {
                                 completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown], nil);
                                 return;
@@ -115,6 +113,10 @@ static NSString *const ON_MAIN_THREAD_EXCEPTION_REASON = @"This method can't be 
 
         onSuccess(results);
     });
+}
+
+- (void)getPageForURL:(NSURL *)url completionHandler:(void (^)(NSError * _Nullable, NXMPage * _Nullable))completionHandler {
+    [self getConversationsPageForURL:url completionHandler:completionHandler];
 }
 
 @end

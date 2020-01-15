@@ -14,6 +14,7 @@
 #import "NXMClientDefine.h"
 #import "NXMConversationPrivate.h"
 #import "NXMConversationIdsPage.h"
+#import "NXMPagePrivate.h"
 #import "NXMPageRequest.h"
 #import "NXMNetworkCallbacks.h"
 #import "NXMCoreEventsPrivate.h"
@@ -225,10 +226,9 @@ static NSString * const MEMBERS_REMOVE_URL_FORMAT = @"%@beta/conversations/%@/me
 
     NXM_LOG_DEBUG([NSString stringWithFormat: @"UserID: %@; Page size: %@", userId, @(cappedSize)].UTF8String);
 
-    NSString *orderValue = order == NXMPageOrderAsc ? PAGE_ORDER_ASC : PAGE_ORDER_DESC;
     NSString *urlString = [NSString stringWithFormat:CONVERSATIONS_PAGE_PER_USER_URL_FORMAT, self.baseUrl, userId];
     NSURL *url = [NSURL URLWithString: urlString];
-
+    NSString *orderValue = [NXMRouter pageOrderStringFrom:order];
     NXMPageRequest *pageRequest = [[NXMPageRequest alloc] initWithPageSize:@(cappedSize).unsignedIntValue
                                                                    withUrl:url
                                                                 withCursor:cursor
@@ -919,19 +919,175 @@ completionBlock:(void (^_Nullable)(NSError * _Nullable error, NXMUser * _Nullabl
         
         onSuccess(events);
     }];
-    
-    
+}
+
+- (void)getEventsPageWithRequest:(NXMGetEventsPageRequest *)request
+               eventsPagingProxy:(id<NXMPageProxy>)proxy
+                       onSuccess:(void (^)(NXMEventsPage * _Nullable))onSuccess
+                         onError:(void (^)(NSError * _Nullable))onError {
+    NXM_LOG_DEBUG(request.conversationId.UTF8String);
+
+    NSString *urlString = [NSString stringWithFormat:EVENTS_PAGE_URL_FORMAT, self.baseUrl, request.conversationId];
+    NSURLComponents *urlComponents = [NSURLComponents componentsWithString:urlString];
+    NSURL *url = urlComponents.URL;
+    NSString *orderValue = [NXMRouter pageOrderStringFrom:request.order];
+    NXMPageRequest *pageRequest = [[NXMPageRequest alloc] initWithPageSize:@(request.size).unsignedIntValue
+                                                                   withUrl:url
+                                                                withCursor:request.cursor
+                                                                 withOrder:orderValue];
+    [self requestWithPageRequest:pageRequest
+                       eventType:request.eventType
+                 completionBlock:^(NSError * _Nullable error, NXMPageResponse * _Nullable pageResponse) {
+                     if (error) {
+                         onError(error);
+                         return;
+                     }
+
+                     NSArray<NXMEvent *> *events = [self eventsFromPageResponse:pageResponse withConversationId:request.conversationId];
+                     NXMEventsPage *page = [[NXMEventsPage alloc] initWithOrder:request.order
+                                                                   pageResponse:pageResponse
+                                                                    pagingProxy:proxy
+                                                                       elements:events];
+                      onSuccess(page);
+                 }];
+}
+
+- (void)getEventsPageForURL:(NSURL *)url
+          eventsPagingProxy:(id<NXMPageProxy>)proxy
+                  onSuccess:(void (^)(NXMEventsPage * _Nullable))onSuccess
+                    onError:(void (^)(NSError * _Nullable))onError {
+    [self requestToServer:nil
+                      url:url
+               httpMethod:@"GET"
+          completionBlock:^(NSError * _Nullable error, NSDictionary * _Nullable data) {
+              if (error) {
+                  onError(error);
+                  return;
+              }
+
+              NSString *conversationId = [NXMRouter parseConversationIdFromURL:url];
+              if (conversationId == nil) {
+                  onError([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown]);
+                  return;
+              }
+
+              NXMPageResponse *pageResponse = [[NXMPageResponse alloc] initWithData:data];
+              NSArray<NXMEvent *> *events = [self eventsFromPageResponse:pageResponse withConversationId:conversationId];
+              NXMEventsPage *page = [[NXMEventsPage alloc] initWithOrder:[NXMRouter parseOrderFromURL:url]
+                                                            pageResponse:pageResponse
+                                                             pagingProxy:proxy
+                                                                elements:events];
+              onSuccess(page);
+          }];
 }
 
 #pragma mark - private
 
-- (void)requestWithPageRequest:(NXMPageRequest*)pageRequets
+- (nonnull NSArray<NXMEvent *> *)eventsFromPageResponse:(nullable NXMPageResponse *)pageResponse
+                                     withConversationId:(nonnull NSString *)conversationId {
+    NSMutableArray<NXMEvent *> *events = [NSMutableArray new];
+    for (NSDictionary *eventJson in pageResponse.data) {
+        NSString *type = eventJson[@"type"];
+
+        if ([type isEqualToString:kNXMSocketEventMemberJoined]) {
+            [events addObject:[self parseMemberEvent:NXMMemberStateJoined dict:eventJson conversationId:conversationId]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventMemberInvited]) {
+            [events addObject:[self parseMemberEvent:NXMMemberStateInvited dict:eventJson conversationId:conversationId]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventMemberLeft]) {
+            [events addObject:[self parseMemberEvent:NXMMemberStateLeft dict:eventJson conversationId:conversationId]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventMemebrMedia]) {
+            [events addObject:[self parseMediaEvent:eventJson conversationId:conversationId]];
+            continue;
+        }
+        if ([type hasPrefix:kNXMEventCustom]) {
+            NSString *customType = [type substringFromIndex:[kNXMEventCustom length] + 1];
+            [events addObject:[self parseCustomEvent:customType dict:eventJson conversationId:conversationId]];
+            continue;
+        }
+        if([type isEqualToString:kNXMSocketEventAudioMuteOn]) {
+            [events addObject:[self parseAudioMuteOnEvent:eventJson conversationId:conversationId]];
+            continue;
+        }
+        if([type isEqualToString:kNXMSocketEventAudioMuteOff]) {
+            [events addObject:[self parseAudioMuteOffEvent:eventJson conversationId:conversationId]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventTextSeen]) {
+            [events addObject:[self parseMessageStatusEvent:eventJson conversationId:conversationId state:NXMMessageStatusTypeSeen]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventTextDelivered]) {
+            [events addObject:[self parseMessageStatusEvent:eventJson conversationId:conversationId state:NXMMessageStatusTypeDelivered]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventText]) {
+            [events addObject:[self parseTextEvent:eventJson conversationId:conversationId]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventImage]) {
+            [events addObject:[self parseImageEvent:eventJson conversationId:conversationId]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventImageSeen]) {
+            [events addObject:[self parseMessageStatusEvent:eventJson conversationId:conversationId state:NXMMessageStatusTypeSeen]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventImageDelivered]) {
+            [events addObject:[self parseMessageStatusEvent:eventJson conversationId:conversationId state:NXMMessageStatusTypeDelivered]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventMessageDelete]) {
+            [events addObject:[self parseMessageStatusEvent:eventJson conversationId:conversationId state:NXMMessageStatusTypeDeleted]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventSipRinging]) {
+            [events addObject:[self parseSipEvent:eventJson conversationId:conversationId state:NXMSipEventRinging]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventSipAnswered]) {
+            [events addObject:[self parseSipEvent:eventJson conversationId:conversationId state:NXMSipEventAnswered]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventSipHangup]) {
+            [events addObject:[self parseSipEvent:eventJson conversationId:conversationId state:NXMSipEventHangup]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventSipStatus]) {
+            [events addObject:[self parseSipEvent:eventJson conversationId:conversationId state:NXMSipEventStatus]];
+            continue;
+        }
+        if ([type isEqualToString:kNXMSocketEventLegStatus]) {
+            [events addObject:[[NXMLegStatusEvent alloc] initWithConversationId:conversationId andData:eventJson]];
+            continue;
+        }
+    }
+    return events;
+}
+
++ (nonnull NSString *)pageOrderStringFrom:(NXMPageOrder)order {
+    return order == NXMPageOrderAsc ? PAGE_ORDER_ASC : PAGE_ORDER_DESC;
+}
+
+- (void)requestWithPageRequest:(nonnull NXMPageRequest *)pageRequest
                completionBlock:(void (^_Nullable)(NSError * _Nullable error, NXMPageResponse * _Nullable data))completionBlock {
-    NSURLComponents *components = [[NSURLComponents alloc] initWithURL:pageRequets.url resolvingAgainstBaseURL:NO];
-    components.percentEncodedQuery = [NSString stringWithFormat:@"page_size=%u%@%@",
-                                      pageRequets.pageSize,
-                                      (pageRequets.cursor && [pageRequets.cursor length] > 0 ? [NSString stringWithFormat:@"&cursor=%@", pageRequets.cursor] : @""),
-                                      (pageRequets.order && [pageRequets.order length] > 0 ? [NSString stringWithFormat:@"&order=%@", pageRequets.order] : @"")];
+    [self requestWithPageRequest:pageRequest eventType:nil completionBlock:completionBlock];
+}
+
+- (void)requestWithPageRequest:(nonnull NXMPageRequest *)pageRequest
+                     eventType:(nullable NSString *)eventType
+               completionBlock:(void (^_Nullable)(NSError * _Nullable error, NXMPageResponse * _Nullable data))completionBlock {
+    NSURLComponents *components = [[NSURLComponents alloc] initWithURL:pageRequest.url resolvingAgainstBaseURL:NO];
+    components.percentEncodedQuery = [NSString stringWithFormat:@"page_size=%u%@%@%@",
+                                      pageRequest.pageSize,
+                                      (pageRequest.cursor && [pageRequest.cursor length] > 0 ? [NSString stringWithFormat:@"&cursor=%@", pageRequest.cursor] : @""),
+                                      (pageRequest.order && [pageRequest.order length] > 0 ? [NSString stringWithFormat:@"&order=%@", pageRequest.order] : @""),
+                                      (eventType ? [NSString stringWithFormat:@"&event_type=%@", eventType] : @"")];
 
     [self requestToServer:nil url:components.URL httpMethod:@"GET" completionBlock:^(NSError * _Nullable error, NSDictionary * _Nullable data) {
         if (error) {
@@ -1071,7 +1227,7 @@ completionBlock:(void (^_Nullable)(NSError * _Nullable error, NXMUser * _Nullabl
 - (NXMMediaActionEvent *)parseAudioMuteOnEvent:(nonnull NSDictionary*)dict conversationId:(nonnull NSString*)conversationId{
     NXMMediaSuspendEvent* event = [NXMMediaSuspendEvent new];
     event.toMemberUuid = dict[@"to"];
-    event.conversationUuid = dict[@"cid"];
+    event.conversationUuid = conversationId;
     event.fromMemberId = dict[@"from"];
     event.creationDate = [NXMUtils dateFromISOString:dict[@"timestamp"]];
     event.uuid = [dict[@"id"] integerValue];
@@ -1086,7 +1242,7 @@ completionBlock:(void (^_Nullable)(NSError * _Nullable error, NXMUser * _Nullabl
 - (NXMMediaActionEvent *)parseAudioMuteOffEvent:(nonnull NSDictionary*)dict conversationId:(nonnull NSString*)conversationId{
     NXMMediaSuspendEvent* event = [NXMMediaSuspendEvent new];
     event.toMemberUuid = dict[@"to"];
-    event.conversationUuid = dict[@"cid"];
+    event.conversationUuid = conversationId;
     event.fromMemberId = dict[@"from"];
     event.creationDate = [NXMUtils dateFromISOString:dict[@"timestamp"]];
     event.uuid = [dict[@"id"] integerValue];
@@ -1216,12 +1372,28 @@ completionBlock:(void (^_Nullable)(NSError * _Nullable error, NXMUser * _Nullabl
     NSUInteger orderIndex = [urlComponents.queryItems indexOfObjectPassingTest:^BOOL(NSURLQueryItem * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         return [obj.name isEqualToString:@"order"];
     }];
-    
-    NSString *orderValue = orderIndex == NSNotFound ? nil : urlComponents.queryItems[orderIndex].value;
-    
-    return [orderValue caseInsensitiveCompare:PAGE_ORDER_ASC] != NSOrderedSame
-            ? NXMPageOrderDesc
-            : NXMPageOrderAsc;
+
+    if (orderIndex == NSNotFound) {
+        return NXMPageOrderAsc;
+    }
+
+    NSString *orderValue = urlComponents.queryItems[orderIndex].value;
+    return [orderValue caseInsensitiveCompare:PAGE_ORDER_ASC] == NSOrderedSame
+            ? NXMPageOrderAsc
+            : NXMPageOrderDesc;
+}
+
++ (nullable NSString *)parseConversationIdFromURL:(NSURL *)url {
+    NSUInteger conversationsIndex = [url.pathComponents indexOfObjectPassingTest:^BOOL(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        return [obj isEqualToString:@"conversations"];
+    }];
+
+    if (conversationsIndex == NSNotFound
+        || conversationsIndex == url.pathComponents.count - 1) {
+        return nil;
+    }
+
+    return url.pathComponents[1 + conversationsIndex];
 }
 
 @end

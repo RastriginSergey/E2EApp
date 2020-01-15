@@ -16,6 +16,7 @@
 #import "NXMNetworkCallbacks.h"
 #import "NXMEventInternal.h"
 #import "NXMConversationIdsPage.h"
+#import "NXMPagePrivate.h"
 
 @interface NXMCore() <RTCMediaWrapperDelegate, NXMNetworkDelegate>
 
@@ -251,6 +252,47 @@ fromConversationWithId:(nonnull NSString *)conversationId
     request.startId = startId;
     request.endId = endId;
     [self.network getEvents:request onSuccess:onSuccess onError:onError];
+}
+
+- (void)getEventsPageWithSize:(NSInteger)size
+                        order:(NXMPageOrder)order
+               conversationId:(NSString *)conversationId
+                    eventType:(NSString *)eventType
+            completionHandler:(void (^)(NSError * _Nullable, NXMEventsPage * _Nullable))completionHandler {
+    NXMGetEventsPageRequest *request = [[NXMGetEventsPageRequest alloc] initWithSize:size
+                                                                               order:order
+                                                                      conversationId:conversationId
+                                                                              cursor:nil
+                                                                           eventType:eventType];
+    [self.network getEventsPageWithRequest:request
+                         eventsPagingProxy:self
+                                 onSuccess:^(NXMEventsPage * _Nullable page) {
+                                     if (!page) {
+                                         completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown], nil);
+                                         return;
+                                     }
+
+                                     completionHandler(nil, page);
+                                 }
+                                   onError:^(NSError * _Nullable error) {
+                                       completionHandler(error, nil);
+                                   }];
+}
+
+- (void)getPageForURL:(NSURL *)url completionHandler:(void (^)(NSError * _Nullable, NXMPage * _Nullable))completionHandler {
+    [self.network getEventsPageForURL:url
+                    eventsPagingProxy:self
+                            onSuccess:^(NXMEventsPage * _Nullable page) {
+                                if (!page) {
+                                    completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown], nil);
+                                    return;
+                                }
+
+                                completionHandler(nil, page);
+                            }
+                              onError:^(NSError * _Nullable error) {
+                                  completionHandler(error, nil);
+                              }];
 }
 
 

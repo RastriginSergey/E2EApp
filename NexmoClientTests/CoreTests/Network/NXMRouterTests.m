@@ -8,27 +8,25 @@
 
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
+#import "NXMPagePrivate.h"
 #import "NXMRouter.h"
+#import "NXMEventInternal.h"
+#import "NXMErrorsPrivate.h"
+#import "NXMGetEventsPageRequest.h"
 
 @interface NXMRouter(NXMRouterTests)
-- (void)executeRequest:(NSURLRequest *)request  responseBlock:(void (^_Nullable)(NSError * _Nullable error, NSDictionary *      _Nullable data))responseBlock;
-
+- (void)executeRequest:(NSURLRequest *)request
+         responseBlock:(void (^_Nullable)(NSError * _Nullable error, NSDictionary * _Nullable data))responseBlock;
 @end
+
 @interface NXMRouterTests : XCTestCase
 
 @end
 
 @implementation NXMRouterTests
 
-- (void)setUp {
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-}
+#pragma mark - create conversation tests
 
-- (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-}
-
-#pragma create conversation tests
 - (void)testCreateConversation {
     NSString *host = @"vv";
     NSString *ips = @"vv";
@@ -96,6 +94,397 @@
     [routerPartialMock stopMocking];
 }
 
-#pragma join conversation tests
-@end
 
+#pragma mark - join conversation tests
+
+
+#pragma mark - get events page tests
+
+- (void)testGetEventsPageWithRequest_succeeds_withSucceedingHttpResponse {
+    NSString *host = @"https://hostname.com/";
+    NSString *ips = @"https://hostname.com/image/";
+    NXMRouter *router = [[NXMRouter alloc] initWithHost:host ipsURL:[NSURL URLWithString:ips]];
+
+    NSString *conversationId = @"CON-ID-01";
+    NSUInteger pageSize = 20;
+    NXMPageOrder order = NXMPageOrderDesc;
+    NSInteger firstEventId = 1234;
+    id<NXMPageProxy> proxyMock = OCMProtocolMock(@protocol(NXMPageProxy));
+    NSDictionary *responseDict = @{
+        @"page_size": @(pageSize),
+        @"cursor": @"string",
+        @"_embedded": @{
+                @"data": @{
+                        @"events": @[
+                                @{
+                                    @"to": @"string",
+                                    @"id": @(firstEventId),
+                                    @"timestamp": @"2019-12-19T11:24:06.766Z",
+                                    @"_links": @{@"self": @{@"href": @"string"}},
+                                    @"from": @"string",
+                                    @"type": @"audio:mute:on"
+                                }
+                        ]
+                }
+        },
+        @"_links": @{
+                @"first": @{@"href": @"string"},
+                @"self": @{@"href": @"string"},
+                @"next": @{@"href": @"string"},
+                @"prev": @{@"href": @"string"}
+        }
+    };
+    id requestMatcher = [OCMArg checkWithBlock:^BOOL(id param) {
+        NSString *urlString = [NSString stringWithFormat:@"%@beta2/conversations/%@/events?page_size=%lu&order=DESC",
+                               host, conversationId, (unsigned long)pageSize];
+        return [((NSURLRequest *)param).URL.absoluteString isEqualToString:urlString];
+    }];
+    id responseBlockMatcher = [OCMArg invokeBlockWithArgs:[NSNull null], responseDict, nil];
+    id routerPartialMock = OCMPartialMock(router);
+    OCMStub([routerPartialMock executeRequest:requestMatcher responseBlock:responseBlockMatcher]);
+
+    NXMEvent *expectedFirstEvent = [[NXMEvent alloc] initWithConversationId:conversationId
+                                                                 sequenceId:firstEventId
+                                                               fromMemberId:nil
+                                                               creationDate:nil
+                                                                       type:NXMEventTypeMediaAction];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    NXMGetEventsPageRequest *request = [[NXMGetEventsPageRequest alloc] initWithSize:pageSize
+                                                                               order:order
+                                                                      conversationId:conversationId
+                                                                              cursor:nil
+                                                                           eventType:nil];
+    [router getEventsPageWithRequest:request
+                   eventsPagingProxy:proxyMock
+                           onSuccess:^(NXMEventsPage * _Nullable page) {
+                               XCTAssertEqual(page.size, pageSize);
+                               XCTAssertEqual(page.order, order);
+                               XCTAssertEqual(page.events.count, 1);
+                               [self doesEvent:page.events.firstObject matchWith:expectedFirstEvent];
+                               [expectation fulfill];
+                           }
+                             onError:^(NSError * _Nullable error) {
+                                 XCTFail(@"Get events page must not fail");
+                             }];
+
+    [self waitForExpectationsWithTimeout:1 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+
+    [routerPartialMock verify];
+    [routerPartialMock stopMocking];
+}
+
+- (void)testGetEventsPageWithRequest_fails_withFailingHttpResponse {
+    NSString *host = @"https://hostname.com/";
+    NSString *ips = @"https://hostname.com/image/";
+    NXMRouter *router = [[NXMRouter alloc] initWithHost:host ipsURL:[NSURL URLWithString:ips]];
+
+    NSString *conversationId = @"CON-ID-01";
+    NSUInteger pageSize = 20;
+    NXMPageOrder order = NXMPageOrderDesc;
+    id<NXMPageProxy> proxyMock = OCMProtocolMock(@protocol(NXMPageProxy));
+    NSError *error = [NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown];
+
+    id requestMatcher = [OCMArg checkWithBlock:^BOOL(id param) {
+        NSString *urlString = [NSString stringWithFormat:@"%@beta2/conversations/%@/events?page_size=%lu&order=DESC",
+                               host, conversationId, (unsigned long)pageSize];
+        return [((NSURLRequest *)param).URL.absoluteString isEqualToString:urlString];
+    }];
+    id responseBlockMatcher = [OCMArg invokeBlockWithArgs:error, [NSNull null], nil];
+    id routerPartialMock = OCMPartialMock(router);
+    OCMStub([routerPartialMock executeRequest:requestMatcher responseBlock:responseBlockMatcher]);
+
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    NXMGetEventsPageRequest *request = [[NXMGetEventsPageRequest alloc] initWithSize:pageSize
+                                                                               order:order
+                                                                      conversationId:conversationId
+                                                                              cursor:nil
+                                                                           eventType:nil];
+    [router getEventsPageWithRequest:request
+                   eventsPagingProxy:proxyMock
+                           onSuccess:^(NXMEventsPage * _Nullable page) {
+                               XCTFail(@"Get events page must fail");
+                           }
+                             onError:^(NSError * _Nullable error) {
+                                 [expectation fulfill];
+                             }];
+
+    [self waitForExpectationsWithTimeout:1 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+
+    [routerPartialMock verify];
+    [routerPartialMock stopMocking];
+}
+
+- (void)testGetEventsPageForURL_succeeds_withSucceedingHttpResponse_andNoOrderInURL {
+    NSString *host = @"https://hostname.com/";
+    NSString *ips = @"https://hostname.com/image/";
+    NXMRouter *router = [[NXMRouter alloc] initWithHost:host ipsURL:[NSURL URLWithString:ips]];
+
+    NSString *conversationId = @"CON-ID-01";
+    NSUInteger pageSize = 20;
+    NSString *cursor = @"SOME_CURSOR";
+    NSString *urlFormat = @"%@beta2/conversations/%@/events?page_size=%lu&cursor=%@";
+    NSString *url = [NSString stringWithFormat:urlFormat, host, conversationId, (unsigned long)pageSize, cursor];
+    NSInteger firstEventId = 1234;
+    id<NXMPageProxy> proxyMock = OCMProtocolMock(@protocol(NXMPageProxy));
+    NSDictionary *responseDict = @{
+        @"page_size": @(pageSize),
+        @"cursor": @"string",
+        @"_embedded": @{
+                @"data": @{
+                        @"events": @[
+                                @{
+                                    @"to": @"string",
+                                    @"id": @(firstEventId),
+                                    @"timestamp": @"2019-12-19T11:24:06.766Z",
+                                    @"_links": @{@"self": @{@"href": @"string"}},
+                                    @"from": @"string",
+                                    @"type": @"audio:mute:on"
+                                }
+                        ]
+                }
+        },
+        @"_links": @{
+                @"first": @{@"href": @"string"},
+                @"self": @{@"href": @"string"},
+                @"next": @{@"href": @"string"},
+                @"prev": @{@"href": @"string"}
+        }
+    };
+    id requestMatcher = [OCMArg checkWithBlock:^BOOL(id param) {
+        NSString *urlString = [NSString stringWithFormat:urlFormat, host, conversationId, (unsigned long)pageSize, cursor];
+        return [((NSURLRequest *)param).URL.absoluteString isEqualToString:urlString];
+    }];
+    id responseBlockMatcher = [OCMArg invokeBlockWithArgs:[NSNull null], responseDict, nil];
+    id routerPartialMock = OCMPartialMock(router);
+    OCMStub([routerPartialMock executeRequest:requestMatcher responseBlock:responseBlockMatcher]);
+
+    NXMEvent *expectedFirstEvent = [[NXMEvent alloc] initWithConversationId:conversationId
+                                                                 sequenceId:firstEventId
+                                                               fromMemberId:nil
+                                                               creationDate:nil
+                                                                       type:NXMEventTypeMediaAction];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    [router getEventsPageForURL:[NSURL URLWithString:url]
+              eventsPagingProxy:proxyMock
+                      onSuccess:^(NXMEventsPage * _Nullable page) {
+                          XCTAssertEqual(page.size, pageSize);
+                          XCTAssertEqual(page.order, NXMPageOrderAsc);
+                          XCTAssertEqual(page.events.count, 1);
+                          [self doesEvent:page.events.firstObject matchWith:expectedFirstEvent];
+                          [expectation fulfill];
+                      }
+                        onError:^(NSError * _Nullable error) {
+                            XCTFail(@"Get events page must not fail");
+                        }];
+
+    [self waitForExpectationsWithTimeout:1 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+
+    [routerPartialMock verify];
+    [routerPartialMock stopMocking];
+}
+
+- (void)testGetEventsPageForURL_succeeds_withSucceedingHttpResponse_andDescOrderInURL {
+    NSString *host = @"https://hostname.com/";
+    NSString *ips = @"https://hostname.com/image/";
+    NXMRouter *router = [[NXMRouter alloc] initWithHost:host ipsURL:[NSURL URLWithString:ips]];
+
+    NSString *conversationId = @"CON-ID-01";
+    NSUInteger pageSize = 20;
+    NSString *cursor = @"SOME_CURSOR";
+    NSString *order = @"desc";
+    NSString *urlFormat = @"%@beta2/conversations/%@/events?page_size=%lu&cursor=%@&order=%@";
+    NSString *url = [NSString stringWithFormat:urlFormat, host, conversationId, (unsigned long)pageSize, cursor, order];
+    NSInteger firstEventId = 1234;
+    id<NXMPageProxy> proxyMock = OCMProtocolMock(@protocol(NXMPageProxy));
+    NSDictionary *responseDict = @{
+        @"page_size": @(pageSize),
+        @"cursor": @"string",
+        @"_embedded": @{
+                @"data": @{
+                        @"events": @[
+                                @{
+                                    @"to": @"string",
+                                    @"id": @(firstEventId),
+                                    @"timestamp": @"2019-12-19T11:24:06.766Z",
+                                    @"_links": @{@"self": @{@"href": @"string"}},
+                                    @"from": @"string",
+                                    @"type": @"audio:mute:on"
+                                }
+                        ]
+                }
+        },
+        @"_links": @{
+                @"first": @{@"href": @"string"},
+                @"self": @{@"href": @"string"},
+                @"next": @{@"href": @"string"},
+                @"prev": @{@"href": @"string"}
+        }
+    };
+    id requestMatcher = [OCMArg checkWithBlock:^BOOL(id param) {
+        NSString *urlString = [NSString stringWithFormat:urlFormat, host, conversationId, (unsigned long)pageSize, cursor, order];
+        return [((NSURLRequest *)param).URL.absoluteString isEqualToString:urlString];
+    }];
+    id responseBlockMatcher = [OCMArg invokeBlockWithArgs:[NSNull null], responseDict, nil];
+    id routerPartialMock = OCMPartialMock(router);
+    OCMStub([routerPartialMock executeRequest:requestMatcher responseBlock:responseBlockMatcher]);
+
+    NXMEvent *expectedFirstEvent = [[NXMEvent alloc] initWithConversationId:conversationId
+                                                                 sequenceId:firstEventId
+                                                               fromMemberId:nil
+                                                               creationDate:nil
+                                                                       type:NXMEventTypeMediaAction];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    [router getEventsPageForURL:[NSURL URLWithString:url]
+              eventsPagingProxy:proxyMock
+                      onSuccess:^(NXMEventsPage * _Nullable page) {
+                          XCTAssertEqual(page.size, pageSize);
+                          XCTAssertEqual(page.order, NXMPageOrderDesc);
+                          XCTAssertEqual(page.events.count, 1);
+                          [self doesEvent:page.events.firstObject matchWith:expectedFirstEvent];
+                          [expectation fulfill];
+                      }
+                        onError:^(NSError * _Nullable error) {
+                            XCTFail(@"Get events page must not fail");
+                        }];
+
+    [self waitForExpectationsWithTimeout:1 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+
+    [routerPartialMock verify];
+    [routerPartialMock stopMocking];
+}
+
+- (void)testGetEventsPageForURL_fails_withFailingHttpResponse {
+    NSString *host = @"https://hostname.com/";
+    NSString *ips = @"https://hostname.com/image/";
+    NXMRouter *router = [[NXMRouter alloc] initWithHost:host ipsURL:[NSURL URLWithString:ips]];
+
+    NSString *conversationId = @"CON-ID-01";
+    NSUInteger pageSize = 20;
+    NSString *cursor = @"SOME_CURSOR";
+    NSString *urlFormat = @"%@beta2/conversations/%@/events?page_size=%lu&cursor=%@";
+    NSString *url = [NSString stringWithFormat:urlFormat, host, conversationId, (unsigned long)pageSize, cursor];
+    id<NXMPageProxy> proxyMock = OCMProtocolMock(@protocol(NXMPageProxy));
+    NSError *error = [NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown];
+    id requestMatcher = [OCMArg checkWithBlock:^BOOL(id param) {
+        NSString *urlString = [NSString stringWithFormat:urlFormat, host, conversationId, (unsigned long)pageSize, cursor];
+        return [((NSURLRequest *)param).URL.absoluteString isEqualToString:urlString];
+    }];
+    id responseBlockMatcher = [OCMArg invokeBlockWithArgs:error, [NSNull null], nil];
+    id routerPartialMock = OCMPartialMock(router);
+    OCMStub([routerPartialMock executeRequest:requestMatcher responseBlock:responseBlockMatcher]);
+
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    [router getEventsPageForURL:[NSURL URLWithString:url]
+              eventsPagingProxy:proxyMock
+                      onSuccess:^(NXMEventsPage * _Nullable page) {
+                          XCTFail(@"Get events page must fail");
+                      }
+                        onError:^(NSError * _Nullable error) {
+                            [expectation fulfill];
+                        }];
+
+    [self waitForExpectationsWithTimeout:1 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+
+    [routerPartialMock verify];
+    [routerPartialMock stopMocking];
+}
+
+- (void)testGetEventsPageWithRequestWithEventTypeFilter_succeeds_withSucceedingHttpResponse {
+    NSString *host = @"https://hostname.com/";
+    NSString *ips = @"https://hostname.com/image/";
+    NXMRouter *router = [[NXMRouter alloc] initWithHost:host ipsURL:[NSURL URLWithString:ips]];
+
+    NSString *conversationId = @"CON-ID-01";
+    NSUInteger pageSize = 20;
+    NXMPageOrder order = NXMPageOrderAsc;
+    NSString *eventType = @"member:*";
+    NSInteger firstEventId = 1234;
+    id<NXMPageProxy> proxyMock = OCMProtocolMock(@protocol(NXMPageProxy));
+    NSDictionary *responseDict = @{
+        @"page_size": @(pageSize),
+        @"cursor": @"string",
+        @"_embedded": @{
+                @"data": @{
+                        @"events": @[
+                                @{
+                                    @"to": @"string",
+                                    @"id": @(firstEventId),
+                                    @"timestamp": @"2019-12-19T11:24:06.766Z",
+                                    @"_links": @{@"self": @{@"href": @"string"}},
+                                    @"from": @"string",
+                                    @"type": @"audio:mute:on"
+                                }
+                        ]
+                }
+        },
+        @"_links": @{
+                @"first": @{@"href": @"string"},
+                @"self": @{@"href": @"string"},
+                @"next": @{@"href": @"string"},
+                @"prev": @{@"href": @"string"}
+        }
+    };
+    id requestMatcher = [OCMArg checkWithBlock:^BOOL(id param) {
+        NSString *urlString = [NSString stringWithFormat:@"%@beta2/conversations/%@/events?page_size=%lu&order=ASC&event_type=%@",
+                               host, conversationId, (unsigned long)pageSize, eventType];
+        return [((NSURLRequest *)param).URL.absoluteString isEqualToString:urlString];
+    }];
+    id responseBlockMatcher = [OCMArg invokeBlockWithArgs:[NSNull null], responseDict, nil];
+    id routerPartialMock = OCMPartialMock(router);
+    OCMStub([routerPartialMock executeRequest:requestMatcher responseBlock:responseBlockMatcher]);
+
+    NXMEvent *expectedFirstEvent = [[NXMEvent alloc] initWithConversationId:conversationId
+                                                                 sequenceId:firstEventId
+                                                               fromMemberId:nil
+                                                               creationDate:nil
+                                                                       type:NXMEventTypeMediaAction];
+    XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
+
+    NXMGetEventsPageRequest *request = [[NXMGetEventsPageRequest alloc] initWithSize:pageSize
+                                                                               order:order
+                                                                      conversationId:conversationId
+                                                                              cursor:nil
+                                                                           eventType:eventType];
+    [router getEventsPageWithRequest:request
+                   eventsPagingProxy:proxyMock
+                           onSuccess:^(NXMEventsPage * _Nullable page) {
+                               XCTAssertEqual(page.size, pageSize);
+                               XCTAssertEqual(page.order, order);
+                               XCTAssertEqual(page.events.count, 1);
+                               [self doesEvent:page.events.firstObject matchWith:expectedFirstEvent];
+                               [expectation fulfill];
+                           }
+                             onError:^(NSError * _Nullable error) {
+                                 XCTFail(@"Get events page must not fail");
+                             }];
+
+    [self waitForExpectationsWithTimeout:1 handler:^(NSError * _Nullable error) {
+        XCTAssertNil(error);
+    }];
+
+    [routerPartialMock verify];
+    [routerPartialMock stopMocking];
+}
+
+- (void)doesEvent:(nonnull NXMEvent *)lhs matchWith:(nonnull NXMEvent *)rhs {
+    XCTAssertEqual(lhs.uuid, rhs.uuid);
+    XCTAssertEqual(lhs.type, rhs.type);
+    XCTAssertTrue([lhs.conversationUuid isEqualToString: rhs.conversationUuid]);
+}
+
+@end

@@ -4,10 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 2.0.0 - 2019-12-24
+## 2.0.0 - 2020-01-15
 
-### Fixed.
+### Added
+- `NXMHelper` with `descriptionForEventType:` method.
+
+### Fixed
 - Calling `conversation.getEvents` returned an `NXMMemberEvent` with the field `member` set to `nil`
+
+### Changed
+- `NXMConversation`'s `getEvents:` method replaced by `getEventsPage:`, `getEventsPageWithSize:order:completionHandler:`, `getEventsPageWithSize:order:eventType:completionHandler:`.
+- `NXMConversationsPage`'s `nextPage:` and `previousPage:` completion handlers are now non-null.
 
 ---
 
@@ -16,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Internal
 - Update user agent format: `NexmoClientSDK/[SDK_VER] [PLATFORM] ([ORIGINAL_SDK])`
 
-### Fixed.
+### Fixed
 - Calling `conversation.getEvents` returned an `NXMEvent` with the field `fromMember` set to `nil`
 - Description in errors.
 

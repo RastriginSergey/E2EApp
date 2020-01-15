@@ -34,6 +34,7 @@ typedef NS_ENUM(NSInteger, NXMErrorCode) {
     NXMErrorCodeEventInvalid,             // @"conversation:error:invalid-event"
     NXMErrorCodeEventBadPermission,
     NXMErrorCodeEventNotFound,
+    NXMErrorCodeEventsPageNotFound,
     
     NXMErrorCodeConversationRetrievalFailed,
     NXMErrorCodeConversationNotFound,

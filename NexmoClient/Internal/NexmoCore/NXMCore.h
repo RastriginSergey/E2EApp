@@ -18,11 +18,12 @@
 #import "NXMConversationsPage.h"
 #import "NXMConversationIdsPage.h"
 #import "NXMClientConfig.h"
+#import "NXMPagePrivate.h"
 
 #import "NXMGetConversationsRequest.h" // remove
 
 
-@interface NXMCore : NSObject
+@interface NXMCore : NSObject <NXMPageProxy>
 
 @property (readonly) NXMConnectionStatus connectionStatus;
 @property (nonatomic, strong, readonly, nullable) NXMUser *user;
@@ -111,6 +112,12 @@ fromConversationWithId:(nonnull NSString *)conversationId
         onSuccess:(NXMSuccessCallbackWithEvents _Nullable)onSuccess
           onError:(NXMErrorCallback _Nullable)onError;
 
+- (void)getEventsPageWithSize:(NSInteger)size
+                        order:(NXMPageOrder)order
+               conversationId:(nonnull NSString *)conversationId
+                    eventType:(nullable NSString *)eventType
+            completionHandler:(void(^_Nullable)(NSError * _Nullable error, NXMEventsPage * _Nullable page))completionHandler;
+
 - (void)getConversationDetails:(nonnull NSString *)conversationId
                      onSuccess:(NXMSuccessCallbackWithConversationDetails _Nullable)onSuccess
                        onError:(NXMErrorCallback _Nullable)onError;
@@ -128,7 +135,7 @@ fromConversationWithId:(nonnull NSString *)conversationId
 
 - (void)getConversationIdsPageForURL:(nonnull NSURL *)url
                            onSuccess:(void (^ _Nullable)(NXMConversationIdsPage * _Nullable page))onSuccess
-                             onError:(void (^ _Nullable)(NSError * _Nullable))onError;
+                             onError:(void (^ _Nullable)(NSError * _Nullable error))onError;
 
 #pragma mark - Custom events Methods
 

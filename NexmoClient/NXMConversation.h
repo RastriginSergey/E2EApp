@@ -6,9 +6,9 @@
 //
 
 #import <Foundation/Foundation.h>
-
 #import "NXMConversationDelegate.h"
 #import "NXMMember.h"
+#import "NXMEventsPage.h"
 
 typedef NS_ENUM(NSInteger, NXMAttachmentType) {
     NXMAttachmentTypeImage
@@ -209,7 +209,31 @@ typedef NS_ENUM(NSInteger, NXMAttachmentType) {
 - (void)sendStopTyping:(void (^_Nullable)(NSError * _Nullable error))completionHandler;
 
 /*!
- * @brief get all conversation events
+ * @brief Get conversation events page with 10 elements page size and ascending order.
+ * @param completionHandler completion block
  */
-- (void)getEvents:(void (^_Nullable)(NSError * _Nullable error, NSArray<NXMEvent *> * _Nullable events))completionHandler;
+- (void)getEventsPage:(void (^_Nullable)(NSError * _Nullable error, NXMEventsPage * _Nullable events))completionHandler;
+
+/*!
+ * @brief Get conversation events page.
+ * @param size              page size
+ * @param order             page order
+ * @param completionHandler completion block
+ */
+- (void)getEventsPageWithSize:(NSUInteger)size
+                        order:(NXMPageOrder)order
+            completionHandler:(void (^_Nullable)(NSError * _Nullable error, NXMEventsPage * _Nullable events))completionHandler;
+
+/*!
+ * @brief Get conversation events page.
+ * @param size              page size
+ * @param order             page order
+ * @param eventType         event type filter
+ * @param completionHandler completion block
+ */
+- (void)getEventsPageWithSize:(NSUInteger)size
+                        order:(NXMPageOrder)order
+                    eventType:(nullable NSString *)eventType
+            completionHandler:(void (^_Nullable)(NSError * _Nullable error, NXMEventsPage * _Nullable events))completionHandler;
+
 @end

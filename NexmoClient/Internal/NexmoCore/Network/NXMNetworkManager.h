@@ -25,12 +25,14 @@
 #import "NXMCreateConversationRequest.h"
 #import "NXMSendImageRequest.h"
 #import "NXMGetEventsRequest.h"
+#import "NXMGetEventsPageRequest.h"
 #import "NXMEnablePushRequest.h"
 #import "NXMSuspendResumeMediaRequest.h"
 #import "NXMSendCustomEventRequest.h"
 #import "NXMSendDTMFRequest.h"
 #import "NXMConversationsPage.h"
 #import "NXMConversationIdsPage.h"
+#import "NXMPagePrivate.h"
 #import "NXMClientConfig.h"
 
 
@@ -127,7 +129,7 @@
 
 - (void)getConversationIdsPageForURL:(nonnull NSURL *)url
                            onSuccess:(void (^ _Nullable)(NXMConversationIdsPage * _Nullable page))onSuccess
-                             onError:(void (^ _Nullable)(NSError * _Nullable))onError;
+                             onError:(void (^ _Nullable)(NSError * _Nullable error))onError;
 
 - (void)getLatestEvent:(nonnull NXMGetEventsRequest *)getEventsRequest
         onSuccess:(NXMSuccessCallbackWithEvent _Nullable)onSuccess
@@ -136,6 +138,16 @@
 - (void)getEvents:(nonnull NXMGetEventsRequest *)getEventsRequest
         onSuccess:(NXMSuccessCallbackWithEvents _Nullable)onSuccess
           onError:(NXMErrorCallback _Nullable)onError;
+
+- (void)getEventsPageWithRequest:(nonnull NXMGetEventsPageRequest *)request
+               eventsPagingProxy:(nonnull id<NXMPageProxy>)pagingProxy
+                       onSuccess:(void(^ _Nullable)(NXMEventsPage * _Nullable page))onSuccess
+                         onError:(void(^ _Nullable)(NSError * _Nullable error))onError;
+
+- (void)getEventsPageForURL:(nonnull NSURL *)url
+          eventsPagingProxy:(nonnull id<NXMPageProxy>)proxy
+                  onSuccess:(void (^ _Nullable)(NXMEventsPage * _Nullable page))onSuccess
+                    onError:(void (^ _Nullable)(NSError * _Nullable error))onError;
         
 - (void)getConversationDetails:(nonnull NSString*)conversationId
                      onSuccess:(NXMSuccessCallbackWithConversationDetails _Nullable)onSuccess

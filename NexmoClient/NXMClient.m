@@ -9,7 +9,6 @@
 #import "NXMStitchContext.h"
 #import "NXMConversationPrivate.h"
 #import "NXMConversationIdsPage.h"
-#import "NXMConversationsPagePrivate.h"
 #import "NXMCallPrivate.h"
 #import "NXMCallMemberPrivate.h"
 #import "NXMBlocksHelper.h"
@@ -35,7 +34,7 @@ static NSString *const NXMCLIENT_CONFIG_CHANGED_AFTER_SHARED_EXCEPTION_REASON = 
 @property (nonatomic, nonnull) NXMStitchContext *stitchContext;
 @property (nonatomic, nullable, weak) id <NXMClientDelegate> delegate;
 @property (nonatomic, nonnull) NSMutableDictionary<NSString*, NXMClientRefCallObj*> * clientRefToCallCallback;
-@property (nonatomic, nonnull) id<NXMConversationsPageProxy> conversationsPagingHandler;
+@property (nonatomic, nonnull) NXMConversationsPagingHandler *conversationsPagingHandler;
 @property (nonatomic, nonnull) NSMutableDictionary<NSString*, NSNumber*> * conversationToLastEvent;
 @property (nonatomic, nonnull) NSObject * syncConversationToLastEvent;
 @end
