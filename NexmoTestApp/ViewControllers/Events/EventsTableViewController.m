@@ -9,7 +9,7 @@
 #import "EventsTableViewController.h"
 #import "NXMHelper.h"
 
-static NSUInteger const EVENTS_PAGE_SIZE = 2;
+static NSUInteger const EVENTS_PAGE_SIZE = 50;
 static NSString *const EVENT_TYPE_FILTER = nil; // E.g.: @"text", @"image" etc.
 static NSString *const EVENT_REUSE_ID = @"eventReuseId";
 static NSString *const EVENTS_TITLE_FORMAT = @"Events [%@]";
@@ -165,8 +165,8 @@ static NSString *const EVENTS_TITLE_FORMAT = @"Events [%@]";
     cell.textLabel.numberOfLines = 0;
     NXMEvent *event = self.eventsPage.events[indexPath.row];
     NSString *eventTypeDescription = [NXMHelper descriptionForEventType:event.type];
-    cell.textLabel.text = [NSString stringWithFormat:@"ID: %li\nType: %@",
-                           (long)event.uuid, eventTypeDescription];
+    cell.textLabel.text = [NSString stringWithFormat:@"ID: %li\nType: %@ %@",
+                           (long)event.uuid, eventTypeDescription, event.description];
     return cell;
 }
 
