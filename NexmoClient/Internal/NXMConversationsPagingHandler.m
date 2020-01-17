@@ -9,8 +9,9 @@
 #import "NXMConversationsPagingHandler.h"
 #import "NXMErrorsPrivate.h"
 #import "NXMLoggerInternal.h"
+#import "NXMConversationPrivate.h"
 
-static NSString *const ON_MAIN_THREAD_EXCEPTION_REASON = @"This method can't be called on the main thread.";
+NSString * const EMPTY_CONVERSATION_UUID = @"emptyConversationUUID";
 
 @implementation NXMConversationsPagingHandler
 
@@ -70,48 +71,83 @@ static NSString *const ON_MAIN_THREAD_EXCEPTION_REASON = @"This method can't be 
 - (void)getConversationsPageFromConversationIdsPage:(NXMConversationIdsPage *)page
                                   completionHandler:(void (^)(NSError * _Nullable, NXMConversationsPage * _Nullable))completionHandler {
     [self getConversationsFromIds:page.conversationIds
-                        onSuccess:^(NSArray<NXMConversation *> * _Nonnull conversations) {
-        NXMConversationsPage *resultPage = [[NXMConversationsPage alloc] initWithOrder:page.order
-                                                                          pageResponse:page.pageResponse
-                                                                           pagingProxy:self
-                                                                              elements:conversations];
-                            if (!resultPage) {
-                                completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown], nil);
-                                return;
-                            }
+                completionHandler:^(NSArray<NXMConversation *> *_Nonnull conversations) {
+                    NXMConversationsPage *resultPage = [[NXMConversationsPage alloc] initWithOrder:page.order
+                                                                                      pageResponse:page.pageResponse
+                                                                                       pagingProxy:self
+                                                                                          elements:conversations];
+                    if (!resultPage) {
+                        completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeUnknown], nil);
+                        return;
+                    }
 
-                            completionHandler(nil, resultPage);
-                        }
-                          onError:^(NSError * _Nullable error) {
-                              completionHandler(error, nil);
-                          }];
+                    completionHandler(nil, resultPage);
+                }];
+}
+
++ (NSArray<NXMConversation *> *)getFilteredConversations:(NSArray<NXMConversation *> *)conversations {
+    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NXMConversation *conversation, NSDictionary *bindings) {
+        return ![conversation.uuid isEqualToString:EMPTY_CONVERSATION_UUID];
+    }];
+    return [conversations filteredArrayUsingPredicate:predicate];
+}
+
++ (NXMConversation *)createPlaceholderConversation {
+    NXMConversationDetails *conversationDetails = [[NXMConversationDetails alloc] initWithConversationId:EMPTY_CONVERSATION_UUID];
+    NXMConversation *conversationPlaceholder = [NXMConversation new];
+    conversationPlaceholder.conversationDetails = conversationDetails;
+
+    return conversationPlaceholder;
+}
+
++ (NSMutableArray<NXMConversation *> *)resultPlaceholderArray:(NSUInteger)count {
+    NSMutableArray *results = [[NSMutableArray alloc] initWithCapacity:count];
+
+    for (NSUInteger index = 0; index < count; ++index) {
+        results[index] = [NXMConversationsPagingHandler createPlaceholderConversation];
+    }
+
+    return results;
 }
 
 - (void)getConversationsFromIds:(nonnull NSArray<NSString *> *)conversationIds
-                      onSuccess:(void (^ _Nonnull)(NSArray<NXMConversation *> * _Nonnull))onSuccess
-                        onError:(void (^ _Nonnull)(NSError * _Nullable))onError {
+              completionHandler:(void (^ _Nonnull)(NSArray<NXMConversation *> * _Nonnull))completionHandler {
+    NXM_LOG_DEBUG([NSString stringWithFormat:@"conversationIds: %@", conversationIds].UTF8String);
 
-    if (NSThread.isMainThread) {
-        NXM_LOG_DEBUG(ON_MAIN_THREAD_EXCEPTION_REASON.UTF8String);
+    NSMutableArray<NXMConversation *> *results = [NXMConversationsPagingHandler resultPlaceholderArray:conversationIds.count];
+
+    dispatch_group_t group = dispatch_group_create();
+    __weak typeof(self) weakSelf = self;
+
+    for (NSUInteger i = 0; i < conversationIds.count; ++i) {
+        NSString *conversationId = conversationIds[i];
+
+        NXM_LOG_DEBUG([NSString stringWithFormat:@"Started a request for the conversation:%@", conversationId].UTF8String);
+
+        dispatch_group_enter(group);
+
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^ {
+
+            weakSelf.getConversationWithUuid(conversationId, ^(NSError * _Nullable error, NXMConversation * _Nullable conversation) {
+                if (error) {
+                    NXM_LOG_ERROR(error.description.UTF8String);
+
+                    dispatch_group_leave(group);
+                    return;
+                }
+
+                if (conversation) {
+                    NXM_LOG_DEBUG([NSString stringWithFormat:@"Successfully requested the conversation:%@", conversationId].UTF8String);
+                    results[i] = conversation;
+
+                    dispatch_group_leave(group);
+                }
+            });
+        });
     }
 
-    __weak typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-
-        // TODO: this solution gets each NXMConversation sequentially. It'd be done concurrently to increase performance
-        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-        __block NSMutableArray<NXMConversation *> *results = [NSMutableArray new];
-
-        for (NSUInteger i = 0; i < conversationIds.count; i += 1) {
-            NSString *conversationId = conversationIds[i];
-            weakSelf.getConversationWithUuid(conversationId, ^(NSError * _Nullable error, NXMConversation * _Nullable conversation) {
-                if (!error && conversation) { [results addObject:conversation]; }
-                dispatch_semaphore_signal(semaphore);
-            });
-            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-        }
-
-        onSuccess(results);
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^ {
+        completionHandler([NXMConversationsPagingHandler getFilteredConversations:results]);
     });
 }
 

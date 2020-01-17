@@ -57,6 +57,7 @@
 		92CF9A0F21C91611001C86F1 /* ContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CF9A0E21C91611001C86F1 /* ContactViewController.m */; };
 		92CF9A1321CA5FE6001C86F1 /* CallViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CF9A1221CA5FE6001C86F1 /* CallViewController.m */; };
 		92CF9A1A21CA6523001C86F1 /* InAppCallCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CF9A1921CA6523001C86F1 /* InAppCallCreator.m */; };
+		AF9FC94E5DE735D7E5FB2800 /* NXMConversation+Equatable.m in Sources */ = {isa = PBXBuildFile; fileRef = AF9FCC83848DFFA0D0A0C2CB /* NXMConversation+Equatable.m */; };
 		D32D425521CC05E00039A133 /* iOSFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D32D425421CC05E00039A133 /* iOSFramework.framework */; };
 		D32D425821CC06760039A133 /* iOSFramework.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = D32D425421CC05E00039A133 /* iOSFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D32D425D21CC06BD0039A133 /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = D32D425B21CC06B70039A133 /* OCMock.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -458,6 +459,8 @@
 		92CF9A3121CBCD66001C86F1 /* CallsDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CallsDefine.h; sourceTree = "<group>"; };
 		92CF9A3221CFBE28001C86F1 /* NTALoginHandlerDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NTALoginHandlerDefine.h; sourceTree = "<group>"; };
 		92D7FBCC21CFF8F3002A2993 /* NexmoTestApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NexmoTestApp.entitlements; sourceTree = "<group>"; };
+		AF9FCC05B1A0616AD5F416BE /* NXMConversation+Equatable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NXMConversation+Equatable.h"; sourceTree = "<group>"; };
+		AF9FCC83848DFFA0D0A0C2CB /* NXMConversation+Equatable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NXMConversation+Equatable.m"; sourceTree = "<group>"; };
 		D32D425421CC05E00039A133 /* iOSFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iOSFramework.framework; path = Frameworks/MiniRTC/iOSFramework.framework; sourceTree = "<group>"; };
 		D32D425B21CC06B70039A133 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = "Frameworks/OCMock/iOS framework/OCMock.framework"; sourceTree = "<group>"; };
 		D32D426421CC173D0039A133 /* iOS framework */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "iOS framework"; path = "Frameworks/OCMock/iOS framework"; sourceTree = "<group>"; };
@@ -1468,6 +1471,8 @@
 				9214F60F21AEF8450021CD05 /* TestingUtils */,
 				F923DD9621985BF600D29065 /* StitchClientTests.m */,
 				F923DD9821985BF600D29065 /* Info.plist */,
+				AF9FCC83848DFFA0D0A0C2CB /* NXMConversation+Equatable.m */,
+				AF9FCC05B1A0616AD5F416BE /* NXMConversation+Equatable.h */,
 			);
 			path = NexmoClientTests;
 			sourceTree = "<group>";
@@ -2062,6 +2067,7 @@
 				F9024EEC21CAB54600D58AD0 /* StitchCoreTests.m in Sources */,
 				F923DD9721985BF600D29065 /* StitchClientTests.m in Sources */,
 				9214F61921AFCF1A0021CD05 /* NXMTestingUtils+ConversationDetails.m in Sources */,
+				AF9FC94E5DE735D7E5FB2800 /* NXMConversation+Equatable.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

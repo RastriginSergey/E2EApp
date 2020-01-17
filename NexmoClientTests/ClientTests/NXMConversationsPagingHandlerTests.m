@@ -18,8 +18,7 @@
               getConversationWithUuid:(GetConversationWithUuidBlock)getConversationWithUuid;
 
 - (void)getConversationsFromIds:(nonnull NSArray<NSString *> *)conversationIds
-                      onSuccess:(void (^ _Nonnull)(NSArray<NXMConversation *> * _Nonnull))onSuccess
-                        onError:(void (^ _Nonnull)(NSError * _Nullable))onError;
+              completionHandler:(void (^ _Nonnull)(NSArray<NXMConversation *> *_Nonnull))completionHandler;
 
 - (void)getConversationsPageFromConversationIdsPage:(NXMConversationIdsPage *)page
                                   completionHandler:(void (^)(NSError * _Nullable, NXMConversationsPage * _Nullable))completionHandler;
@@ -258,27 +257,29 @@
 }
 
 
-#pragma mark - getConversationsFromIds:onSuccess:onError:
+#pragma mark - getConversationsFromIds:completionHandler:
 
 - (void)testGetConversationsFromIds_happyPath {
     NSArray<NSString *> *conversationIds = @[@"CON-01", @"CON-02", @"CON-03"];
+    NXMConversation *conversationA = [[NXMConversation alloc] initWithConversationDetails:[NXMTestingUtils conversationDetailsWithConversationId:conversationIds[0]] andStitchContext:self.stitchContextMock];
+    NXMConversation *conversationB = [[NXMConversation alloc] initWithConversationDetails:[NXMTestingUtils conversationDetailsWithConversationId:conversationIds[1]] andStitchContext:self.stitchContextMock];
+    NXMConversation *conversationC = [[NXMConversation alloc] initWithConversationDetails:[NXMTestingUtils conversationDetailsWithConversationId:conversationIds[2]] andStitchContext:self.stitchContextMock];
+    NSDictionary<NSString *, NXMConversation *> *conversationById = @{conversationIds[0]: conversationA, conversationIds[1]: conversationB, conversationIds[2]: conversationC};
     GetConversationWithUuidBlock getConversationWithUuid = ^(NSString * _Nonnull uuid, void (^ _Nullable completionHandler)(NSError * _Nullable, NXMConversation * _Nullable)) {
-        NXMConversationDetails *details = [NXMTestingUtils conversationDetailsWithConversationId:uuid];
-        NXMConversation *conversation = [[NXMConversation alloc] initWithConversationDetails:details andStitchContext:self.stitchContextMock];
-        completionHandler(nil, conversation);
+        completionHandler(nil, conversationById[uuid]);
     };
     NXMConversationsPagingHandler *conversationsPagingHandler = [[NXMConversationsPagingHandler alloc] initWithStitchContext:self.stitchContextMock
                                                                                                      getConversationWithUuid:getConversationWithUuid];
     XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
     [conversationsPagingHandler getConversationsFromIds:conversationIds
-                                              onSuccess:^(NSArray<NXMConversation *> * _Nonnull conversations) {
-                                                  XCTAssertEqual(conversations.count, 3);
-                                                  XCTAssertTrue([conversations[0].uuid isEqualToString:conversationIds[0]]);
-                                                  XCTAssertTrue([conversations[1].uuid isEqualToString:conversationIds[1]]);
-                                                  XCTAssertTrue([conversations[2].uuid isEqualToString:conversationIds[2]]);
-                                                  [expectation fulfill];
-                                              }
-                                                onError:^(NSError * _Nullable error) { }];
+                                      completionHandler:^(NSArray<NXMConversation *> *_Nonnull conversations) {
+                                          XCTAssertEqual(conversations.count, 3);
+                                          XCTAssertTrue([conversationA isEqual:conversations[0]]);
+                                          XCTAssertTrue([conversationB isEqual:conversations[1]]);
+                                          XCTAssertTrue([conversationC isEqual:conversations[2]]);
+
+                                          [expectation fulfill];
+                                      }];
     [self waitForExpectationsWithTimeout:1 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error);
     }];
@@ -286,49 +287,50 @@
 
 - (void)testGetConversationsFromIds_whenConversationFromIdFails {
     NSArray<NSString *> *conversationIds = @[@"CON-01", @"CON-02", @"CON-03"];
-    GetConversationWithUuidBlock getConversationWithUuid = ^(NSString * _Nonnull uuid, void (^ _Nullable completionHandler)(NSError * _Nullable, NXMConversation * _Nullable)) {
+    NXMConversation *conversationA = [[NXMConversation alloc] initWithConversationDetails:[NXMTestingUtils conversationDetailsWithConversationId:conversationIds[0]] andStitchContext:self.stitchContextMock];
+    NXMConversation *conversationB = [[NXMConversation alloc] initWithConversationDetails:[NXMTestingUtils conversationDetailsWithConversationId:conversationIds[2]] andStitchContext:self.stitchContextMock];
+
+    NSDictionary<NSString *, NXMConversation *> *conversationById = @{conversationIds[0]: conversationA, conversationIds[2]: conversationB};
+
+    GetConversationWithUuidBlock getConversationWithUuid = ^(NSString *_Nonnull uuid, void (^_Nullable completionHandler)(NSError *_Nullable, NXMConversation *_Nullable)) {
         if ([uuid isEqualToString:@"CON-02"]) {
             completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeNone andUserInfo:nil], nil);
             return;
         }
 
-        NXMConversationDetails *details = [NXMTestingUtils conversationDetailsWithConversationId:uuid];
-        NXMConversation *conversation = [[NXMConversation alloc] initWithConversationDetails:details andStitchContext:self.stitchContextMock];
-        completionHandler(nil, conversation);
+        completionHandler(nil, conversationById[uuid]);
     };
     NXMConversationsPagingHandler *conversationsPagingHandler = [[NXMConversationsPagingHandler alloc] initWithStitchContext:self.stitchContextMock
                                                                                                      getConversationWithUuid:getConversationWithUuid];
     XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
     [conversationsPagingHandler getConversationsFromIds:conversationIds
-                                              onSuccess:^(NSArray<NXMConversation *> * _Nonnull conversations) {
-                                                  XCTAssertEqual(conversations.count, 2);
-                                                  XCTAssertTrue([conversations[0].uuid isEqualToString:conversationIds[0]]);
-                                                  XCTAssertTrue([conversations[1].uuid isEqualToString:conversationIds[2]]);
-                                                  [expectation fulfill];
-                                              }
-                                                onError:^(NSError * _Nullable error) { }];
-    [self waitForExpectationsWithTimeout:1 handler:^(NSError * _Nullable error) {
+                                      completionHandler:^(NSArray<NXMConversation *> *_Nonnull conversations) {
+                                          XCTAssertEqual(conversations.count, 2);
+                                          XCTAssertTrue([conversationA isEqual:conversations[0]]);
+                                          XCTAssertTrue([conversationB isEqual:conversations[1]]);
+                                          [expectation fulfill];
+                                      }];
+    [self waitForExpectationsWithTimeout:1 handler:^(NSError *_Nullable error) {
         XCTAssertNil(error);
     }];
 }
 
-- (void)testGetConversationsFromIds_notOnMainThread {
+-(void)testGetConversationsFromIds_whenAllConversationsFromIdFail {
     NSArray<NSString *> *conversationIds = @[@"CON-01", @"CON-02", @"CON-03"];
-    GetConversationWithUuidBlock getConversationWithUuid = ^(NSString * _Nonnull uuid, void (^ _Nullable completionHandler)(NSError * _Nullable, NXMConversation * _Nullable)) {
-        NXMConversationDetails *details = [NXMTestingUtils conversationDetailsWithConversationId:uuid];
-        NXMConversation *conversation = [[NXMConversation alloc] initWithConversationDetails:details andStitchContext:self.stitchContextMock];
-        completionHandler(nil, conversation);
+
+    GetConversationWithUuidBlock getConversationWithUuid = ^(NSString *_Nonnull uuid, void (^_Nullable completionHandler)(NSError *_Nullable, NXMConversation *_Nullable)) {
+        completionHandler([NXMErrors nxmErrorWithErrorCode:NXMErrorCodeNone andUserInfo:nil], nil);
     };
+
     NXMConversationsPagingHandler *conversationsPagingHandler = [[NXMConversationsPagingHandler alloc] initWithStitchContext:self.stitchContextMock
                                                                                                      getConversationWithUuid:getConversationWithUuid];
     XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
     [conversationsPagingHandler getConversationsFromIds:conversationIds
-                                              onSuccess:^(NSArray<NXMConversation *> * _Nonnull conversations) {
-                                                  XCTAssertFalse(NSThread.isMainThread);
-                                                  [expectation fulfill];
-                                              }
-                                                onError:^(NSError * _Nullable error) { }];
-    [self waitForExpectationsWithTimeout:1 handler:^(NSError * _Nullable error) {
+                                      completionHandler:^(NSArray<NXMConversation *> *_Nonnull conversations) {
+                                          XCTAssertEqual(conversations.count, 0);
+                                          [expectation fulfill];
+                                      }];
+    [self waitForExpectationsWithTimeout:1 handler:^(NSError *_Nullable error) {
         XCTAssertNil(error);
     }];
 }
