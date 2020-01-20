@@ -1066,6 +1066,8 @@ completionBlock:(void (^_Nullable)(NSError * _Nullable error, NXMUser * _Nullabl
             [events addObject:[[NXMLegStatusEvent alloc] initWithConversationId:conversationId andData:eventJson]];
             continue;
         }
+
+        [events addObject: [self parseUnknownEvent:eventJson conversationId:conversationId]];
     }
     return events;
 }
@@ -1323,6 +1325,14 @@ completionBlock:(void (^_Nullable)(NSError * _Nullable error, NXMUser * _Nullabl
     
     imageEvent.state = [self parseStateFromDictionary:json[@"state"]];
     return imageEvent;
+}
+
+- (nonnull NXMEvent *)parseUnknownEvent:(nonnull NSDictionary *)json conversationId:(nonnull NSString *)conversationId {
+    return [[NXMEvent alloc] initWithConversationId:conversationId
+                                         sequenceId:[[self getSequenceId:json] integerValue]
+                                       fromMemberId:[self getFromMemberId:json]
+                                       creationDate:[self getCreationDate:json]
+                                               type:NXMEventTypeUnknown];
 }
 
 - (NSMutableDictionary<NSNumber *, NSMutableDictionary<NSString *, NSDate *> *> *)parseStateFromDictionary:(NSDictionary *)dictionary {

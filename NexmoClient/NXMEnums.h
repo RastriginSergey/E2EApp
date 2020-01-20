@@ -52,7 +52,8 @@ typedef NS_ENUM(NSInteger, NXMEventType) {
     NXMEventTypeMember,
     NXMEventTypeSip,
     NXMEventTypeDTMF,
-    NXMEventTypeLegStatus
+    NXMEventTypeLegStatus,
+    NXMEventTypeUnknown
 };
 
 typedef NS_ENUM(NSInteger, NXMSipStatus){

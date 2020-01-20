@@ -49,6 +49,9 @@
         case NXMEventTypeLegStatus:
             result = @"Leg status";
             break;
+        case NXMEventTypeUnknown:
+            result = @"Unknown";
+            break;
     }
     return result;
 }
