@@ -92,8 +92,7 @@
 
 - (void)processClientPushWithUserInfo:(nonnull NSDictionary *)userInfo
                            completion:(void(^_Nullable)(NSError * _Nullable error))completion {
-    [self.client processNexmoPushWithUserInfo:userInfo
-                            completionHandler:completion];
+    [self.client processNexmoPushPayload:userInfo];
 }
 
 #pragma mark - post notifications

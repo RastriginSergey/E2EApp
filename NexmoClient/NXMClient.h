@@ -12,6 +12,7 @@
 #import "NXMCall.h"
 #import "NXMConversationsPage.h"
 #import "NXMClientConfig.h"
+#import "NXMPushPayload.h"
 
 /*!
  * @brief You use a <i>NXMClient</i> instance to utilise the services provided by NexmoConversation API in your app.
@@ -233,6 +234,21 @@ completionHandler:(void(^_Nullable)(NSError * _Nullable error, NXMCall * _Nullab
  }];
  */
 - (void)processNexmoPushWithUserInfo:(nonnull NSDictionary *)userInfo
-                   completionHandler:(void(^_Nullable)(NSError * _Nullable error))completionHandler;
+                   completionHandler:(void(^_Nullable)(NSError * _Nullable error))completionHandler __attribute((deprecated("Use processNexmoPushPayload instead.")));
+
+
+
+/**
+ @brief process Nexmo push event, Call this method when isNexmoPushWithUserInfo:userInfo return true
+ @param pushInfo    pushInfo
+ @code BOOL isNexmoPush = [myNXNClient isNexmoPushWithUserInfo:pushInfo];
+ if (isNexmoPush){
+ NXMPushPayload *pushPayload = [myNXNClient processNexmoPushPayload:pushInfo];
+ if (!pushPayload){
+    NSLog(@"Not a nexmo push");
+    return;
+ };
+ */
+- (nullable NXMPushPayload *)processNexmoPushPayload:(nonnull NSDictionary *)pushInfo;
 
 @end

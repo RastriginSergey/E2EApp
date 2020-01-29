@@ -15,6 +15,7 @@
 #import "NXMLoggerInternal.h"
 #import "NXMErrorsPrivate.h"
 #import "NXMEventInternal.h"
+#import "NXMPushPayloadInternal.h"
 #import "NXMMemberEventPrivate.h"
 #import "NXMConversationsPagingHandler.h"
 
@@ -420,6 +421,26 @@ static dispatch_once_t _onceToken = 0;
         NXM_LOG_ERROR("Error processing nexmo push with error:%s", [error.description UTF8String]);
         [NXMBlocksHelper runWithError:error completion:completionHandler];
     }];
+}
+
+- (nullable NXMPushPayload *)processNexmoPushPayload:(nonnull NSDictionary *)pushInfo {
+    NXM_LOG_DEBUG([[pushInfo description] UTF8String]);
+    
+    NSDictionary *nexmoPayload = pushInfo[@"nexmo"];
+    if (!nexmoPayload) {
+        [self.delegate client:self didReceiveError:[NXMErrors nxmErrorWithErrorCode:NXMErrorCodePushNotANexmoPush]];
+        return nil;
+    }
+    
+    [self processNexmoPushWithUserInfo:pushInfo completionHandler:^(NSError * _Nullable error) {
+        if (error) {
+            NXM_LOG_ERROR(error.description.UTF8String);
+        }
+    }];
+    
+    NXMPushPayload *payload = [[NXMPushPayload alloc] initWithData:nexmoPayload];
+    
+    return payload;
 }
 
 #pragma mark - notification center

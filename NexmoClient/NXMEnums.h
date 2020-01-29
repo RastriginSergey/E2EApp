@@ -24,6 +24,13 @@ typedef NS_ENUM(NSInteger, NXMConnectionStatusReason) {
     NXMConnectionStatusReasonTerminated
 };
 
+
+typedef NS_ENUM(NSInteger, NXMPushTemplate) {
+    NXMPushTemplateDefault,
+    NXMPushTemplateCustom
+};
+
+
 typedef NS_ENUM(NSInteger, NXMMemberUpdateType) {
     NXMMemberUpdateTypeState,
     NXMMemberUpdateTypeMedia,
