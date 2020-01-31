@@ -7,6 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
+#import <NexmoClient/NexmoClient.h>
 
 @interface E2EAppUITests : XCTestCase
 
@@ -32,9 +33,11 @@
     XCUIApplication *app = [[XCUIApplication alloc] init];
     [app launch];
 
+    NXMClient *client = [NXMClient new];
     // Use recording to get started writing UI tests.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
     XCTAssertTrue(YES);
+
 }
 
 @end

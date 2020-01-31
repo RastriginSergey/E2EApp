@@ -3,18 +3,16 @@
 <plist version="1.0">
 <dict>
 	<key>SchemeUserState</key>
-	<dict />
-	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>B1FDC07B23E4449D00131681</key>
+		<key>E2EApp.xcscheme_^#shared#^_</key>
 		<dict>
-			<key>primary</key>
-			<true />
+			<key>orderHint</key>
+			<integer>0</integer>
 		</dict>
-		<key>B1FDC09623E4449E00131681</key>
+		<key>E2EAppUITests.xcscheme_^#shared#^_</key>
 		<dict>
-			<key>primary</key>
-			<true />
+			<key>orderHint</key>
+			<integer>1</integer>
 		</dict>
 	</dict>
 </dict>
