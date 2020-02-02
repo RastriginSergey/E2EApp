@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 2.1.0 - TBA
+## 2.1.0 - 2020-01-31
 
 ### Added
+
 - `NXMPushPayload` for custom push notifications.
 ```
  if (NXNClient.shared isNexmoPushWithUserInfo:pushInfo]){
@@ -51,6 +52,27 @@ ___
 ## 1.2.2 - 2019-12-12
 
 ### Fixed
+- Calling `conversation.getEvents` returned an `NXMMemberEvent` with the field `member` set to `nil`
+
+### Changed
+- `NXMConversation`'s `getEvents:` method replaced by `getEventsPage:`, `getEventsPageWithSize:order:completionHandler:`, `getEventsPageWithSize:order:eventType:completionHandler:`.
+- `NXMConversationsPage`'s `nextPage:` and `previousPage:` completion handlers are now non-null.
+
+---
+
+## 1.2.3 - 2019-12-17
+
+### Internal
+- Update user agent format: `NexmoClientSDK/[SDK_VER] [PLATFORM] ([ORIGINAL_SDK])`
+
+### Fixed
+- Calling `conversation.getEvents` returned an `NXMEvent` with the field `fromMember` set to `nil`
+- Description in errors.
+
+___
+
+## 1.2.2 - 2019-12-12
+### Fixed
 - Support for DTLS in WebRTC.
 - 'didReceiveCall' and 'didReceiveConversation' not being called twice for the same call or conversation.
 - Option to enable push notification with only one token `pushKit` or `userNotification`.
@@ -72,8 +94,7 @@ This configuration is optional and a default will be set if not specified.
 
 Note: setConfiguration should be used before accessing `NXMClient.shared`.
 
-### Fixed
-Corrected nil values for `fromMember` for `NXMConversation` events.
+Fixed nil fromMember for `NXMConversation` events.
 
 ## 1.2.0 - 2019-12-03
 
