@@ -40,4 +40,8 @@
 
 }
 
+- (void)testFails {
+    XCTAssertFalse(YES);
+}
+
 @end
