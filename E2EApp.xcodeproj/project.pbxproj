@@ -36,6 +36,7 @@
 		49A3463C0376C0FA7D27A722 /* Pods-E2EApp-E2EAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E2EApp-E2EAppUITests.debug.xcconfig"; path = "Target Support Files/Pods-E2EApp-E2EAppUITests/Pods-E2EApp-E2EAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		AEE035B05C7741F5E0382E54 /* Pods-E2EApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E2EApp.debug.xcconfig"; path = "Target Support Files/Pods-E2EApp/Pods-E2EApp.debug.xcconfig"; sourceTree = "<group>"; };
 		AF21BB1EDF95F9935A046F83 /* libPods-E2EAppUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-E2EAppUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AF9FC239B56811BCC8BAA4A7 /* appcenter-post-build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = "appcenter-post-build.sh"; path = "E2EApp/appcenter-post-build.sh"; sourceTree = "<group>"; };
 		B1FDC07C23E4449D00131681 /* E2EApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = E2EApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1FDC07F23E4449D00131681 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B1FDC08023E4449D00131681 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -105,6 +106,7 @@
 				B1FDC07D23E4449D00131681 /* Products */,
 				78ADD268CE4ED0B657586563 /* Pods */,
 				297D127ADBA06560F23CE5A6 /* Frameworks */,
+				AF9FC239B56811BCC8BAA4A7 /* appcenter-post-build.sh */,
 			);
 			sourceTree = "<group>";
 		};
