@@ -2,7 +2,12 @@
 
 echo "post build script was executed"
 
-env
+pwd
+
+ls -R ./DerivedData | awk '
+/:$/&&f{s=$0;f=0}
+/:$/&&!f{sub(/:$/,"");s=$0;f=1;next}
+NF&&f{ print s"/"$0 }'
 
 
 appcenter test run xcuitest \
