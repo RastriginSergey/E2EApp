@@ -39,8 +39,4 @@
     XCTAssertTrue(YES);
 }
 
-- (void)testFails {
-    XCTAssertFalse(YES);
-}
-
 @end
