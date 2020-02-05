@@ -22,7 +22,7 @@ appcenter test run xcuitest \
 --test-series "master" \
 --locale "en_US" \
 --token "1b2050ed79bfa481249056ef0970e19938771312" \
---build-dir $APPCENTER_OUTPUT_DIRECTORY
+--build-dir "${APPCENTER_XCODE_PROJECT}/DerivedData/Build/Products/Debug-iphoneos"
 
 echo $APPCENTER_OUTPUT_DIRECTORY
 
