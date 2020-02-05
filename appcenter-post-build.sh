@@ -6,6 +6,8 @@ cd "/Users/runner/Library/Developer/Xcode/DerivedData/E2EApp-*/Build/"
 
 BUILD_PATH=pwd
 
+ls -R $BUILD_PATH
+
 appcenter test run xcuitest \
 --app "ashley.arthur-vonage.com/IOS-SDK_TEST" \
 --devices "ashley.arthur-vonage.com/ios11" \
