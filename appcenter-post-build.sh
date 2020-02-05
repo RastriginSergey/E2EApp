@@ -14,7 +14,9 @@ echo "post build script was executed"
 #
 #abs_path="`dir_resolve \"/Users/runner/Library/Developer/Xcode/DerivedData/E2EApp-*/DerivedData/Build/Products/Debug-iphoneos\"`"
 
-env
+#env
+
+ls -R /Users/runner/runners/2.164.7/work/1/a
 
 appcenter test run xcuitest \
 --app "ashley.arthur-vonage.com/IOS-SDK_TEST" \
@@ -22,7 +24,7 @@ appcenter test run xcuitest \
 --test-series "master" \
 --locale "en_US" \
 --token "1b2050ed79bfa481249056ef0970e19938771312" \
---build-dir $APPCENTER_OUTPUT_DIRECTORY
+--build-dir "${APPCENTER_XCODE_PROJECT}/DerivedData/Build/Products/Debug-iphoneos"
 
 echo $APPCENTER_OUTPUT_DIRECTORY
 
