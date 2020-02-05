@@ -16,7 +16,7 @@ echo "post build script was executed"
 
 #env
 
-ls -R /Users/runner/runners/2.164.7/work/1/a
+ls -R $HOME
 
 appcenter test run xcuitest \
 --app "ashley.arthur-vonage.com/IOS-SDK_TEST" \
