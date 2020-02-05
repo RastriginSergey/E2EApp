@@ -2,7 +2,7 @@
 
 echo "post build script was executed"
 
-cd "/Users/runner/Library/Developer/Xcode/DerivedData/E2EApp-*/Build/"
+#cd /Users/runner/Library/Developer/Xcode/DerivedData/E2EApp-*/Build
 
 BUILD_PATH=$(pwd)
 
