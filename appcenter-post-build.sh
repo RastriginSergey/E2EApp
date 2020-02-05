@@ -21,3 +21,7 @@ appcenter test run xcuitest \
 --locale "en_US" \
 --token "1b2050ed79bfa481249056ef0970e19938771312" \
 --build-dir $APPCENTER_OUTPUT_DIRECTORY
+
+echo $APPCENTER_OUTPUT_DIRECTORY
+
+ls -lah $APPCENTER_OUTPUT_DIRECTORY
