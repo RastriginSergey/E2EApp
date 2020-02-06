@@ -9,7 +9,7 @@ xcrun xcodebuild build-for-testing \
 
 appcenter test run xcuitest \
 --app "ashley.arthur-vonage.com/IOS-SDK_TEST" \
---devices "ashley.arthur-vonage.com/ios11" \
+--devices c56c42b8 \
 --test-series "set-of-devices" \
 --locale "en_US" \
 --token "1b2050ed79bfa481249056ef0970e19938771312" \
