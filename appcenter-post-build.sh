@@ -1,8 +1,3 @@
-echo "================================="
-echo "ENVIRONEMNT VARIABLES"
-env
-echo "================================="
-
 rm -rf DerivedData
 xcrun xcodebuild build-for-testing \
   -configuration Debug \
