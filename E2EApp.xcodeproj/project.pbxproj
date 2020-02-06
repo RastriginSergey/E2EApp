@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4FA202FAACDB85DEAF23B0F4 /* libPods-E2EApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48697F7996B4525379592F6E /* libPods-E2EApp.a */; };
+		AF9FCA7EF4407738AF8A68DE /* appcenter-pre-build.sh in Resources */ = {isa = PBXBuildFile; fileRef = AF9FCE14C0FF0BF41620AF5A /* appcenter-pre-build.sh */; };
 		B1FDC08123E4449D00131681 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B1FDC08023E4449D00131681 /* AppDelegate.m */; };
 		B1FDC08423E4449D00131681 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B1FDC08323E4449D00131681 /* SceneDelegate.m */; };
 		B1FDC08723E4449D00131681 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B1FDC08623E4449D00131681 /* ViewController.m */; };
@@ -36,8 +37,8 @@
 		49A3463C0376C0FA7D27A722 /* Pods-E2EApp-E2EAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E2EApp-E2EAppUITests.debug.xcconfig"; path = "Target Support Files/Pods-E2EApp-E2EAppUITests/Pods-E2EApp-E2EAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		AEE035B05C7741F5E0382E54 /* Pods-E2EApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E2EApp.debug.xcconfig"; path = "Target Support Files/Pods-E2EApp/Pods-E2EApp.debug.xcconfig"; sourceTree = "<group>"; };
 		AF21BB1EDF95F9935A046F83 /* libPods-E2EAppUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-E2EAppUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AF9FC299E934A7C33B8DDC0B /* appcenter-pre-build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "appcenter-pre-build.sh"; sourceTree = "<group>"; };
 		AF9FC9BA5159CC4A0690A615 /* appcenter-post-build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "appcenter-post-build.sh"; sourceTree = "<group>"; };
+		AF9FCE14C0FF0BF41620AF5A /* appcenter-pre-build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "appcenter-pre-build.sh"; sourceTree = "<group>"; };
 		B1FDC07C23E4449D00131681 /* E2EApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = E2EApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1FDC07F23E4449D00131681 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B1FDC08023E4449D00131681 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -82,6 +83,7 @@
 			children = (
 				48697F7996B4525379592F6E /* libPods-E2EApp.a */,
 				AF21BB1EDF95F9935A046F83 /* libPods-E2EAppUITests.a */,
+				AF9FCE14C0FF0BF41620AF5A /* appcenter-pre-build.sh */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -108,7 +110,6 @@
 				78ADD268CE4ED0B657586563 /* Pods */,
 				297D127ADBA06560F23CE5A6 /* Frameworks */,
 				AF9FC9BA5159CC4A0690A615 /* appcenter-post-build.sh */,
-				AF9FC299E934A7C33B8DDC0B /* appcenter-pre-build.sh */,
 			);
 			sourceTree = "<group>";
 		};
@@ -235,6 +236,7 @@
 				B1FDC08F23E4449E00131681 /* LaunchScreen.storyboard in Resources */,
 				B1FDC08C23E4449E00131681 /* Assets.xcassets in Resources */,
 				B1FDC08A23E4449D00131681 /* Main.storyboard in Resources */,
+				AF9FCA7EF4407738AF8A68DE /* appcenter-pre-build.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
