@@ -13,6 +13,7 @@
 #import "InAppcallCreator.h"
 #import "ServerCallCreator.h"
 #import "CallViewController.h"
+#import "ChatViewController.h"
 
 @interface ContactViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *avatarInitialisLabel;
@@ -21,13 +22,13 @@
 @property (weak, nonatomic) IBOutlet UIButton *messageButton;
 
 @property (nonatomic) NTAUserInfo *contactUserInfo;
-//@property NXMConversation *conv;
 @end
 
 @implementation ContactViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view.
 }
 
@@ -63,19 +64,6 @@
     //create an NTA Call Object and initialize with inApp parameters it so that when we move to the next screen the next screen just calls start.
     ServerCallCreator *callCreator = [[ServerCallCreator alloc] initWithUsers:@[self.contactUserInfo]];
     [self showInCallViewControllerWithCallCreator:callCreator];
-    
-
-    // comment out to test conversation
-//    [CommunicationsManager.sharedInstance.client getConversationWithUuid:@"CON-1922470e-6182-442a-91e7-f0519a38c01a" completion:^(NSError * _Nullable error, NXMConversation * _Nullable conversation) {
-//        self.conv = conversation;
-//
-//        NXMConversationEventsController *cntrl = [self.conv eventsControllerWithTypes:[[NSSet alloc] initWithArray:@[@(NXMEventTypeText), @(NXMEventTypeCustom)]] andDelegate:self];
-//
-//        [cntrl loadEarlierEventsWithMaxAmount:100 completion:^(NSError * _Nullable error) {
-//            //
-//        }];
-//    }];
-    
 }
 
 - (void)showInCallViewControllerWithCallCreator:(id<CallCreator>)callCreator {
@@ -84,9 +72,70 @@
     [self presentViewController:inCallVC animated:YES completion:nil];
 }
 
+
 #pragma mark - messages
 
 - (IBAction)messageButtonPrerssed:(UIButton *)sender {
+    // TODO activity indicatore
+    NSString *convUuid = [self conversationIdForUser];
     
+    if (convUuid.length > 0) {
+        [CommunicationsManager.sharedInstance.client getConversationWithUuid:convUuid completionHandler:^(NSError * _Nullable error, NXMConversation * _Nullable conversation) {
+            if (error) {
+                // TODO: show error
+                return;
+            }
+            
+            [self showConversation:conversation];
+        }];
+        
+        return;
+    }
+    
+    [CommunicationsManager.sharedInstance.client createConversationWithName:[[NSUUID UUID] UUIDString]
+                                                          completionHandler:^(NSError * _Nullable error, NXMConversation * _Nullable conversation) {
+        if (error) {
+            // TODO: show error
+            return;
+        }
+                                                              
+        [conversation join:^(NSError * _Nullable error, NXMMember * _Nullable member) {
+          [conversation joinMemberWithUsername:self.contactUserInfo.displayName completion:^(NSError * _Nullable error, NXMMember * _Nullable member) {
+              [self updateConversationIdForUser:conversation.uuid];
+              [self showConversation:conversation];
+          }];
+        }];
+    }];
+
 }
+
+- (void)showConversation:(NXMConversation *)conversation {
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self showConversation:conversation];
+        });
+        
+        return;
+    }
+    
+    ChatViewController *chatVC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"Chat"];
+    [chatVC updateConversation:conversation];
+    [chatVC setHidesBottomBarWhenPushed:YES];
+    [self.navigationController pushViewController:chatVC animated:YES];
+}
+
+- (NSString *)conversationIdForUser {
+    NSString *myUser = CommunicationsManager.sharedInstance.client.user.displayName;
+    NSString *secondUser = self.contactUserInfo.displayName;
+    NSString *keyFormat = [NSString stringWithFormat:@"%@-%@", myUser > secondUser ? myUser : secondUser, myUser > secondUser ? secondUser : myUser];
+    return [[NSUserDefaults standardUserDefaults] stringForKey:keyFormat];
+}
+
+- (void)updateConversationIdForUser:(NSString *)convUUid {
+    NSString *myUser = CommunicationsManager.sharedInstance.client.user.displayName;
+    NSString *secondUser = self.contactUserInfo.displayName;
+    NSString *keyFormat = [NSString stringWithFormat:@"%@-%@", myUser > secondUser ? myUser : secondUser, myUser > secondUser ? secondUser : myUser];
+    [[NSUserDefaults standardUserDefaults] setObject:convUUid forKey:keyFormat];
+}
+
 @end

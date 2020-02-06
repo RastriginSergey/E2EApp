@@ -123,7 +123,6 @@ static NXMPageOrder EVENTS_PAGE_DEFAULT_ORDER = NXMPageOrderAsc;
             }
             break;
         case NXMEventTypeMedia:
-        case NXMEventTypeMediaAction:
             if([self.delegate respondsToSelector:@selector(conversation:didReceiveMediaEvent:)]) {
                 [self.delegate conversation:self didReceiveMediaEvent:(NXMMediaEvent *)event];
             }

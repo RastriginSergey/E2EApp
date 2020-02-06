@@ -95,7 +95,6 @@
    
     switch (event.type) {
         case NXMEventTypeMedia:
-        case NXMEventTypeMediaAction:
             [self handleMediaEvent:(NXMMediaEvent *)event];
             break;
         case NXMEventTypeMember: {
@@ -144,14 +143,9 @@
     
     if (event.type == NXMEventTypeMedia) {
         NXM_LOG_DEBUG("member before media updates %s", [member.description UTF8String]);
-
-        [member updateMedia:((NXMMediaEvent *)event).mediaSettings];
+        NXMMediaEvent * mediaEvent =(NXMMediaEvent *)event;
+        [member updateMedia:mediaEvent.isEnabled isSuspended:mediaEvent.isSuspended];
         NXM_LOG_DEBUG("member after media updates %s", [member.description UTF8String]);
-
-    } else if (event.type == NXMEventTypeMediaAction) {
-        NXMMediaSettings *settings = [[NXMMediaSettings alloc] initWithEnabled:member.media.isEnabled
-                                                                       suspend:((NXMMediaSuspendEvent *)event).isSuspended];
-        [member updateMedia:settings];
     }
     
     [self member:member changedWithType:NXMMemberUpdateTypeMedia];

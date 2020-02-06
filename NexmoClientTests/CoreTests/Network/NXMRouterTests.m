@@ -147,7 +147,7 @@
                                                                  sequenceId:firstEventId
                                                                fromMemberId:nil
                                                                creationDate:nil
-                                                                       type:NXMEventTypeMediaAction];
+                                                                       type:NXMEventTypeMedia];
     XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
 
     NXMGetEventsPageRequest *request = [[NXMGetEventsPageRequest alloc] initWithSize:pageSize
@@ -268,7 +268,7 @@
                                                                  sequenceId:firstEventId
                                                                fromMemberId:nil
                                                                creationDate:nil
-                                                                       type:NXMEventTypeMediaAction];
+                                                                       type:NXMEventTypeMedia];
     XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
 
     [router getEventsPageForURL:[NSURL URLWithString:url]
@@ -341,7 +341,7 @@
                                                                  sequenceId:firstEventId
                                                                fromMemberId:nil
                                                                creationDate:nil
-                                                                       type:NXMEventTypeMediaAction];
+                                                                       type:NXMEventTypeMedia];
     XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
 
     [router getEventsPageForURL:[NSURL URLWithString:url]
@@ -452,7 +452,7 @@
                                                                  sequenceId:firstEventId
                                                                fromMemberId:nil
                                                                creationDate:nil
-                                                                       type:NXMEventTypeMediaAction];
+                                                                       type:NXMEventTypeMedia];
     XCTestExpectation *expectation = [self expectationWithDescription:NSStringFromSelector(_cmd)];
 
     NXMGetEventsPageRequest *request = [[NXMGetEventsPageRequest alloc] initWithSize:pageSize

@@ -1,21 +1,29 @@
 //
 //  NXMImageInfo.m
-//  NexmoConversationObjC
+//  NexmoClient
 //
-//  Created by Chen Lev on 6/3/18.
 //  Copyright © 2018 Vonage. All rights reserved.
 //
 
 #import "NXMImageInfo.h"
 
+@interface NXMImageInfo()
+@property (nonatomic, readwrite, nonnull) NSString *imageUuid;
+@property (nonatomic, readwrite, nonnull) NSURL *url;
+@property (readwrite) NSInteger sizeInBytes;
+@property (readwrite) NXMImageSize size;
+
+@end
+
 @implementation NXMImageInfo
 
-- (nullable instancetype)initWithId:(nonnull NSString *)imageId size:(NSInteger)size url:(nonnull NSURL *)url type:(NXMImageSize)type {
+- (instancetype)initWithData:(NSDictionary *)data size:(NXMImageSize)size {
+    
     if (self = [super init]) {
-        self.imageUuid = imageId;
-        self.sizeInBytes = size;
-        self.url = url;
-        self.size = type;
+        self.imageUuid = data[@"id"];
+        self.sizeInBytes = [data[@"size"] integerValue];
+        self.url = [[NSURL alloc] initWithString:data[@"url"]];
+        self.size = size;
     }
     
     return self;

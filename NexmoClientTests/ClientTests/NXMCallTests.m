@@ -14,6 +14,9 @@
 #import "NXMCoreEventsPrivate.h"
 #import "NXMConversationDelegate.h"
 
+@interface NXMDTMFEvent (NXMDTMFEventTests)
+- (instancetype)initWithDigit:(NSString *)digit andDuration:(NSNumber *)duration;
+@end
 @interface NXMCall(NXMCallTests)
 - (void)hangup:(NXMCallMember *)callMember;
 @end

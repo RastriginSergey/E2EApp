@@ -25,7 +25,7 @@
 - (instancetype)initWithMemberEvent:(NXMMemberEvent *)memberEvent;
 
 - (void)updateChannelWithLeg:(NXMLeg *)leg;
-- (void)updateMedia:(NXMMediaSettings *)media;
+- (void)updateMedia:(BOOL)isEnabled isSuspended:(BOOL)isSuspended;
 - (void)updateState:(NXMMemberEvent *)memberEvent;
 - (void)updateExpired;
 

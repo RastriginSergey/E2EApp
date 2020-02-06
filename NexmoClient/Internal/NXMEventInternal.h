@@ -12,6 +12,18 @@
 
 @property (nonatomic, nonnull) NSString *fromMemberId;
 
+- (nullable instancetype)initWithData:(nonnull NSDictionary *)data
+                                 type:(NXMEventType)type;
+
+- (nullable instancetype)initWithData:(nonnull NSDictionary *)data
+                                 type:(NXMEventType)type
+                     conversationUuid:(nonnull NSString *)conversationUuid;
+
+- (nullable instancetype)initWithData:(nonnull NSDictionary *)data
+                                 type:(NXMEventType)type
+                     conversationUuid:(nonnull NSString *)conversationUuid
+                         fromMemberId:(nullable)memberId;
+
 - (nullable instancetype)initWithConversationId:(nonnull NSString *)conversationId
                                      sequenceId:(NSInteger)sequenceId
                                    fromMemberId:(nullable NSString *)fromMemberId

@@ -62,12 +62,12 @@
 - (nullable instancetype)initWithData:(nullable NSDictionary *)data
                             andLegData:(nullable NSDictionary *)legData {
     
-    return [self initWithConversationId:legData[@"convertsation_id"]
+    return [self initWithConversationId:legData[@"conversation_id"]
                             andMemberId:legData[@"member_id"]
                                andLegId:data[@"leg_id"]
                             andlegTypeE:[NXMLeg getLegTypeFromString:data[@"type"]]
                           andLegStatusE:[NXMLeg getLegStatusFromString:legData[@"status"]]
-                                andDate:@"date"];
+                                andDate:legData[@"date"]];
 }
 
 
@@ -86,7 +86,7 @@
 
 + (NXMLegType)getLegTypeFromString:(nullable NSString*)typeString {
     return [typeString isEqualToString:@"app"] ? NXMLegTypeApp :
-           [typeString isEqualToString:@"phone"] ? NXMLegTypeApp :
+           [typeString isEqualToString:@"phone"] ? NXMLegTypePhone :
            NXMLegTypeUnknown;
 }
 

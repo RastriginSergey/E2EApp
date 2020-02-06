@@ -13,7 +13,6 @@
 
 @class NXMEvent;
 @interface NXMPushParserManager : NSObject
-+(nonnull instancetype)sharedInstance;
--(BOOL)isStitchPushWithUserInfo:(nonnull NSDictionary *)userInfo;
--(nullable NXMEvent *)parseStitchPushEventWithUserInfo:(nonnull NSDictionary *)userInfo;
++ (BOOL)isNexmoPushWithUserInfo:(nonnull NSDictionary *)userInfo;
++ (nullable NXMEvent *)parseEventWithUserInfo:(nonnull NSDictionary *)userInfo;
 @end

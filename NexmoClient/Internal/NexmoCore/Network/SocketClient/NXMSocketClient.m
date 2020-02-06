@@ -11,17 +11,14 @@
 #import "NXMSocketClient.h"
 #import "NXMClientDefine.h"
 
-#import "NXMLoggerInternal.h"
+#import "NXMCoreEvents.h"
+#import "NXMEventCreator.h"
 
+#import "NXMLoggerInternal.h"
 #import "NXMErrorsPrivate.h"
-#import "NXMCoreEventsPrivate.h"
 #import "NXMUserPrivate.h"
-#import "NXMLegPrivate.h"
 
 #import "NXMUtils.h"
-#import "NXMImageInfoInternal.h"
-
-
 
 
 @interface NXMSocketClient()
@@ -530,34 +527,23 @@
 
 #pragma mark - Socket Events
 
++ (NXMEvent *)onConversationEvent:(NSString *)eventName data:(NSDictionary *)data {
+    return [NXMEventCreator createEvent:eventName data:data];
+}
+
 #pragma mark members
 - (void)onMemberJoined:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
     
-    NSDictionary *json = data[0];
-    NXMMemberEvent *memberEvent = [[NXMMemberEvent alloc] initWithConversationId:json[@"cid"]
-                                                                      sequenceId:[json[@"id"] integerValue]
-                                                                        andState:NXMMemberStateJoined
-                                                                 clientRef:json[@"client_ref"]
-                                                                         andData:json[@"body"]
-                                                                    creationDate:[NXMUtils dateFromISOString:json[@"timestamp"]]
-                                                                        memberId:json[@"from"]];
-    
-    //    memberEvent.joinDate = json[@"body"][@"timestamp"][@"joined"]; // TODO: NSDate
+    NXMMemberEvent *memberEvent = (NXMMemberEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventMemberJoined data:data[0]];
+
     [self.delegate memberJoined:memberEvent];
 }
 
 - (void)onMemberInvited:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
     
-    NSDictionary *json = data[0];
-    NXMMemberEvent *memberEvent = [[NXMMemberEvent alloc] initWithConversationId:json[@"cid"]
-                                                                      sequenceId:[json[@"id"] integerValue]
-                                                                        andState:NXMMemberStateInvited
-                                                                 clientRef:json[@"client_ref"]
-                                                                         andData:json[@"body"]
-                                                                    creationDate:[NXMUtils dateFromISOString:json[@"timestamp"]]
-                                                                        memberId:json[@"from"]];
+    NXMMemberEvent *memberEvent = (NXMMemberEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventMemberInvited data:data[0]];
     
     [self.delegate memberInvited:memberEvent];
 }
@@ -565,15 +551,7 @@
 - (void)onMemberLeft:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
     
-    NSDictionary *json = data[0];
-    NXMMemberEvent *memberEvent = [[NXMMemberEvent alloc] initWithConversationId:json[@"cid"]
-                                                                      sequenceId:[json[@"id"] integerValue]
-                                                                        andState:NXMMemberStateLeft
-                                                                clientRef:json[@"client_ref"]
-                                                                         andData:json[@"body"]
-                                                                    creationDate:[NXMUtils dateFromISOString:json[@"timestamp"]]
-                                                                        memberId:json[@"from"]];
-    
+    NXMMemberEvent *memberEvent = (NXMMemberEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventMemberLeft data:data[0]];
     [self.delegate memberRemoved:memberEvent];
 }
 
@@ -583,64 +561,21 @@
 - (void)onCustomEvent:(NSString *)event data:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
     
-    NSDictionary *json = data[0];
-    
-    NXMCustomEvent *customEvent = [[NXMCustomEvent alloc] initWithCustomType:[event substringFromIndex:[kNXMEventCustom length] + 1]
-                                                                     andData:json];
-    
+    NXMCustomEvent *customEvent = (NXMCustomEvent *)[NXMSocketClient onConversationEvent:kNXMEventCustom data:data[0]];
     [self.delegate customEvent:customEvent];
-    
 }
 
 - (void)onTextRecevied:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
     
-    NSDictionary *json = data[0];
-    
-    NXMTextEvent *textEvent = [NXMTextEvent new];
-    textEvent.text = json[@"body"][@"text"];
-    textEvent.conversationUuid = json[@"cid"];
-    textEvent.fromMemberId = json[@"from"];
-    textEvent.creationDate = [NXMUtils dateFromISOString:json[@"timestamp"]];
-    textEvent.uuid = [json[@"id"] integerValue];
-    textEvent.type = NXMEventTypeText;
-    
+    NXMTextEvent *textEvent = (NXMTextEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventText data:data[0]];
     [self.delegate textRecieved:textEvent];
-    
 }
 
 - (void)onImageRecevied:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
     
-    NSDictionary *json = data[0];
-    
-    NXMImageEvent *imageEvent = [[NXMImageEvent alloc] initWithConversationId:json[@"cid"]
-                                                                   sequenceId:[json[@"id"] integerValue]
-                                                                 fromMemberId:json[@"from"]
-                                                                 creationDate:[NXMUtils dateFromISOString:json[@"timestamp"]]
-                                                                         type:NXMEventTypeImage];
-    NSDictionary *body = json[@"body"];
-    imageEvent.imageUuid = body[@"id"];
-    NSDictionary *originalJSON = body[@"original"];
-    imageEvent.originalImage = [[NXMImageInfo alloc] initWithId:originalJSON[@"id"]
-                                                             size:[originalJSON[@"size"] integerValue]
-                                                              url:originalJSON[@"url"]
-                                                             type:NXMImageSizeOriginal];
-    
-    NSDictionary *mediumJSON = body[@"medium"];
-    imageEvent.mediumImage = [[NXMImageInfo alloc] initWithId:mediumJSON[@"id"]
-                                                           size:[mediumJSON[@"size"] integerValue]
-                                                            url:mediumJSON[@"url"]
-                                                           type:NXMImageSizeMedium];
-    
-    
-    NSDictionary *thumbnailJSON = body[@"thumbnail"];
-    imageEvent.thumbnailImage = [[NXMImageInfo alloc] initWithId:thumbnailJSON[@"id"]
-                                                              size:[thumbnailJSON[@"size"] integerValue]
-                                                               url:thumbnailJSON[@"url"]
-                                                              type:NXMImageSizeThumbnail];
-    
-    
+    NXMImageEvent *imageEvent = (NXMImageEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventImage data:data[0]];
     [self.delegate imageRecieved:imageEvent];
     
 }
@@ -648,171 +583,88 @@
 - (void)onMessageDeleted:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
     
-    NSDictionary *json = data[0];
-    
-    NXMMessageStatusEvent *messageEvent = [NXMMessageStatusEvent new];
-    messageEvent.uuid = [json[@"body"][@"event_id"] integerValue];
-    messageEvent.conversationUuid = json[@"cid"];
-    messageEvent.fromMemberId = json[@"from"];
-    messageEvent.creationDate = [NXMUtils dateFromISOString:json[@"timestamp"]];
-    messageEvent.referenceEventUuid = [json[@"id"] integerValue];
-    messageEvent.status = NXMMessageStatusTypeDeleted;
-    messageEvent.type = NXMEventTypeMessageStatus;
-    
+    NXMMessageStatusEvent *messageEvent = (NXMMessageStatusEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventMessageDelete data:data[0]];
+
     [self.delegate messageDeleted:messageEvent];
 }
 
 - (void)onTextSeen:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
     
-    NSDictionary *json = data[0];
-    NXMMessageStatusEvent *statusEvent = [NXMMessageStatusEvent new];
-    statusEvent.uuid = [json[@"body"][@"event_id"] integerValue];
-    statusEvent.conversationUuid = json[@"cid"];
-    statusEvent.fromMemberId = json[@"from"];
-    statusEvent.creationDate = [NXMUtils dateFromISOString:json[@"timestamp"]];
-    statusEvent.referenceEventUuid = [json[@"id"] integerValue];
-    statusEvent.status = NXMMessageStatusTypeSeen;
-    statusEvent.type = NXMEventTypeMessageStatus;
-    
-    [self.delegate textSeen:statusEvent];
+    NXMMessageStatusEvent *messageEvent = (NXMMessageStatusEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventTextSeen data:data[0]];
+    [self.delegate textSeen:messageEvent];
 }
 
 - (void)onTextDelivered:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
     
-    NSDictionary *json = data[0];
-    NXMMessageStatusEvent *statusEvent = [NXMMessageStatusEvent new];
-    statusEvent.uuid = [json[@"body"][@"event_id"] integerValue];
-    statusEvent.conversationUuid = json[@"cid"];
-    statusEvent.fromMemberId = json[@"from"];
-    statusEvent.creationDate = [NXMUtils dateFromISOString:json[@"timestamp"]];
-    statusEvent.referenceEventUuid = [json[@"id"] integerValue];
-    statusEvent.status = NXMMessageStatusTypeDelivered;
-    statusEvent.type = NXMEventTypeMessageStatus;
-    
-    [self.delegate textDelivered:statusEvent];
-    
+    NXMMessageStatusEvent *messageEvent = (NXMMessageStatusEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventTextDelivered data:data[0]];
+    [self.delegate textDelivered:messageEvent];
 }
 
 - (void)onImageSeen:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
     
-    NSDictionary *json = data[0];
-    NXMMessageStatusEvent *statusEvent = [NXMMessageStatusEvent new];
-    statusEvent.uuid = [json[@"body"][@"event_id"] integerValue];
-    statusEvent.conversationUuid = json[@"cid"];
-    statusEvent.fromMemberId = json[@"from"];
-    statusEvent.creationDate = [NXMUtils dateFromISOString:json[@"timestamp"]];
-    statusEvent.referenceEventUuid = [json[@"id"] integerValue];
-    statusEvent.status = NXMMessageStatusTypeSeen;
-    statusEvent.type = NXMEventTypeMessageStatus;
-    
-    [self.delegate imageSeen:statusEvent];
+    NXMMessageStatusEvent *messageEvent = (NXMMessageStatusEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventImageSeen data:data[0]];
+    [self.delegate imageSeen:messageEvent];
 }
 
 - (void)onImageDelivered:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
     
-    NSDictionary *json = data[0];
-    NXMMessageStatusEvent *statusEvent = [NXMMessageStatusEvent new];
-    statusEvent.uuid = [json[@"body"][@"event_id"] integerValue];
-    statusEvent.conversationUuid = json[@"cid"];
-    statusEvent.fromMemberId = json[@"from"];
-    statusEvent.creationDate = [NXMUtils dateFromISOString:json[@"timestamp"]];
-    statusEvent.referenceEventUuid = [json[@"id"] integerValue];
-    statusEvent.status = NXMMessageStatusTypeDelivered;
-    statusEvent.type = NXMEventTypeMessageStatus;
-    
-    [self.delegate imageDelivered:statusEvent];
+    NXMMessageStatusEvent *messageEvent = (NXMMessageStatusEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventImageDelivered data:data[0]];
+    [self.delegate imageDelivered:messageEvent];
 }
 
 #pragma mark typing
 - (void)onTextTypingOn:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
-    NSDictionary *json = data[0];
     
-    NXMTextTypingEvent *textTypingEvent = [NXMTextTypingEvent new];
-    textTypingEvent.conversationUuid = json[@"cid"];
-    textTypingEvent.fromMemberId = json[@"from"];
-    textTypingEvent.creationDate = [NXMUtils dateFromISOString:json[@"timestamp"]];
-    textTypingEvent.uuid = [json[@"id"] integerValue];
-    textTypingEvent.status = NXMTextTypingEventStatusOn;
-    textTypingEvent.type = NXMEventTypeTextTyping;
-    
+    NXMTextTypingEvent *textTypingEvent = (NXMTextTypingEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventTypingOn data:data[0]];
     [self.delegate textTypingOn:textTypingEvent];
 }
 
 - (void)onTextTypingOff:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
-    NSDictionary *json = data[0];
     
-    NXMTextTypingEvent *textTypingEvent = [NXMTextTypingEvent new];
-    textTypingEvent.conversationUuid = json[@"cid"];
-    textTypingEvent.fromMemberId = json[@"from"];
-    textTypingEvent.creationDate = [NXMUtils dateFromISOString:json[@"timestamp"]];
-    textTypingEvent.uuid = [json[@"id"] integerValue];
-    textTypingEvent.status = NXMTextTypingEventStatusOff;
-    textTypingEvent.type = NXMEventTypeTextTyping;
-    
+    NXMTextTypingEvent *textTypingEvent = (NXMTextTypingEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventTypingOff data:data[0]];
     [self.delegate textTypingOff:textTypingEvent];
 }
 #pragma mark media sip
 
 - (void)onSipRinging:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
-    NSDictionary *json = data[0];
-    NXMSipEvent * sipEvent = [self fillSipEventFromJson:json];
-    sipEvent.status = NXMSipEventRinging;
     
+    NXMSipEvent *sipEvent = (NXMSipEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventSipRinging data:data[0]];
     [self.delegate sipRinging:sipEvent];
 }
 - (void)onSipAnswered:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
-    NSDictionary *json = data[0];
-    NXMSipEvent * sipEvent = [self fillSipEventFromJson:json];
-    sipEvent.status = NXMSipEventAnswered;
     
+    NXMSipEvent *sipEvent = (NXMSipEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventSipAnswered data:data[0]];
     [self.delegate sipAnswered:sipEvent];
 }
 - (void)onSipHangup:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
-    NSDictionary *json = data[0];
-    NXMSipEvent * sipEvent = [self fillSipEventFromJson:json];
-    sipEvent.status = NXMSipEventHangup;
     
+    NXMSipEvent *sipEvent = (NXMSipEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventSipHangup data:data[0]];
     [self.delegate sipHangup:sipEvent];
 }
+
 - (void)onSipStatus:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
-    NSDictionary *json = data[0];
-    NXMSipEvent * sipEvent = [self fillSipEventFromJson:json];
-    sipEvent.status = NXMSipEventStatus;
     
+    NXMSipEvent *sipEvent = (NXMSipEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventSipStatus data:data[0]];
     [self.delegate sipStatus:sipEvent];
 }
 
 - (void)onLegStatus:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
-    NSDictionary *json = data[0];
     
-    NXMLegStatusEvent * legStatusEvent= [[NXMLegStatusEvent alloc]
-                                         initWithConversationId:json[@"cid"]
-                                         andData:json];
-    
+    NXMLegStatusEvent * legStatusEvent = (NXMLegStatusEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventLegStatus data:data[0]];
     [self.delegate legStatus:legStatusEvent];
 }
 
-- (NXMSipEvent*) fillSipEventFromJson:(NSDictionary*) json{
-    NXMSipEvent * sipEvent= [NXMSipEvent new];
-    sipEvent.fromMemberId = json[@"from"];
-    sipEvent.uuid = [json[@"id"] integerValue];
-    sipEvent.conversationUuid = json[@"cid"];
-    sipEvent.phoneNumber = json[@"body"][@"channel"][@"to"][@"number"];
-    sipEvent.applicationId = json[@"application_id"];
-    sipEvent.type = NXMEventTypeSip;
-    return sipEvent;
-}
 #pragma mark media rtc
 
 - (void)onRTCAnswer:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
@@ -849,69 +701,29 @@
 
 - (void)onRTCMemberMedia:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
-    NSDictionary *json = data[0];
     
-    NXMMediaEvent *mediaEvent = [NXMMediaEvent new];
-    mediaEvent.conversationUuid = json[@"cid"];
-    mediaEvent.fromMemberId = json[@"from"];
-    mediaEvent.creationDate = [NXMUtils dateFromISOString:json[@"timestamp"]];
-    mediaEvent.uuid = [json[@"id"] integerValue];
-    mediaEvent.mediaSettings = [NXMMediaSettings new];
-    mediaEvent.mediaSettings.isEnabled = [json[@"body"][@"media"][@"audio_settings"][@"enabled"] boolValue];
-    mediaEvent.mediaSettings.isSuspended = [json[@"body"][@"media"][@"audio_settings"][@"muted"] boolValue];
-    mediaEvent.type = NXMEventTypeMedia;
-    
+    NXMMediaEvent * mediaEvent = (NXMMediaEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventMemebrMedia data:data[0]];
     [self.delegate mediaEvent:mediaEvent];
 }
 
 - (void)onRTCAudioMuteOn:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
-    NSDictionary *json = data[0];
     
-    NXMMediaSuspendEvent *mediaEvent = [NXMMediaSuspendEvent new];
-    mediaEvent.toMemberUuid = json[@"to"];
-    mediaEvent.conversationUuid = json[@"cid"];
-    mediaEvent.fromMemberId = json[@"from"];
-    mediaEvent.creationDate = [NXMUtils dateFromISOString:json[@"timestamp"]];
-    mediaEvent.uuid = [json[@"id"] integerValue];
-    mediaEvent.type = NXMEventTypeMediaAction;
-    mediaEvent.actionType = NXMMediaActionTypeSuspend;
-    mediaEvent.mediaType = NXMMediaTypeAudio;
-    mediaEvent.isSuspended = true;
-    
-    [self.delegate mediaActionEvent:mediaEvent];
+    NXMMediaEvent* event = (NXMMediaEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventAudioMuteOn data:data[0]];
+    [self.delegate mediaEvent:event];
 }
 
 - (void)onRTCAudioMuteOff:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
-    NSDictionary *json = data[0];
     
-    NXMMediaSuspendEvent *mediaEvent = [NXMMediaSuspendEvent new];
-    mediaEvent.toMemberUuid = json[@"to"];
-    mediaEvent.conversationUuid = json[@"cid"];
-    mediaEvent.fromMemberId = json[@"from"];
-    mediaEvent.creationDate = [NXMUtils dateFromISOString:json[@"timestamp"]];
-    mediaEvent.uuid = [json[@"id"] integerValue];
-    mediaEvent.type = NXMEventTypeMediaAction;
-    mediaEvent.actionType = NXMMediaActionTypeSuspend;
-    mediaEvent.mediaType = NXMMediaTypeAudio;
-    mediaEvent.isSuspended = false;
-    
-    [self.delegate mediaActionEvent:mediaEvent];
+    NXMMediaEvent* event = (NXMMediaEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventAudioMuteOff data:data[0]];
+    [self.delegate mediaEvent:event];
 }
 
 - (void)onAudioDTMF:(NSArray *)data emitter:(VPSocketAckEmitter *)emitter {
     NXM_LOG_DEBUG([data.description UTF8String]);
-    NSDictionary *json = data[0];
     
-    NXMDTMFEvent *event = [[NXMDTMFEvent alloc] initWithDigit:json[@"body"][@"digit"]
-                                                   andDuration:[NSNumber numberWithInteger:[json[@"body"][@"duration"] integerValue]]];
-    event.conversationUuid = json[@"cid"];
-    event.fromMemberId = json[@"from"];
-    event.creationDate = [NXMUtils dateFromISOString:json[@"timestamp"]];
-    event.uuid = [json[@"id"] integerValue];
-    event.type = NXMEventTypeDTMF;
-    
+    NXMDTMFEvent *event = (NXMDTMFEvent *)[NXMSocketClient onConversationEvent:kNXMSocketEventAudioDtmf data:data[0]];
     [self.delegate DTMFEvent:event];
 }
 

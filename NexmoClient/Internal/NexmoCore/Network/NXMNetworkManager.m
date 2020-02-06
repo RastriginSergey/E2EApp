@@ -361,10 +361,6 @@
     [self.delegate mediaEvent:mediaEvent];
 }
 
-- (void)mediaActionEvent:(nonnull NXMMediaActionEvent *)mediaActionEvent{
-    [self.delegate mediaActionEvent:mediaActionEvent];
-}
-
 - (void)rtcAnswerEvent:(nonnull NXMRtcAnswerEvent *)rtcEvent {
     [self.delegate rtcAnswerEvent:rtcEvent];
 }

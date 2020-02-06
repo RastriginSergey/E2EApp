@@ -7,54 +7,30 @@
 //
 
 #import "NXMPushParserManager.h"
-#import "NXMPushParsers.h"
+#import "NXMEventCreator.h"
+
 
 static const NSString *stitchPushIdentifier = @"nexmo";
-@interface NXMPushParserManager ()
-@property (nonatomic, nonnull) NSMutableDictionary<NSString *, id<NXMPushParsing>> *parsers;
--(nullable NSDictionary *)stitchPushInfoWithUserInfo:(nonnull NSDictionary *)userInfo;
-@end
 
 @implementation NXMPushParserManager
 
-+(nonnull instancetype)sharedInstance {
-    static NXMPushParserManager *sharedParser = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedParser = [[NXMPushParserManager alloc] init];
-    });
-    return sharedParser;
-}
-
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        [self initParsers];
-    }
-    return self;
-}
-
--(void)initParsers {
-    self.parsers = [NSMutableDictionary new];
-    self.parsers[[NXMPushParserTextEvent eventTypeIdentifier]] = [[NXMPushParserTextEvent alloc] init];
-    self.parsers[[NXMPushParserImageEvent eventTypeIdentifier]] = [[NXMPushParserImageEvent alloc] init];
-    self.parsers[[NXMPushParserInviteEvent eventTypeIdentifier]] = [[NXMPushParserInviteEvent alloc] init];
-}
-
--(BOOL)isStitchPushWithUserInfo:(nonnull NSDictionary *)userInfo {
++ (BOOL)isNexmoPushWithUserInfo:(nonnull NSDictionary *)userInfo {
     return userInfo[stitchPushIdentifier] ? true : false;
 }
 
--(nullable NSDictionary *)stitchPushInfoWithUserInfo:(nonnull NSDictionary *)userInfo {
++ (nullable NSDictionary *)nexmoPushInfoWithUserInfo:(nonnull NSDictionary *)userInfo {
     return userInfo[stitchPushIdentifier];
 }
 
--(nullable NXMEvent *)parseStitchPushEventWithUserInfo:(nonnull NSDictionary *)userInfo {
-    if(![self isStitchPushWithUserInfo:userInfo]) {
++ (nullable NXMEvent *)parseEventWithUserInfo:(nonnull NSDictionary *)userInfo {
+    if(![self isNexmoPushWithUserInfo:userInfo]) {
         return nil;
     }
-    NSDictionary *pushPayload = [self stitchPushInfoWithUserInfo:userInfo];
-    return [self.parsers[pushPayload[@"event_type"]] parseStitchPushEventWithStitchPushInfo:pushPayload];
+
+    NSDictionary *pushPayload = [self nexmoPushInfoWithUserInfo:userInfo];
+    return [NXMEventCreator createEvent:pushPayload[@"event_type"]
+                                   data:pushPayload
+                       conversationUuid:pushPayload[@"conversation_id"]];
+
 }
 @end

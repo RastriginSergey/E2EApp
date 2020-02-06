@@ -99,8 +99,8 @@
 
 }
 
-- (void)updateMedia:(NXMMediaSettings *)media {
-    [self.media updateWithEnabled:media.isEnabled suspend:media.isSuspended];
+- (void)updateMedia:(BOOL)isEnabled isSuspended:(BOOL)isSuspended {
+    [self.media updateWithEnabled:isEnabled suspend:isSuspended];
 }
 
 - (void)updateState:(NXMMemberEvent *)memberEvent {

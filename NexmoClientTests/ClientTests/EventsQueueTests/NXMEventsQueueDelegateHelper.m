@@ -64,4 +64,9 @@
         [self.finishHandleExpectation fulfill];
     }
 }
+
+- (void)conversationExpired {
+    
+}
+
 @end

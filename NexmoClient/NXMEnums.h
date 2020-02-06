@@ -43,10 +43,6 @@ typedef NS_ENUM(NSInteger, NXMMediaType) {
     NXMMediaTypeVideo = (1 << 1)
 };
 
-typedef NS_ENUM(NSInteger, NXMMediaActionType) {
-    NXMMediaActionTypeSuspend
-};
-
 typedef NS_ENUM(NSInteger, NXMEventType) {
     NXMEventTypeGeneral,
     NXMEventTypeCustom,
@@ -55,7 +51,6 @@ typedef NS_ENUM(NSInteger, NXMEventType) {
     NXMEventTypeMessageStatus,
     NXMEventTypeTextTyping,
     NXMEventTypeMedia,
-    NXMEventTypeMediaAction,
     NXMEventTypeMember,
     NXMEventTypeSip,
     NXMEventTypeDTMF,

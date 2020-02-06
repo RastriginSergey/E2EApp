@@ -1,8 +1,7 @@
 //
-//  NXMSocketClientDefine.h
-//  NexmoConversationObjC
+//  NXMClientDefine.h
+//  NexmoClient
 //
-//  Created by Chen Lev on 2/22/18.
 //  Copyright © 2018 Vonage. All rights reserved.
 //
 

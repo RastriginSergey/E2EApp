@@ -7,14 +7,43 @@
 //
 
 #import "NXMEventInternal.h"
+#import "NXMUtils.h"
 
 @interface NXMEvent()
 @property (nonatomic, readwrite, nullable) NXMMember *fromMember;
 @property (nonatomic, readwrite, nonnull) NSString *fromMemberId;
+@property (nonatomic, readwrite) NXMEventType type;
+@property (nonatomic, readwrite) NSInteger uuid;
 
 @end
 
 @implementation NXMEvent
+
+- (nullable instancetype)initWithData:(nonnull NSDictionary *)data type:(NXMEventType)type {
+    return [self initWithData:data
+                         type:type
+             conversationUuid:data[@"cid"]];
+}
+
+- (nullable instancetype)initWithData:(nonnull NSDictionary *)data
+                                 type:(NXMEventType)type
+                     conversationUuid:(NSString *)conversationUuid {
+    return [self initWithData:data
+                         type:type
+             conversationUuid:conversationUuid
+                 fromMemberId:data[@"from"]];
+}
+
+- (nullable instancetype)initWithData:(nonnull NSDictionary *)data
+                                 type:(NXMEventType)type
+                     conversationUuid:(NSString *)conversationUuid
+                         fromMemberId:(nullable)memberId {
+    return [self initWithConversationId:conversationUuid
+                             sequenceId:[data[@"id"] integerValue]
+                           fromMemberId:memberId
+                           creationDate:[NXMUtils dateFromISOString:data[@"timestamp"]]
+                                   type:type];
+}
 
 - (nullable instancetype)initWithConversationId:(nonnull NSString *)conversationId
                                            type:(NXMEventType)type

@@ -45,46 +45,45 @@
                              fromMemberId:(NSString *)fromMemberId
                                     media:(BOOL)media {
     
-    NSDictionary *data = @{
-                        @"user": @{
-                            @"id": userId,
-                            @"user_id": userId,
-                            @"name": userId
-                        },
-                        @"channel": @{
-                            @"type": @"app",
-                            @"legs": @[],
-                            @"leg_settings": @{}
-                        },
-                        @"timestamp": @{
-                            state: @"2019-06-12T15:36:49.227Z"
-                        },
-                        @"initiator": @{
-                            state: @{
-                                @"isSystem": @(false),
-                                @"user_id": fromMemberId,
-                                @"member_id": fromMemberId
-                            }
-                        },
-                        @"media": @{
-                            @"audio_settings": @{
-                                @"enabled": @(media),
-                                @"earmuffed": @(false),
-                                @"muted": @(false)
-                            },
-                            @"audio": @(media)
-                        },
-                    };
-        
-    NXMMemberEvent *event = [[NXMMemberEvent alloc] initWithConversationId:@"1"
-                                                                sequenceId:1
-                                                                  andState:[state isEqualToString:@"invited"] ? NXMMemberStateInvited :
-                             [state isEqualToString:@"joined"] ? NXMMemberStateJoined :
-                             NXMMemberStateLeft
-                                                           clientRef:clientRef
-                                                                   andData:data
-                                                              creationDate:nil
-                                                                  memberId:memberId];
+    NSDictionary *data = @{         @"id": convId,
+                                    @"type": [NSString stringWithFormat:@"member:%@", state],
+                                    @"from": memberId,
+                                    @"body": @{
+                                        @"user": @{
+                                                   @"id": userId,
+                                                   @"user_id": userId,
+                                                   @"name": userId
+                                                   },
+                                        @"channel": @{
+                                                      @"type": @"app",
+                                                      @"legs": @[],
+                                                      @"leg_settings": @{}
+                                                      },
+                                        @"timestamp": @{
+                                                        state: @"2019-06-12T15:36:49.227Z"
+                                                        },
+                                        @"initiator": @{
+                                                        state: @{
+                                                                @"isSystem": @(false),
+                                                                @"user_id": fromMemberId,
+                                                                @"member_id": fromMemberId
+                                                                }
+                                                        },
+                                        @"media": @{
+                                                    @"audio_settings": @{
+                                                            @"enabled": @(media),
+                                                            @"earmuffed": @(false),
+                                                            @"muted": @(false)
+                                                            },
+                                                    @"audio": @(media)
+                                                    },
+                                        @"client_ref": clientRef.length > 0 ? clientRef : @"",
+                                    }, @"timestamp": @"2020-01-27T15:07:24.615Z" };
+    
+    NXMMemberEvent *event = [[NXMMemberEvent alloc] initWithData:data
+                                                           state:[state isEqualToString:@"invited"] ? NXMMemberStateInvited :
+                             [state isEqualToString:@"joined"] ? NXMMemberStateJoined : NXMMemberStateLeft
+                                                conversationUuid:convId];
     
     return event;
     

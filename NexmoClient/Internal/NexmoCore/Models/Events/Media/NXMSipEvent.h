@@ -8,7 +8,7 @@
 #import "NXMEvent.h"
 
 @interface NXMSipEvent : NXMEvent
-@property (nonatomic, strong, nonnull) NSString *phoneNumber;
-@property (nonatomic, strong, nonnull) NSString *applicationId;
-@property (nonatomic) NXMSipStatus status;
+@property (nonatomic, copy, nonnull) NSString *phoneNumber;
+@property (nonatomic, copy, nonnull) NSString *applicationId;
+@property (nonatomic, readonly) NXMSipStatus status;
 @end

@@ -24,35 +24,41 @@
 
 @implementation NXMMemberEvent
 
-- (instancetype)initWithConversationId:(NSString *)conversationId
-                            sequenceId:(NSUInteger)sequenceId
-                              andState:(NXMMemberState)state
-                       clientRef:(NSString *)clientRef
-                               andData:(NSDictionary *)data
-                          creationDate:(NSDate *)date
-                              memberId:(NSString *)memberId {
+- (instancetype)initWithData:(NSDictionary *)data
+                       state:(NXMMemberState)state {
+    return [self initWithData:data state:state conversationUuid:data[@"cid"]];
+}
+
+- (instancetype)initWithData:(NSDictionary *)data state:(NXMMemberState)state conversationUuid:(NSString *)conversationUuid {
+    NSString *memberId = data[@"body"][@"user"][@"member_id"] ?: data[@"from"];
+    
+    return [self initWithData:data state:state conversationUuid:conversationUuid memberId:memberId];
+}
+
+- (instancetype)initWithData:(NSDictionary *)data
+                       state:(NXMMemberState)state
+            conversationUuid:(NSString *)conversationUuid
+                    memberId:(NSString *)memberId {
     
     NSString *fromKey = state == NXMMemberStateInvited ? @"invited" :
                         state == NXMMemberStateJoined ? @"joined" :
                         @"left";
-    if (self = [super initWithConversationId:conversationId
-                                  sequenceId:sequenceId
-                                fromMemberId:data[@"initiator"][fromKey][@"member_id"]
-                                creationDate:date
-                                        type:NXMEventTypeMember]) {
-        
-        self.memberId = memberId;
-        self.user =  [[NXMUser alloc] initWithData:data[@"user"]];
-        self.state = state;
-        
-        self.clientRef = clientRef;
-        
-        BOOL isEnabled = [[[data[@"media"] objectForKey:@"audio_settings"] objectForKey:@"enabled"] boolValue];
-        BOOL isMuted = [[[data[@"media"] objectForKey:@"audio_settings"] objectForKey:@"muted"] boolValue];
-        self.media = [[NXMMediaSettings alloc] initWithEnabled:isEnabled suspend:isMuted];
+    NSDictionary *body = data[@"body"];
+    
+    if (self = [super initWithData:data
+                              type:NXMEventTypeMember
+                  conversationUuid:conversationUuid
+                      fromMemberId:body[@"initiator"][fromKey][@"member_id"]]) {
 
-        self.knockingId = data[@"channel"][@"knocking_id"];
-        self.channel = [[NXMChannel alloc] initWithData:data[@"channel"] andConversationId:conversationId andMemberId:memberId];
+        
+        self.user = [[NXMUser alloc] initWithData:body[@"user"]];
+        self.channel = [[NXMChannel alloc] initWithData:body[@"channel"] andConversationId:conversationUuid andMemberId:memberId];
+        self.media = [[NXMMediaSettings alloc] initWithEnabled:[[[body[@"media"] objectForKey:@"audio_settings"] objectForKey:@"enabled"] boolValue]
+                                                       suspend:[[[body[@"media"] objectForKey:@"audio_settings"] objectForKey:@"muted"] boolValue]];
+        self.state = state;
+        self.memberId = memberId;
+        self.clientRef = data[@"client_ref"];
+        self.knockingId = body[@"channel"][@"knocking_id"];
     }
 
     return self;

@@ -44,4 +44,14 @@
     
     return self;
 }
+
+- (NSString *)description {
+    return [NSString stringWithFormat:@"<%@: %p> %@ customType=%@ data=%@",
+            NSStringFromClass([self class]),
+            self,
+            super.description,
+            self.customType,
+            self.data];
+}
+
 @end

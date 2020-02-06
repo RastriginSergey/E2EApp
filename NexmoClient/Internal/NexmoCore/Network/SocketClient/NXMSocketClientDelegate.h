@@ -36,7 +36,6 @@
 - (void)textTypingOff:(nonnull NXMTextTypingEvent *)textTypingEvent;
 
 - (void)mediaEvent:(nonnull NXMMediaEvent *)mediaEvent;
-- (void)mediaActionEvent:(nonnull NXMMediaActionEvent *)mediaActionEvent;
 - (void)rtcAnswerEvent:(nonnull NXMRtcAnswerEvent *)rtcEvent;
 - (void)DTMFEvent:(nonnull NXMDTMFEvent *)dtmfEvent;
 

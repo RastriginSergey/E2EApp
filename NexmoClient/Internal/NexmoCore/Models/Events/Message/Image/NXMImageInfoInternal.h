@@ -10,6 +10,8 @@
 
 @interface NXMImageInfo(internal)
 
+- (nullable instancetype)initWithData:(nonnull NSDictionary *)data;
+
 - (nullable instancetype)initWithId:(nonnull NSString *)imageId
                                size:(NSInteger)size
                                 url:(nonnull NSURL *)url

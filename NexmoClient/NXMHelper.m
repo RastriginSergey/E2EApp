@@ -34,9 +34,6 @@
         case NXMEventTypeMedia:
             result = @"Media";
             break;
-        case NXMEventTypeMediaAction:
-            result = @"Media action";
-            break;
         case NXMEventTypeMember:
             result = @"Member";
             break;

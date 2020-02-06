@@ -49,10 +49,6 @@
 
 }
 
-- (void)actionOnMedia:(nonnull NXMMediaActionEvent *)mediaActionEvent {
-    [self dispatchWithNotificationName:kNXMEventsDispatcherNotificationMedia andEvent:mediaActionEvent];
-}
-
 - (void)DTMFEvent:(nonnull NXMDTMFEvent *)dtmfEvent {
     [self dispatchWithNotificationName:kNXMEventsDispatcherNotificationMedia andEvent:dtmfEvent];
 }
@@ -117,7 +113,7 @@
     [self dispatchWithNotificationName:kNXMEventsDispatcherNotificationMessage andEvent:statusEvent];
 }
 
-- (void)localActionOnMedia:(nonnull NXMMediaActionEvent *)mediaActionEvent {
+- (void)localActionOnMedia:(nonnull NXMEvent *)mediaActionEvent {
     //TODO: 🐶
 }
 

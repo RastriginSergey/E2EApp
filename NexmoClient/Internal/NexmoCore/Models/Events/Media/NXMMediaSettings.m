@@ -7,6 +7,11 @@
 
 #import "NXMMediaSettings.h"
 
+@interface NXMMediaSettings()
+@property (nonatomic, readwrite) bool isEnabled;
+@property (nonatomic, readwrite) bool isSuspended;
+@end
+
 @implementation NXMMediaSettings
 
 - (instancetype)initWithEnabled:(BOOL)enabled suspend:(BOOL)suspend {

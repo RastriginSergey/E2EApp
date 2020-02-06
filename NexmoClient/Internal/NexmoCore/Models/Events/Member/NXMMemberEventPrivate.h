@@ -10,13 +10,17 @@
 
 @interface NXMMemberEvent (private)
 
-- (instancetype)initWithConversationId:(NSString *)conversationId
-                        sequenceId:(NSUInteger)sequenceId
-                        andState:(NXMMemberState)state
-                        clientRef:(NSString *)clientRef
-                        andData:(NSDictionary *)data
-                        creationDate:(NSDate *)creationDate
-                        memberId:(NSString *)memberId;
+- (instancetype)initWithData:(NSDictionary *)data
+state:(NXMMemberState)state;
+
+- (instancetype)initWithData:(NSDictionary *)data
+                        state:(NXMMemberState)state
+    conversationUuid:(NSString *)conversationUuid;
+
+- (instancetype)initWithData:(NSDictionary *)data
+state:(NXMMemberState)state
+conversationUuid:(NSString *)conversationUuid
+memberId:(NSString *)memberId;
 
 @property (nonatomic, readonly) NXMUser *user;
 

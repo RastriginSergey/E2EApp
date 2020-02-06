@@ -46,16 +46,8 @@
     [self.eventsDispatcher  imageSeen:statusEvent];
 }
 
-- (void)actionOnMedia:(nonnull NXMMediaActionEvent *)mediaActionEvent {
-    [self.eventsDispatcher actionOnMedia:mediaActionEvent];
-}
-
 - (void)informOnMedia:(nonnull NXMMediaEvent *)mediaEvent {
     [self.eventsDispatcher informOnMedia:mediaEvent];
-}
-
-- (void)localActionOnMedia:(nonnull NXMMediaActionEvent *)mediaActionEvent {
-    [self.eventsDispatcher localActionOnMedia:mediaActionEvent];
 }
 
 - (void)localInformOnMedia:(nonnull NXMMediaEvent *)mediaEvent {

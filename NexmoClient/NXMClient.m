@@ -517,7 +517,7 @@ static dispatch_once_t _onceToken = 0;
         }
     }
     //Out going server call
-    if (event.state == NXMMemberStateJoined && event.clientRef){
+    if (event.state == NXMMemberStateJoined && event.clientRef.length > 0){
         NXM_LOG_DEBUG("got member JOINED event with clientRef" );
         
         [self getConversationWithUuid:event.conversationUuid completionHandler:^(NSError * _Nullable error, NXMConversation * _Nullable conversation) {
