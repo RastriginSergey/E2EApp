@@ -5,12 +5,12 @@ DEPENDENCIES:
   - NexmoClient (= 2.1.0)
 
 SPEC REPOS:
-  "https://RastriginSergey:fc827ef69f51ebd2e0af541e5fc1960d601aab15@github.com/Vonage/PrivateCocoapodsSpecs":
+  "git@github.com:CocoaPods/Specs.git":
     - NexmoClient
 
 SPEC CHECKSUMS:
-  NexmoClient: fd540aee8ddd0f44b236f0c24b2212001a96fec3
+  NexmoClient: 3a32c721be9f81f81621a52d71fc093eb1930728
 
-PODFILE CHECKSUM: 0c16f471e1bef1381834f1628e22b53cefce3746
+PODFILE CHECKSUM: a6b95e79fcb1750e7447971253dbf06e40e5388a
 
 COCOAPODS: 1.8.4
