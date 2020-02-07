@@ -2,4 +2,4 @@
 
 echo "HERE ⭐️"
 
-pod repo add NEXMO_PRIVATE_COCOAPODS https://RastriginSergey:fc827ef69f51ebd2e0af541e5fc1960d601aab15@github.com/Vonage/PrivateCocoapodsSpecs
+pod repo add NEXMO_PRIVATE_COCOAPODS https://RastriginSergey:6621d42f61bc6d9091bdb8f364913878c9953ec5@github.com/Vonage/PrivateCocoapodsSpecs

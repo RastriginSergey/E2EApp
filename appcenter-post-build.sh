@@ -7,7 +7,7 @@ xcrun xcodebuild build-for-testing \
   -derivedDataPath DerivedData
 
 # version of devices 10.2
-appcenter test run xcuitest
+appcenter test run xcuitest \
 --app "My_Test/AppForE2E" \
 --devices "My_Test/10-dot-2-1" \
 --test-series "launch-tests" \
