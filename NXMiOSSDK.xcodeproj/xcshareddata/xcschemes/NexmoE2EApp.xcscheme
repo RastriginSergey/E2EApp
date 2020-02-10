@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1030"
+   LastUpgradeVersion = "1120"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F9024ECE21CAA4F300D58AD0"
-               BuildableName = "NexmoSwiftApp.app"
-               BlueprintName = "NexmoSwiftApp"
+               BlueprintIdentifier = "B1CA260423F1850700B29681"
+               BuildableName = "NexmoE2EApp.app"
+               BlueprintName = "NexmoE2EApp"
                ReferencedContainer = "container:NXMiOSSDK.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -27,16 +27,17 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F9024ECE21CAA4F300D58AD0"
-            BuildableName = "NexmoSwiftApp.app"
-            BlueprintName = "NexmoSwiftApp"
-            ReferencedContainer = "container:NXMiOSSDK.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B1CA261E23F1850800B29681"
+               BuildableName = "NexmoE2EAppUITests.xctest"
+               BlueprintName = "NexmoE2EAppUITests"
+               ReferencedContainer = "container:NXMiOSSDK.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -53,9 +54,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F9024ECE21CAA4F300D58AD0"
-            BuildableName = "NexmoSwiftApp.app"
-            BlueprintName = "NexmoSwiftApp"
+            BlueprintIdentifier = "B1CA260423F1850700B29681"
+            BuildableName = "NexmoE2EApp.app"
+            BlueprintName = "NexmoE2EApp"
             ReferencedContainer = "container:NXMiOSSDK.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -70,9 +71,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F9024ECE21CAA4F300D58AD0"
-            BuildableName = "NexmoSwiftApp.app"
-            BlueprintName = "NexmoSwiftApp"
+            BlueprintIdentifier = "B1CA260423F1850700B29681"
+            BuildableName = "NexmoE2EApp.app"
+            BlueprintName = "NexmoE2EApp"
             ReferencedContainer = "container:NXMiOSSDK.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
