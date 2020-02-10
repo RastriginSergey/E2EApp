@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B1CA260423F1850700B29681"
-               BuildableName = "NexmoE2EApp.app"
-               BlueprintName = "NexmoE2EApp"
+               BlueprintIdentifier = "B1CA262F23F1AEF400B29681"
+               BuildableName = "E2EApp.app"
+               BlueprintName = "E2EApp"
                ReferencedContainer = "container:NXMiOSSDK.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B1CA261E23F1850800B29681"
-               BuildableName = "NexmoE2EAppUITests.xctest"
-               BlueprintName = "NexmoE2EAppUITests"
+               BlueprintIdentifier = "B1CA264923F1AEF500B29681"
+               BuildableName = "E2EAppUITests.xctest"
+               BlueprintName = "E2EAppUITests"
                ReferencedContainer = "container:NXMiOSSDK.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -54,9 +54,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B1CA260423F1850700B29681"
-            BuildableName = "NexmoE2EApp.app"
-            BlueprintName = "NexmoE2EApp"
+            BlueprintIdentifier = "B1CA262F23F1AEF400B29681"
+            BuildableName = "E2EApp.app"
+            BlueprintName = "E2EApp"
             ReferencedContainer = "container:NXMiOSSDK.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -71,9 +71,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B1CA260423F1850700B29681"
-            BuildableName = "NexmoE2EApp.app"
-            BlueprintName = "NexmoE2EApp"
+            BlueprintIdentifier = "B1CA262F23F1AEF400B29681"
+            BuildableName = "E2EApp.app"
+            BlueprintName = "E2EApp"
             ReferencedContainer = "container:NXMiOSSDK.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

@@ -58,6 +58,13 @@
 		92CF9A1321CA5FE6001C86F1 /* CallViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CF9A1221CA5FE6001C86F1 /* CallViewController.m */; };
 		92CF9A1A21CA6523001C86F1 /* InAppCallCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = 92CF9A1921CA6523001C86F1 /* InAppCallCreator.m */; };
 		AF9FC94E5DE735D7E5FB2800 /* NXMConversation+Equatable.m in Sources */ = {isa = PBXBuildFile; fileRef = AF9FCC83848DFFA0D0A0C2CB /* NXMConversation+Equatable.m */; };
+		B1CA263423F1AEF400B29681 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B1CA263323F1AEF400B29681 /* AppDelegate.m */; };
+		B1CA263A23F1AEF400B29681 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B1CA263923F1AEF400B29681 /* ViewController.m */; };
+		B1CA263D23F1AEF400B29681 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1CA263B23F1AEF400B29681 /* Main.storyboard */; };
+		B1CA263F23F1AEF500B29681 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1CA263E23F1AEF500B29681 /* Assets.xcassets */; };
+		B1CA264223F1AEF500B29681 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1CA264023F1AEF500B29681 /* LaunchScreen.storyboard */; };
+		B1CA264523F1AEF500B29681 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B1CA264423F1AEF500B29681 /* main.m */; };
+		B1CA264F23F1AEF500B29681 /* E2EAppUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = B1CA264E23F1AEF500B29681 /* E2EAppUITests.m */; };
 		D32D425521CC05E00039A133 /* iOSFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D32D425421CC05E00039A133 /* iOSFramework.framework */; };
 		D32D425821CC06760039A133 /* iOSFramework.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = D32D425421CC05E00039A133 /* iOSFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D32D425D21CC06BD0039A133 /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = D32D425B21CC06B70039A133 /* OCMock.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -298,6 +305,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		B1CA264B23F1AEF500B29681 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F9C35DC4203078BD009FAE4F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B1CA262F23F1AEF400B29681;
+			remoteInfo = E2EApp;
+		};
 		F9024EE921CAA5F800D58AD0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F9C35DC4203078BD009FAE4F /* Project object */;
@@ -459,6 +473,19 @@
 		92D7FBCC21CFF8F3002A2993 /* NexmoTestApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NexmoTestApp.entitlements; sourceTree = "<group>"; };
 		AF9FCC05B1A0616AD5F416BE /* NXMConversation+Equatable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NXMConversation+Equatable.h"; sourceTree = "<group>"; };
 		AF9FCC83848DFFA0D0A0C2CB /* NXMConversation+Equatable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NXMConversation+Equatable.m"; sourceTree = "<group>"; };
+		B1CA263023F1AEF400B29681 /* E2EApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = E2EApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1CA263223F1AEF400B29681 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		B1CA263323F1AEF400B29681 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		B1CA263823F1AEF400B29681 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		B1CA263923F1AEF400B29681 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		B1CA263C23F1AEF400B29681 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B1CA263E23F1AEF500B29681 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B1CA264123F1AEF500B29681 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B1CA264323F1AEF500B29681 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B1CA264423F1AEF500B29681 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B1CA264A23F1AEF500B29681 /* E2EAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = E2EAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1CA264E23F1AEF500B29681 /* E2EAppUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = E2EAppUITests.m; sourceTree = "<group>"; };
+		B1CA265023F1AEF500B29681 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D32D425421CC05E00039A133 /* iOSFramework.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iOSFramework.framework; path = Frameworks/MiniRTC/iOSFramework.framework; sourceTree = "<group>"; };
 		D32D425B21CC06B70039A133 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = "Frameworks/OCMock/iOS framework/OCMock.framework"; sourceTree = "<group>"; };
 		D32D426421CC173D0039A133 /* iOS framework */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "iOS framework"; path = "Frameworks/OCMock/iOS framework"; sourceTree = "<group>"; };
@@ -701,6 +728,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B1CA262D23F1AEF400B29681 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B1CA264723F1AEF500B29681 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F9024ECC21CAA4F300D58AD0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1061,6 +1102,31 @@
 				F9E5E33A21D501A300FC7202 /* PSTNCallCreator.m */,
 			);
 			path = Calls;
+			sourceTree = "<group>";
+		};
+		B1CA263123F1AEF400B29681 /* E2EApp */ = {
+			isa = PBXGroup;
+			children = (
+				B1CA263223F1AEF400B29681 /* AppDelegate.h */,
+				B1CA263323F1AEF400B29681 /* AppDelegate.m */,
+				B1CA263823F1AEF400B29681 /* ViewController.h */,
+				B1CA263923F1AEF400B29681 /* ViewController.m */,
+				B1CA263B23F1AEF400B29681 /* Main.storyboard */,
+				B1CA263E23F1AEF500B29681 /* Assets.xcassets */,
+				B1CA264023F1AEF500B29681 /* LaunchScreen.storyboard */,
+				B1CA264323F1AEF500B29681 /* Info.plist */,
+				B1CA264423F1AEF500B29681 /* main.m */,
+			);
+			path = E2EApp;
+			sourceTree = "<group>";
+		};
+		B1CA264D23F1AEF500B29681 /* E2EAppUITests */ = {
+			isa = PBXGroup;
+			children = (
+				B1CA264E23F1AEF500B29681 /* E2EAppUITests.m */,
+				B1CA265023F1AEF500B29681 /* Info.plist */,
+			);
+			path = E2EAppUITests;
 			sourceTree = "<group>";
 		};
 		F9024D8B21CA9AF000D58AD0 /* NexmoCore */ = {
@@ -1547,6 +1613,8 @@
 		F9C35DC3203078BD009FAE4F = {
 			isa = PBXGroup;
 			children = (
+				B1CA263123F1AEF400B29681 /* E2EApp */,
+				B1CA264D23F1AEF500B29681 /* E2EAppUITests */,
 				0C77F825E1C5CD9646B440FA /* Frameworks */,
 				F9E5E2F621D3AA8900FC7202 /* LICENSE */,
 				85C4B90521D25AEA00ED596B /* Makefile */,
@@ -1566,6 +1634,8 @@
 				F923DD9121985BF600D29065 /* NexmoClientTests.xctest */,
 				F94291E221BD46F900FA45A1 /* NexmoTestApp.app */,
 				F9024ECF21CAA4F300D58AD0 /* NexmoSwiftApp.app */,
+				B1CA263023F1AEF400B29681 /* E2EApp.app */,
+				B1CA264A23F1AEF500B29681 /* E2EAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1719,6 +1789,41 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		B1CA262F23F1AEF400B29681 /* E2EApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B1CA265123F1AEF500B29681 /* Build configuration list for PBXNativeTarget "E2EApp" */;
+			buildPhases = (
+				B1CA262C23F1AEF400B29681 /* Sources */,
+				B1CA262D23F1AEF400B29681 /* Frameworks */,
+				B1CA262E23F1AEF400B29681 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = E2EApp;
+			productName = E2EApp;
+			productReference = B1CA263023F1AEF400B29681 /* E2EApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B1CA264923F1AEF500B29681 /* E2EAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B1CA265423F1AEF500B29681 /* Build configuration list for PBXNativeTarget "E2EAppUITests" */;
+			buildPhases = (
+				B1CA264623F1AEF500B29681 /* Sources */,
+				B1CA264723F1AEF500B29681 /* Frameworks */,
+				B1CA264823F1AEF500B29681 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B1CA264C23F1AEF500B29681 /* PBXTargetDependency */,
+			);
+			name = E2EAppUITests;
+			productName = E2EAppUITests;
+			productReference = B1CA264A23F1AEF500B29681 /* E2EAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		F9024ECE21CAA4F300D58AD0 /* NexmoSwiftApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F9024EDE21CAA4F500D58AD0 /* Build configuration list for PBXNativeTarget "NexmoSwiftApp" */;
@@ -1806,6 +1911,15 @@
 				LastUpgradeCheck = 1030;
 				ORGANIZATIONNAME = Vonage;
 				TargetAttributes = {
+					B1CA262F23F1AEF400B29681 = {
+						CreatedOnToolsVersion = 11.2.1;
+						ProvisioningStyle = Manual;
+					};
+					B1CA264923F1AEF500B29681 = {
+						CreatedOnToolsVersion = 11.2.1;
+						ProvisioningStyle = Manual;
+						TestTargetID = B1CA262F23F1AEF400B29681;
+					};
 					F9024ECE21CAA4F300D58AD0 = {
 						CreatedOnToolsVersion = 10.1;
 						ProvisioningStyle = Manual;
@@ -1849,11 +1963,30 @@
 				F923DD9021985BF600D29065 /* NexmoClientTests */,
 				F94291E121BD46F900FA45A1 /* NexmoTestApp */,
 				F9024ECE21CAA4F300D58AD0 /* NexmoSwiftApp */,
+				B1CA262F23F1AEF400B29681 /* E2EApp */,
+				B1CA264923F1AEF500B29681 /* E2EAppUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		B1CA262E23F1AEF400B29681 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1CA264223F1AEF500B29681 /* LaunchScreen.storyboard in Resources */,
+				B1CA263F23F1AEF500B29681 /* Assets.xcassets in Resources */,
+				B1CA263D23F1AEF400B29681 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B1CA264823F1AEF500B29681 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F9024ECD21CAA4F300D58AD0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1928,6 +2061,24 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B1CA262C23F1AEF400B29681 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1CA263A23F1AEF400B29681 /* ViewController.m in Sources */,
+				B1CA263423F1AEF400B29681 /* AppDelegate.m in Sources */,
+				B1CA264523F1AEF500B29681 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B1CA264623F1AEF500B29681 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1CA264F23F1AEF500B29681 /* E2EAppUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F9024ECB21CAA4F300D58AD0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2096,6 +2247,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		B1CA264C23F1AEF500B29681 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B1CA262F23F1AEF400B29681 /* E2EApp */;
+			targetProxy = B1CA264B23F1AEF500B29681 /* PBXContainerItemProxy */;
+		};
 		F9024EEA21CAA5F800D58AD0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F923DD8821985BF600D29065 /* NexmoClient */;
@@ -2114,6 +2270,22 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		B1CA263B23F1AEF400B29681 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B1CA263C23F1AEF400B29681 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		B1CA264023F1AEF500B29681 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B1CA264123F1AEF500B29681 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
 		F9024ED521CAA4F300D58AD0 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2149,6 +2321,86 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		B1CA265223F1AEF500B29681 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = PR6C39UQ38;
+				INFOPLIST_FILE = E2EApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rastrigin.E2EApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Rastrigin Test Profile";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B1CA265323F1AEF500B29681 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = PR6C39UQ38;
+				INFOPLIST_FILE = E2EApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rastrigin.E2EApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Rastrigin Test Profile";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		B1CA265523F1AEF500B29681 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = PR6C39UQ38;
+				INFOPLIST_FILE = E2EAppUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rastrigin.E2EAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Rastrigin Test Profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = E2EApp;
+			};
+			name = Debug;
+		};
+		B1CA265623F1AEF500B29681 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = PR6C39UQ38;
+				INFOPLIST_FILE = E2EAppUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rastrigin.E2EAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "Rastrigin Test Profile";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = E2EApp;
+			};
+			name = Release;
+		};
 		F9024EDF21CAA4F500D58AD0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2533,6 +2785,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B1CA265123F1AEF500B29681 /* Build configuration list for PBXNativeTarget "E2EApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1CA265223F1AEF500B29681 /* Debug */,
+				B1CA265323F1AEF500B29681 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B1CA265423F1AEF500B29681 /* Build configuration list for PBXNativeTarget "E2EAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1CA265523F1AEF500B29681 /* Debug */,
+				B1CA265623F1AEF500B29681 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F9024EDE21CAA4F500D58AD0 /* Build configuration list for PBXNativeTarget "NexmoSwiftApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
