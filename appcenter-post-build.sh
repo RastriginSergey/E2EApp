@@ -1,7 +1,7 @@
 echo "Executing post build script"
 
 xcrun  xcodebuild build-for-testing   -configuration Debug   -workspace E2EApp.xcworkspace  -sdk iphoneos   -scheme E2EApp   -derivedDataPath DerivedData
-zip -r DerivedData DerivedData/
+zip -r DerivedData DerivedData/ $APPCENTER_OUTPUT_DIRECTORY
 
 REGION=eu-west-2
 BUCKET=nexmo-sdk-ci
