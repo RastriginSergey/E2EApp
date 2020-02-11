@@ -40,6 +40,17 @@
 
 }
 
+/*
+xcodebuild test-without-building -project NXMiOSSDK.xcodeproj \
+    -scheme NexmoE2EApp \
+    -destination 'platform=iOS Simulator,name=iPhone 8,OS=13.3' \
+    MY_ENV_VAR_01='Some value'
+ */
+- (void)testEnvironmentVariable {
+    NSString *myEnvVar01 = NSProcessInfo.processInfo.environment[@"TEST_ENV"];
+    XCTAssertTrue([myEnvVar01 isEqualToString:@"Some value"]);
+}
+
 - (void)testFails {
     XCTAssertFalse(YES);
 }
