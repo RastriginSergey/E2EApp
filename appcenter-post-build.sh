@@ -6,7 +6,12 @@ xcrun xcodebuild build-for-testing \
   -scheme $APPCENTER_XCODE_SCHEME \
   -derivedDataPath DerivedData
 
-ls -R ./DerivedData
+cd ./DerivedData/Build/Products
+
+zip -rX Products.zip *
+
+zipinfo Products.zip
+
 
 # version of devices 10.2
 #appcenter test run xcuitest \
