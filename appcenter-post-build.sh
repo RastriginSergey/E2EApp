@@ -1,5 +1,8 @@
 aws --version
 
+aws s3 cp s3://nexmo-sdk-ci/bar.zip ./
+
+ls
 #rm -rf DerivedData
 ##xcrun xcodebuild build-for-testing \
 ##  -configuration Debug \
