@@ -2,10 +2,14 @@ platform :ios, '10.2'
 
 source "https://RastriginSergey:#{ENV['token']}@github.com/Vonage/PrivateCocoapodsSpecs"
 
+CLIENT_VERSION = ENV['CLIENT_VERSION']
+
+print CLIENT_VERSION
+
 target 'E2EApp' do
-  pod 'NexmoClient', '2.1.0'
+  pod 'NexmoClient', CLIENT_VERSION
 end
 
 target 'E2EAppUITests' do
-  pod 'NexmoClient', '2.1.0'
+  pod 'NexmoClient', CLIENT_VERSION
 end
