@@ -5,4 +5,6 @@ pod repo add NEXMO_PRIVATE_COCOAPODS https://RastriginSergey:$GITHUB_TOKEN@githu
 
 env
 
+env
+
 pip install awscli
