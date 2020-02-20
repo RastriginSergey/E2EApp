@@ -11,4 +11,4 @@ cp $APPCENTER_OUTPUT_DIRECTORY/*.ipa ./DerivedData/Build/Products
 
 (cd ./DerivedData/Build/Products; zip -rX Products.zip *)
 
-aws s3 cp ./DerivedData/Build/Products/Products.zip s3://nexmo-sdk-ci/${APPCENTER_BRANCH}_${APPCENTER_BUILD_ID}.zip
+aws s3 cp ./DerivedData/Build/Products/Products.zip s3://nexmo-sdk-ci/branch/${APPCENTER_BRANCH}/build/${APPCENTER_BUILD_ID}.zip
