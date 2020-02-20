@@ -1,8 +1,6 @@
-#!/usr/bin/env bash
+echo "Executing post build script"
 
-echo "HERE ⭐️"
+# Add Private CocoaPods
 pod repo add NEXMO_PRIVATE_COCOAPODS https://RastriginSergey:$GITHUB_TOKEN@github.com/Vonage/PrivateCocoapodsSpecs
-
-env
 
 pip install awscli
