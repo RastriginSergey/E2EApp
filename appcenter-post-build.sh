@@ -7,6 +7,8 @@ xcrun xcodebuild build-for-testing \
 -scheme E2EApp \
 -derivedDataPath DerivedData
 
+cp $APPCENTER_OUTPUT_DIRECTORY/*.ipa ./DerivedData/Build/Products
+
 (cd ./DerivedData/Build/Products; zip -rX Products.zip *)
 
-aws s3 cp ./DerivedData/Build/Products/Products.zip s3://nexmo-sdk-ci/somethingsFOrNow.zip
+aws s3 cp ./DerivedData/Build/Products/Products.zip s3://nexmo-sdk-ci/${APPCENTER_BRANCH}_${APPCENTER_BUILD_ID}.zip
