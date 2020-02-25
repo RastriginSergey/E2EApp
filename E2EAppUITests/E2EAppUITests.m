@@ -11,12 +11,18 @@
 
 @interface E2EAppUITests : XCTestCase
 
+@property XCUIApplication *app;
+
 @end
 
 @implementation E2EAppUITests
 
 - (void)setUp {
     // Put setup code here. This method is called before the invocation of each test method in the class.
+
+    // UI tests must launch the application that they test.
+    self.app = [XCUIApplication new];
+    [self.app launch];
 
     // In UI tests it is usually best to stop immediately when a failure occurs.
     self.continueAfterFailure = NO;
@@ -29,14 +35,21 @@
 }
 
 - (void)testExample {
-    // UI tests must launch the application that they test.
-    XCUIApplication *app = [[XCUIApplication alloc] init];
-    [app launch];
-
     NXMClient *client = [NXMClient new];
     // Use recording to get started writing UI tests.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
     XCTAssertTrue(YES);
+}
+
+/*
+xcodebuild test-without-building -project NXMiOSSDK.xcodeproj \
+    -scheme NexmoE2EApp \
+    -destination 'platform=iOS Simulator,name=iPhone 8,OS=13.3' \
+    NPE_ENV_NAME='Correct value'
+ */
+- (void)testNpeEnvNameEnvironmentVariable {
+    NSString *npeEnvName = NSProcessInfo.processInfo.environment[@"NPE_ENV_NAME"];
+    XCTAssertTrue([npeEnvName isEqualToString:@"Correct value"]);
 }
 
 @end
