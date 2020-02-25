@@ -1,6 +1,7 @@
 echo "Executing post clone script"
 
 pip install awscli
+gem install dotenv
 
 aws s3 cp s3://nexmo-sdk-ci/branches/${APPCENTER_BRANCH}/build-id/${APPCENTER_BUILD_ID}.env ./config.env
 

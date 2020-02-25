@@ -1,3 +1,6 @@
+require 'dotenv'
+Dotenv.load('config.env')
+
 platform :ios, '10.2'
 
 source "https://RastriginSergey:#{ENV['GITHUB_TOKEN']}@github.com/Vonage/PrivateCocoapodsSpecs"
