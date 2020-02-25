@@ -1,5 +1,7 @@
 echo "Executing post build script"
 
+source ./config.env
+
 xcrun xcodebuild build-for-testing \
 -configuration Debug \
 -workspace E2EApp.xcworkspace \
