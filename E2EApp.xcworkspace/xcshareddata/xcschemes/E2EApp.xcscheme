@@ -62,8 +62,8 @@
       </BuildableProductRunnable>
       <EnvironmentVariables>
          <EnvironmentVariable
-            key = "NPE_ENV_NAME"
-            value = "$(NPE_ENV_NAME)"
+            key = "ENV_NAME"
+            value = "$(ENV_NAME)"
             isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>

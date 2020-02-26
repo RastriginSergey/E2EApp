@@ -7,7 +7,6 @@
 //
 
 #import <XCTest/XCTest.h>
-#import <NexmoClient/NexmoClient.h>
 
 @interface E2EAppUITests : XCTestCase
 
@@ -35,7 +34,6 @@
 }
 
 - (void)testExample {
-    NXMClient *client = [NXMClient new];
     // Use recording to get started writing UI tests.
     // Use XCTAssert and related functions to verify your tests produce the correct results.
     XCTAssertTrue(YES);
@@ -48,8 +46,8 @@ xcodebuild test-without-building -project NXMiOSSDK.xcodeproj \
     NPE_ENV_NAME='Correct value'
  */
 - (void)testNpeEnvNameEnvironmentVariable {
-    NSString *npeEnvName = NSProcessInfo.processInfo.environment[@"NPE_ENV_NAME"];
-    XCTAssertTrue([npeEnvName isEqualToString:@"Correct value"]);
+    NSString *envName = NSProcessInfo.processInfo.environment[@"ENV_NAME"];
+    XCTAssertTrue([envName isEqualToString:@"Correct value"]);
 }
 
 @end
