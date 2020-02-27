@@ -16,8 +16,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="33" translatesAutoresizingMaskIntoConstraints="NO" id="26I-4X-LPT">
-                                <rect key="frame" x="165.5" y="411.5" width="83.5" height="83.5"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="26I-4X-LPT">
+                                <rect key="frame" x="165.5" y="420" width="83.5" height="66.5"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mk8-Zd-abJ">
                                         <rect key="frame" x="0.0" y="0.0" width="83.5" height="30"/>
@@ -27,7 +27,7 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Logged off" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NJZ-Nx-4TV">
-                                        <rect key="frame" x="0.0" y="63" width="83.5" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="46" width="83.5" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -35,25 +35,25 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NPE:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uo2-3i-16Y">
-                                <rect key="frame" x="12" y="793.5" width="37.5" height="20.5"/>
+                                <rect key="frame" x="16" y="789" width="37.5" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User token:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z0w-Po-Ny6">
-                                <rect key="frame" x="12" y="829.5" width="88" height="20.5"/>
+                                <rect key="frame" x="16" y="825.5" width="88" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TIr-8g-UkX">
-                                <rect key="frame" x="108" y="829.5" width="14" height="20.5"/>
+                                <rect key="frame" x="112" y="825.5" width="14" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="npeName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="diR-xe-sut">
-                                <rect key="frame" x="57.5" y="793.5" width="74" height="20.5"/>
+                                <rect key="frame" x="61.5" y="789" width="74" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -61,17 +61,17 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="TIr-8g-UkX" secondAttribute="trailing" constant="12" id="4rA-vA-NnP"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="TIr-8g-UkX" secondAttribute="trailing" constant="16" id="4rA-vA-NnP"/>
                             <constraint firstItem="26I-4X-LPT" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="97a-Hs-j31"/>
                             <constraint firstItem="26I-4X-LPT" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="G9q-BY-dLt"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Z0w-Po-Ny6" secondAttribute="bottom" constant="12" id="HqL-bA-Oqs"/>
-                            <constraint firstItem="TIr-8g-UkX" firstAttribute="leading" secondItem="Z0w-Po-Ny6" secondAttribute="trailing" constant="8" id="KjH-s9-jLI"/>
-                            <constraint firstItem="Z0w-Po-Ny6" firstAttribute="top" secondItem="Uo2-3i-16Y" secondAttribute="bottom" constant="15.5" id="Kld-Qa-6ay"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Z0w-Po-Ny6" secondAttribute="bottom" constant="16" id="HqL-bA-Oqs"/>
+                            <constraint firstItem="TIr-8g-UkX" firstAttribute="leading" secondItem="Z0w-Po-Ny6" secondAttribute="trailing" constant="8" symbolic="YES" id="KjH-s9-jLI"/>
+                            <constraint firstItem="Z0w-Po-Ny6" firstAttribute="top" secondItem="Uo2-3i-16Y" secondAttribute="bottom" constant="16" id="Kld-Qa-6ay"/>
                             <constraint firstItem="TIr-8g-UkX" firstAttribute="firstBaseline" secondItem="Z0w-Po-Ny6" secondAttribute="firstBaseline" id="Zdy-y1-YkR"/>
                             <constraint firstItem="Uo2-3i-16Y" firstAttribute="leading" secondItem="Z0w-Po-Ny6" secondAttribute="leading" id="bfH-C1-TcV"/>
                             <constraint firstItem="diR-xe-sut" firstAttribute="leading" secondItem="Uo2-3i-16Y" secondAttribute="trailing" constant="8" symbolic="YES" id="gUa-1Y-SBV"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="diR-xe-sut" secondAttribute="trailing" constant="12" id="gV2-pE-TIP"/>
-                            <constraint firstItem="Z0w-Po-Ny6" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="12" id="pRO-Pe-wPT"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="diR-xe-sut" secondAttribute="trailing" constant="16" id="gV2-pE-TIP"/>
+                            <constraint firstItem="Z0w-Po-Ny6" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="pRO-Pe-wPT"/>
                             <constraint firstItem="diR-xe-sut" firstAttribute="firstBaseline" secondItem="Uo2-3i-16Y" secondAttribute="firstBaseline" id="zlh-E2-DY9"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

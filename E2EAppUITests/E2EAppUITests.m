@@ -51,9 +51,13 @@ xcodebuild test-without-building -project NXMiOSSDK.xcodeproj \
 //}
 
 - (void)testLoginSuccessful {
-    [self.app.buttons[@"Login"] tap];
+    XCUIElement *connectedLabel = self.app.staticTexts[@"Connected"];
+    NSPredicate *existsPredicate = [NSPredicate predicateWithFormat:@"exists == true"];
+    [self expectationForPredicate:existsPredicate evaluatedWithObject:connectedLabel handler:nil];
 
-    // TODO: watch loginStatusLabel...
+    [self.app.buttons[@"Login"] tap];
+    [self waitForExpectationsWithTimeout:10 handler:nil];
+    XCTAssert(connectedLabel.exists);
 }
 
 @end

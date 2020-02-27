@@ -25,6 +25,8 @@ static NSString * const IPS_URL = @"https://api.dev.nexmoinc.net/play4/v1/image"
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.loginStatusLabel.text = @"-";
+
     self.npeNameLabel.text = [self npeName];
     self.userTokenLabel.text = [self userToken];
 }
