@@ -7,8 +7,9 @@
 //
 
 @import UIKit;
+@import NexmoClient;
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <NXMClientDelegate>
 
 
 @end

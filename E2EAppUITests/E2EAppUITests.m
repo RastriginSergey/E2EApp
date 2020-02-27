@@ -33,11 +33,11 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
-- (void)testExample {
-    // Use recording to get started writing UI tests.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-    XCTAssertTrue(YES);
-}
+//- (void)testExample {
+//    // Use recording to get started writing UI tests.
+//    // Use XCTAssert and related functions to verify your tests produce the correct results.
+//    XCTAssertTrue(YES);
+//}
 
 /*
 xcodebuild test-without-building -project NXMiOSSDK.xcodeproj \
@@ -45,9 +45,13 @@ xcodebuild test-without-building -project NXMiOSSDK.xcodeproj \
     -destination 'platform=iOS Simulator,name=iPhone 8,OS=13.3' \
     NPE_ENV_NAME='Correct value'
  */
-- (void)testNpeEnvNameEnvironmentVariable {
-    NSString *envName = NSProcessInfo.processInfo.environment[@"ENV_NAME"];
-    XCTAssertTrue([envName isEqualToString:@"Correct value"]);
+//- (void)testNpeEnvNameEnvironmentVariable {
+//    NSString *envName = NSProcessInfo.processInfo.environment[@"ENV_NAME"];
+//    XCTAssertTrue([envName isEqualToString:@"Correct value"]);
+//}
+
+- (void)testLoginSuccessful {
+
 }
 
 @end

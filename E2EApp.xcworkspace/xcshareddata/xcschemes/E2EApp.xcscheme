@@ -62,6 +62,11 @@
       </BuildableProductRunnable>
       <EnvironmentVariables>
          <EnvironmentVariable
+            key = "USER_TOKEN"
+            value = "$(USER_TOKEN)"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
             key = "ENV_NAME"
             value = "$(ENV_NAME)"
             isEnabled = "YES">
