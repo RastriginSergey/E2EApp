@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-#import <NexmoClient/NexmoClient.h>
+@import NexmoClient;
 
 @interface ViewController ()
 

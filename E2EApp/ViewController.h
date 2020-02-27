@@ -6,7 +6,7 @@
 //  Copyright © 2020 Sergei Rastrigin. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 @interface ViewController : UIViewController
 
