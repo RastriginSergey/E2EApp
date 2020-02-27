@@ -51,7 +51,9 @@ xcodebuild test-without-building -project NXMiOSSDK.xcodeproj \
 //}
 
 - (void)testLoginSuccessful {
+    [self.app.buttons[@"Login"] tap];
 
+    // TODO: watch loginStatusLabel...
 }
 
 @end
