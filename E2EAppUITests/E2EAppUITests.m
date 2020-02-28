@@ -1,8 +1,9 @@
 @import XCTest;
 #import "LoginViewController.h"
 
-//static NSString * const ENV_NAME_ENV_VAR = @"ENV_NAME";
-//static NSString * const USER_TOKEN_ENV_VAR = @"USER_TOKEN";
+static NSString * const VARS_JSON_FILE_NAME = @"vars";
+static NSString * const ENV_NAME_JSON_KEY = @"envName";
+static NSString * const USER_TOKEN_JSON_KEY = @"userToken";
 
 @interface E2EAppUITests : XCTestCase
 @property XCUIApplication *app;
@@ -19,17 +20,15 @@
 }
 
 - (nonnull NSArray<NSString *> *)launchArguments {
-//    NSString *envName = NSProcessInfo.processInfo.environment[ENV_NAME_ENV_VAR];
-//    NSString *userToken = NSProcessInfo.processInfo.environment[USER_TOKEN_ENV_VAR];
-    NSDictionary *varsDictionary = [self varsDictionaryFromJsonFile];
-    NSString *envName = varsDictionary[@"envName"];
-    NSString *userToken = varsDictionary[@"userToken"];
+    NSDictionary *varsDictionary = [self varsDictionary];
+    NSString *envName = varsDictionary[ENV_NAME_JSON_KEY];
+    NSString *userToken = varsDictionary[USER_TOKEN_JSON_KEY];
     return @[[self argumentNameFor:[LoginViewController npeNameLaunchArgument]], envName,
              [self argumentNameFor:[LoginViewController userTokenLaunchArgument]], userToken];
 }
 
-- (nonnull NSDictionary *)varsDictionaryFromJsonFile {
-    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:@"vars" ofType:@"json"];
+- (nonnull NSDictionary *)varsDictionary {
+    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:VARS_JSON_FILE_NAME ofType:@"json"];
     NSData *data = [NSData dataWithContentsOfFile:path];
     return [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
 }
