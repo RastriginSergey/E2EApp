@@ -14,6 +14,9 @@
 }
 
 - (void)testLoginSuccessful {
+    XCTAssertGreaterThan(NSProcessInfo.processInfo.environment[@"ENV_NAME"].length, 0);
+    XCTAssertGreaterThan(NSProcessInfo.processInfo.environment[@"USER_TOKEN"].length, 0);
+
     XCUIElement *connectedLabel = self.app.staticTexts[@"Connected"];
     NSPredicate *existsPredicate = [NSPredicate predicateWithFormat:@"exists == true"];
     [self expectationForPredicate:existsPredicate evaluatedWithObject:connectedLabel handler:nil];
