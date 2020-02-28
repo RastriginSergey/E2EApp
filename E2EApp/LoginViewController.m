@@ -33,34 +33,38 @@ static NSString * const LOGIN_STATUS_LABEL_ACCESSIBILITY_ID = @"loginStatusLabel
     self.loginStatusLabel.accessibilityIdentifier = LOGIN_STATUS_LABEL_ACCESSIBILITY_ID;
 
     self.loginStatusLabel.text = NOT_DEFINED_TEXT;
-    self.npeNameLabel.text = [self npeName];
-    self.userTokenLabel.text = [self shortUserToken];
+    self.npeNameLabel.text = [self getNpeName];
+    self.userTokenLabel.text = [self.class shortUserTokenFrom:[self getUserToken]];
 }
 
 - (IBAction)onLoginButtonTouchUpInside:(UIButton *)sender {
-    [NXMClient setConfiguration: [self clientConfig]];
+    [NXMClient setConfiguration:[self getClientConfig]];
     [NXMClient.shared setDelegate:self];
 
-    [NXMClient.shared loginWithAuthToken:[self shortUserToken]];
+    [NXMClient.shared loginWithAuthToken:[self getUserToken]];
 }
 
-- (nonnull NXMClientConfig *)clientConfig {
-    NSString *npeName = [self npeName];
+- (nonnull NXMClientConfig *)getClientConfig {
+    NSString *npeName = [self getNpeName];
     NSString *apiUrl = [NSString stringWithFormat:API_URL_FORMAT, npeName];
     NSString *websocketUrl = [NSString stringWithFormat:WEBSOCKET_URL_FORMAT, npeName];
     return [[NXMClientConfig alloc] initWithApiUrl:apiUrl websocketUrl:websocketUrl ipsUrl:IPS_URL];
 }
 
-- (nonnull NSString *)npeName {
+- (nonnull NSString *)getNpeName {
     NSString *npeName = [NSUserDefaults.standardUserDefaults stringForKey:NPE_NAME_LAUNCH_ARG];
     return npeName.length == 0 ? NOT_DEFINED_TEXT : npeName;
 }
 
-- (nonnull NSString *)shortUserToken {
+- (nonnull NSString *)getUserToken {
+    NSString *userToken = [NSUserDefaults.standardUserDefaults stringForKey:USER_TOKEN_LAUNCH_ARG];
+    return userToken.length == 0 ? NOT_DEFINED_TEXT : userToken;
+}
+
++ (nonnull NSString *)shortUserTokenFrom:(nonnull NSString *)userToken {
     NSUInteger prefixLength = 6;
     NSUInteger suffixLength = 10;
     NSUInteger minUserTokenLength = 1 + prefixLength + suffixLength;
-    NSString *userToken = [NSUserDefaults.standardUserDefaults stringForKey:USER_TOKEN_LAUNCH_ARG];
     NSString *shortUserToken = NOT_DEFINED_TEXT;
     if (userToken.length > 0 && userToken.length < minUserTokenLength) {
         shortUserToken = userToken;
