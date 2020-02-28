@@ -4,7 +4,16 @@ static NSString * const API_URL_FORMAT = @"https://%@-api.npe.nexmo.io";
 static NSString * const WEBSOCKET_URL_FORMAT = @"https://%@-ws.npe.nexmo.io";
 static NSString * const IPS_URL = @"https://api.dev.nexmoinc.net/play4/v1/image";
 
+static NSString * const NPE_NAME_LAUNCH_ARG = @"npeName";
+static NSString * const USER_TOKEN_LAUNCH_ARG = @"userToken";
+
+static NSString * const DISCONNECTED_STATUS_TEXT = @"Disconnected";
+static NSString * const CONNECTING_STATUS_TEXT = @"Connecting";
+static NSString * const CONNECTED_STATUS_TEXT = @"Connected";
 static NSString * const NOT_DEFINED_TEXT = @"-";
+
+static NSString * const LOGIN_BUTTON_ACCESSIBILITY_ID = @"loginButtonId";
+static NSString * const LOGIN_STATUS_LABEL_ACCESSIBILITY_ID = @"loginStatusLabelId";
 
 @interface LoginViewController ()
 
@@ -75,6 +84,28 @@ static NSString * const NOT_DEFINED_TEXT = @"-";
     dispatch_async(dispatch_get_main_queue(), ^{
         weakSelf.loginStatusLabel.text = text;
     });
+}
+
+#pragma mark - Static 'properties'
+
++ (NSString *)npeNameLaunchArgument {
+    return NPE_NAME_LAUNCH_ARG;
+}
+
++ (NSString *)userTokenLaunchArgument {
+    return USER_TOKEN_LAUNCH_ARG;
+}
+
++ (NSString *)connectedStatusText {
+    return CONNECTED_STATUS_TEXT;
+}
+
++ (NSString *)loginButtonAccessibilityId {
+    return LOGIN_BUTTON_ACCESSIBILITY_ID;
+}
+
++ (NSString *)loginStatusLabelAccessibilityId {
+    return LOGIN_STATUS_LABEL_ACCESSIBILITY_ID;
 }
 
 @end

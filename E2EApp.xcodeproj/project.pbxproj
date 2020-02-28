@@ -8,10 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		08A1A0B9E3E138E93B861EBC /* Pods_E2EApp_E2EAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F63B92B00009C9B69079ECA /* Pods_E2EApp_E2EAppUITests.framework */; };
+		3C1FB44224096EB90010CFD4 /* vars.json in Resources */ = {isa = PBXBuildFile; fileRef = 3C1FB44124096EB90010CFD4 /* vars.json */; };
+		3C1FB44324096FE20010CFD4 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B1FDC08623E4449D00131681 /* LoginViewController.m */; };
+		3C1FB444240971550010CFD4 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B1FDC08623E4449D00131681 /* LoginViewController.m */; };
 		92B29D7E363C9697103AF15A /* Pods_E2EApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8B228EFC7C698864344C091 /* Pods_E2EApp.framework */; };
-		AF9FC00F0D9D445CF755D8D9 /* appcenter-pre-build.sh in Resources */ = {isa = PBXBuildFile; fileRef = AF9FCF73A64960E623A8BF67 /* appcenter-pre-build.sh */; };
 		B1FDC08123E4449D00131681 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B1FDC08023E4449D00131681 /* AppDelegate.m */; };
-		B1FDC08723E4449D00131681 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B1FDC08623E4449D00131681 /* LoginViewController.m */; };
 		B1FDC08A23E4449D00131681 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1FDC08823E4449D00131681 /* Main.storyboard */; };
 		B1FDC08C23E4449E00131681 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1FDC08B23E4449E00131681 /* Assets.xcassets */; };
 		B1FDC08F23E4449E00131681 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B1FDC08D23E4449E00131681 /* LaunchScreen.storyboard */; };
@@ -31,6 +32,7 @@
 
 /* Begin PBXFileReference section */
 		336493425D2794FD8AE2C538 /* Pods-E2EApp-E2EAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E2EApp-E2EAppUITests.debug.xcconfig"; path = "Target Support Files/Pods-E2EApp-E2EAppUITests/Pods-E2EApp-E2EAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		3C1FB44124096EB90010CFD4 /* vars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = vars.json; sourceTree = "<group>"; };
 		49111ABCDB4BB1DE98C27324 /* Pods-E2EApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E2EApp.debug.xcconfig"; path = "Target Support Files/Pods-E2EApp/Pods-E2EApp.debug.xcconfig"; sourceTree = "<group>"; };
 		5F63B92B00009C9B69079ECA /* Pods_E2EApp_E2EAppUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_E2EApp_E2EAppUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		65B8AF7CD9189398FD1E73C8 /* Pods-E2EApp-E2EAppUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-E2EApp-E2EAppUITests.release.xcconfig"; path = "Target Support Files/Pods-E2EApp-E2EAppUITests/Pods-E2EApp-E2EAppUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 		B1FDC09A23E4449E00131681 /* E2EAppUITests */ = {
 			isa = PBXGroup;
 			children = (
+				3C1FB44124096EB90010CFD4 /* vars.json */,
 				B1FDC09B23E4449E00131681 /* E2EAppUITests.m */,
 				B1FDC09D23E4449E00131681 /* Info.plist */,
 			);
@@ -225,7 +228,6 @@
 				B1FDC08F23E4449E00131681 /* LaunchScreen.storyboard in Resources */,
 				B1FDC08C23E4449E00131681 /* Assets.xcassets in Resources */,
 				B1FDC08A23E4449D00131681 /* Main.storyboard in Resources */,
-				AF9FC00F0D9D445CF755D8D9 /* appcenter-pre-build.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +235,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C1FB44224096EB90010CFD4 /* vars.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,9 +327,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B1FDC08723E4449D00131681 /* LoginViewController.m in Sources */,
 				B1FDC08123E4449D00131681 /* AppDelegate.m in Sources */,
 				B1FDC09223E4449E00131681 /* main.m in Sources */,
+				3C1FB44324096FE20010CFD4 /* LoginViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +337,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C1FB444240971550010CFD4 /* LoginViewController.m in Sources */,
 				B1FDC09C23E4449E00131681 /* E2EAppUITests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
