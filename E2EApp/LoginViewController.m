@@ -1,15 +1,9 @@
 #import "LoginViewController.h"
 
-static NSString * const NPE_NAME_ENV_VAR = @"ENV_NAME";
-static NSString * const USER_TOKEN_ENV_VAR = @"USER_TOKEN";
-
 static NSString * const API_URL_FORMAT = @"https://%@-api.npe.nexmo.io";
 static NSString * const WEBSOCKET_URL_FORMAT = @"https://%@-ws.npe.nexmo.io";
 static NSString * const IPS_URL = @"https://api.dev.nexmoinc.net/play4/v1/image";
 
-static NSString * const DISCONNECTED_STATUS_TEXT = @"Disconnected";
-static NSString * const CONNECTING_STATUS_TEXT = @"Connecting";
-static NSString * const CONNECTED_STATUS_TEXT = @"Connected";
 static NSString * const NOT_DEFINED_TEXT = @"-";
 
 @interface LoginViewController ()
@@ -24,7 +18,6 @@ static NSString * const NOT_DEFINED_TEXT = @"-";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
     self.loginStatusLabel.text = NOT_DEFINED_TEXT;
 
     self.npeNameLabel.text = [self npeName];
@@ -46,12 +39,12 @@ static NSString * const NOT_DEFINED_TEXT = @"-";
 }
 
 - (nonnull NSString *)npeName {
-    NSString *npeName = NSProcessInfo.processInfo.environment[NPE_NAME_ENV_VAR];
+    NSString *npeName = [NSUserDefaults.standardUserDefaults stringForKey:NPE_NAME_LAUNCH_ARG];
     return npeName.length == 0 ? NOT_DEFINED_TEXT : npeName;
 }
 
 - (nonnull NSString *)userToken {
-    NSString *userToken = NSProcessInfo.processInfo.environment[USER_TOKEN_ENV_VAR];
+    NSString *userToken = [NSUserDefaults.standardUserDefaults stringForKey:USER_TOKEN_LAUNCH_ARG];
     return userToken.length == 0 ? NOT_DEFINED_TEXT : userToken;
 }
 

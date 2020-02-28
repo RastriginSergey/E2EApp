@@ -1,4 +1,8 @@
 @import XCTest;
+#import "LoginViewController.h"
+
+static NSString * const ENV_NAME_ENV_VAR = @"ENV_NAME";
+static NSString * const USER_TOKEN_ENV_VAR = @"USER_TOKEN";
 
 @interface E2EAppUITests : XCTestCase
 @property XCUIApplication *app;
@@ -8,16 +12,21 @@
 
 - (void)setUp {
     self.app = [XCUIApplication new];
+    NSString *envName = NSProcessInfo.processInfo.environment[ENV_NAME_ENV_VAR];
+    NSString *userToken = NSProcessInfo.processInfo.environment[USER_TOKEN_ENV_VAR];
+    self.app.launchArguments = @[[self argumentNameFor:NPE_NAME_LAUNCH_ARG], envName,
+                                 [self argumentNameFor:USER_TOKEN_LAUNCH_ARG], userToken];
     [self.app launch];
 
     self.continueAfterFailure = NO;
 }
 
-- (void)testLoginSuccessful {
-    XCTAssertGreaterThan(NSProcessInfo.processInfo.environment[@"ENV_NAME"].length, 0);
-    XCTAssertGreaterThan(NSProcessInfo.processInfo.environment[@"USER_TOKEN"].length, 0);
+- (nonnull NSString *)argumentNameFor:(nonnull NSString *)name {
+    return [NSString stringWithFormat:@"-%@", name];
+}
 
-    XCUIElement *connectedLabel = self.app.staticTexts[@"Connected"];
+- (void)testLoginSuccessful {
+    XCUIElement *connectedLabel = self.app.staticTexts[CONNECTED_STATUS_TEXT];
     NSPredicate *existsPredicate = [NSPredicate predicateWithFormat:@"exists == true"];
     [self expectationForPredicate:existsPredicate evaluatedWithObject:connectedLabel handler:nil];
 
