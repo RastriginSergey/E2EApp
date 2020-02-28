@@ -1,18 +1,18 @@
-//
-//  ViewController.m
-//  E2EApp
-//
-//  Created by Sergei Rastrigin on 31/01/2020.
-//  Copyright © 2020 Sergei Rastrigin. All rights reserved.
-//
+#import "LoginViewController.h"
 
-#import "ViewController.h"
+static NSString * const NPE_NAME_ENV_VAR = @"ENV_NAME";
+static NSString * const USER_TOKEN_ENV_VAR = @"USER_TOKEN";
 
 static NSString * const API_URL_FORMAT = @"https://%@-api.npe.nexmo.io";
 static NSString * const WEBSOCKET_URL_FORMAT = @"https://%@-ws.npe.nexmo.io";
 static NSString * const IPS_URL = @"https://api.dev.nexmoinc.net/play4/v1/image";
 
-@interface ViewController ()
+static NSString * const DISCONNECTED_STATUS_TEXT = @"Disconnected";
+static NSString * const CONNECTING_STATUS_TEXT = @"Connecting";
+static NSString * const CONNECTED_STATUS_TEXT = @"Connected";
+static NSString * const NOT_DEFINED_TEXT = @"-";
+
+@interface LoginViewController ()
 
 @property (weak, nonatomic) IBOutlet UILabel *loginStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *npeNameLabel;
@@ -20,40 +20,39 @@ static NSString * const IPS_URL = @"https://api.dev.nexmoinc.net/play4/v1/image"
 
 @end
 
-@implementation ViewController
+@implementation LoginViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.loginStatusLabel.text = @"-";
+    self.loginStatusLabel.text = NOT_DEFINED_TEXT;
 
     self.npeNameLabel.text = [self npeName];
     self.userTokenLabel.text = [self userToken];
 }
 
 - (IBAction)onLoginButtonTouchUpInside:(UIButton *)sender {
-    /* TODO:
-     Jenkins build params (NPE name, user token) -> XCUITest (-> App)
-     */
-
-    NSString *npeName = [self npeName];
-
-    NXMClientConfig *clientConfig = [[NXMClientConfig alloc] initWithApiUrl:[NSString stringWithFormat:API_URL_FORMAT, npeName]
-                                                               websocketUrl:[NSString stringWithFormat:WEBSOCKET_URL_FORMAT, npeName]
-                                                                     ipsUrl:IPS_URL];
-
-    [NXMClient setConfiguration: clientConfig];
+    [NXMClient setConfiguration: [self clientConfig]];
     [NXMClient.shared setDelegate:self];
 
     [NXMClient.shared loginWithAuthToken:[self userToken]];
 }
 
+- (nonnull NXMClientConfig *)clientConfig {
+    NSString *npeName = [self npeName];
+    NSString *apiUrl = [NSString stringWithFormat:API_URL_FORMAT, npeName];
+    NSString *websocketUrl = [NSString stringWithFormat:WEBSOCKET_URL_FORMAT, npeName];
+    return [[NXMClientConfig alloc] initWithApiUrl:apiUrl websocketUrl:websocketUrl ipsUrl:IPS_URL];
+}
+
 - (nonnull NSString *)npeName {
-    return NSProcessInfo.processInfo.environment[@"ENV_NAME"];
+    NSString *npeName = NSProcessInfo.processInfo.environment[NPE_NAME_ENV_VAR];
+    return npeName.length == 0 ? NOT_DEFINED_TEXT : npeName;
 }
 
 - (nonnull NSString *)userToken {
-    return NSProcessInfo.processInfo.environment[@"USER_TOKEN"];
+    NSString *userToken = NSProcessInfo.processInfo.environment[USER_TOKEN_ENV_VAR];
+    return userToken.length == 0 ? NOT_DEFINED_TEXT : userToken;
 }
 
 #pragma mark - NXMClientDelegate
@@ -61,13 +60,13 @@ static NSString * const IPS_URL = @"https://api.dev.nexmoinc.net/play4/v1/image"
 - (void)client:(nonnull NXMClient *)client didChangeConnectionStatus:(NXMConnectionStatus)status reason:(NXMConnectionStatusReason)reason {
     switch (status) {
         case NXMConnectionStatusDisconnected:
-            [self updateLoginStatusLabel:@"Disconnected"];
+            [self updateLoginStatusLabel:DISCONNECTED_STATUS_TEXT];
             break;
         case NXMConnectionStatusConnecting:
-            [self updateLoginStatusLabel:@"Connecting"];
+            [self updateLoginStatusLabel:CONNECTING_STATUS_TEXT];
             break;
         case NXMConnectionStatusConnected:
-            [self updateLoginStatusLabel:@"Connected"];
+            [self updateLoginStatusLabel:CONNECTED_STATUS_TEXT];
             break;
     }
 }
