@@ -88,6 +88,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="loginButton" destination="mk8-Zd-abJ" id="LM5-JL-xpP"/>
                         <outlet property="loginStatusLabel" destination="NJZ-Nx-4TV" id="1Ol-ff-eUU"/>
                         <outlet property="npeNameLabel" destination="diR-xe-sut" id="9YR-o1-JWO"/>
                         <outlet property="userTokenLabel" destination="TIr-8g-UkX" id="2Zd-hL-HSP"/>

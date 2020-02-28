@@ -8,6 +8,7 @@ static NSString * const NOT_DEFINED_TEXT = @"-";
 
 @interface LoginViewController ()
 
+@property (weak, nonatomic) IBOutlet UIButton *loginButton;
 @property (weak, nonatomic) IBOutlet UILabel *loginStatusLabel;
 @property (weak, nonatomic) IBOutlet UILabel *npeNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *userTokenLabel;
@@ -18,8 +19,11 @@ static NSString * const NOT_DEFINED_TEXT = @"-";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.loginStatusLabel.text = NOT_DEFINED_TEXT;
 
+    self.loginButton.accessibilityIdentifier = LOGIN_BUTTON_ACCESSIBILITY_ID;
+    self.loginStatusLabel.accessibilityIdentifier = LOGIN_STATUS_LABEL_ACCESSIBILITY_ID;
+
+    self.loginStatusLabel.text = NOT_DEFINED_TEXT;
     self.npeNameLabel.text = [self npeName];
     self.userTokenLabel.text = [self userToken];
 }
