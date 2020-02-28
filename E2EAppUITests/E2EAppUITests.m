@@ -12,37 +12,39 @@ static NSString * const USER_TOKEN_JSON_KEY = @"userToken";
 @implementation E2EAppUITests
 
 - (void)setUp {
-    self.app = [XCUIApplication new];
-    self.app.launchArguments = [self launchArguments];
-    [self.app launch];
-
     self.continueAfterFailure = NO;
+
+    NSBundle *bundle = [NSBundle bundleForClass:self.class];
+    NSString *varsJsonPath = [bundle pathForResource:VARS_JSON_FILE_NAME ofType:@"json"];
+    NSData *varsData = [NSData dataWithContentsOfFile:varsJsonPath];
+    NSDictionary *varsDictionary = [self.class varsDictionaryFrom:varsData];
+
+    self.app = [XCUIApplication new];
+    self.app.launchArguments = [self.class launchArgumentsFrom:varsDictionary];
+    [self.app launch];
 }
 
-- (nonnull NSArray<NSString *> *)launchArguments {
-    NSDictionary *varsDictionary = [self varsDictionary];
++ (nonnull NSDictionary *)varsDictionaryFrom:(nonnull NSData *)data {
+    return [NSJSONSerialization JSONObjectWithData:data options:(NSJSONReadingOptions)kNilOptions error:nil];
+}
+
++ (nonnull NSArray<NSString *> *)launchArgumentsFrom:(nonnull NSDictionary *)varsDictionary {
     NSString *envName = varsDictionary[ENV_NAME_JSON_KEY];
     NSString *userToken = varsDictionary[USER_TOKEN_JSON_KEY];
-    return @[[self argumentNameFor:[LoginViewController npeNameLaunchArgument]], envName,
-             [self argumentNameFor:[LoginViewController userTokenLaunchArgument]], userToken];
+    return @[[self.class argumentNameFor:LoginViewController.npeNameLaunchArgument], envName,
+             [self.class argumentNameFor:LoginViewController.userTokenLaunchArgument], userToken];
 }
 
-- (nonnull NSDictionary *)varsDictionary {
-    NSString *path = [[NSBundle bundleForClass:self.class] pathForResource:VARS_JSON_FILE_NAME ofType:@"json"];
-    NSData *data = [NSData dataWithContentsOfFile:path];
-    return [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
-}
-
-- (nonnull NSString *)argumentNameFor:(nonnull NSString *)name {
++ (nonnull NSString *)argumentNameFor:(nonnull NSString *)name {
     return [NSString stringWithFormat:@"-%@", name];
 }
 
 - (void)testLoginSuccessful {
-    XCUIElement *loginStatusLabel = self.app.staticTexts[[LoginViewController connectedStatusText]];
+    XCUIElement *loginStatusLabel = self.app.staticTexts[LoginViewController.connectedStatusText];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"exists == true"];
     [self expectationForPredicate:predicate evaluatedWithObject:loginStatusLabel handler:nil];
 
-    [self.app.buttons[[LoginViewController loginButtonAccessibilityId]] tap];
+    [self.app.buttons[LoginViewController.loginButtonAccessibilityId] tap];
 
     [self waitForExpectationsWithTimeout:10 handler:nil];
     XCTAssert(loginStatusLabel.exists);

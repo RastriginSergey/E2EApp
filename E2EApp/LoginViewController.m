@@ -34,14 +34,14 @@ static NSString * const LOGIN_STATUS_LABEL_ACCESSIBILITY_ID = @"loginStatusLabel
 
     self.loginStatusLabel.text = NOT_DEFINED_TEXT;
     self.npeNameLabel.text = [self npeName];
-    self.userTokenLabel.text = [self userToken];
+    self.userTokenLabel.text = [self shortUserToken];
 }
 
 - (IBAction)onLoginButtonTouchUpInside:(UIButton *)sender {
     [NXMClient setConfiguration: [self clientConfig]];
     [NXMClient.shared setDelegate:self];
 
-    [NXMClient.shared loginWithAuthToken:[self userToken]];
+    [NXMClient.shared loginWithAuthToken:[self shortUserToken]];
 }
 
 - (nonnull NXMClientConfig *)clientConfig {
@@ -56,9 +56,20 @@ static NSString * const LOGIN_STATUS_LABEL_ACCESSIBILITY_ID = @"loginStatusLabel
     return npeName.length == 0 ? NOT_DEFINED_TEXT : npeName;
 }
 
-- (nonnull NSString *)userToken {
+- (nonnull NSString *)shortUserToken {
+    NSUInteger prefixLength = 6;
+    NSUInteger suffixLength = 10;
+    NSUInteger minUserTokenLength = 1 + prefixLength + suffixLength;
     NSString *userToken = [NSUserDefaults.standardUserDefaults stringForKey:USER_TOKEN_LAUNCH_ARG];
-    return userToken.length == 0 ? NOT_DEFINED_TEXT : userToken;
+    NSString *shortUserToken = NOT_DEFINED_TEXT;
+    if (userToken.length > 0 && userToken.length < minUserTokenLength) {
+        shortUserToken = userToken;
+    } else if (userToken.length >= minUserTokenLength) {
+        NSString *prefix = [userToken substringToIndex:prefixLength];
+        NSString *suffix = [userToken substringFromIndex:userToken.length - suffixLength];
+        shortUserToken = [NSString stringWithFormat:@"%@ ... %@", prefix, suffix];
+    }
+    return shortUserToken;
 }
 
 #pragma mark - NXMClientDelegate
