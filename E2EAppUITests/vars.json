@@ -1,4 +1,6 @@
 {
   "envName": "undefined",
-  "userToken": "undefined"
+  "rs256PrivateKey": "undefined",
+  "applicationId": "undefined",
+  "username":"undefined"
 }

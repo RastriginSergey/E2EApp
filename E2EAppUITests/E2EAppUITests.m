@@ -1,9 +1,12 @@
 @import XCTest;
 #import "LoginViewController.h"
+#import "E2EAppUITests-Swift.h"
 
 static NSString * const VARS_JSON_FILE_NAME = @"vars";
 static NSString * const ENV_NAME_JSON_KEY = @"envName";
-static NSString * const USER_TOKEN_JSON_KEY = @"userToken";
+static NSString * const RS256_PRIVATE_KEY = @"rs256PrivateKey";
+static NSString * const APPLICATION_ID = @"applicationId";
+static NSString * const USERNAME = @"username";
 
 @interface E2EAppUITests : XCTestCase
 @property XCUIApplication *app;
@@ -44,7 +47,12 @@ static NSString * const USER_TOKEN_JSON_KEY = @"userToken";
 
 + (nonnull NSArray<NSString *> *)launchArgumentsFrom:(nonnull NSDictionary *)varsDictionary {
     NSString *envName = varsDictionary[ENV_NAME_JSON_KEY];
-    NSString *userToken = varsDictionary[USER_TOKEN_JSON_KEY];
+    NSString *privateKey = varsDictionary[RS256_PRIVATE_KEY];
+    NSString *applicationId = varsDictionary[APPLICATION_ID];
+    NSString *username = varsDictionary[USERNAME];
+    NSString *userToken = [JWTGenerator generateTokenWithPrivateKey:privateKey
+                                                      applicationId:applicationId
+                                                           username:username];
     return @[[self.class argumentNameFor:LoginViewController.npeNameLaunchArgument], envName,
              [self.class argumentNameFor:LoginViewController.userTokenLaunchArgument], userToken];
 }

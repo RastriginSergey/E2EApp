@@ -1,16 +1,25 @@
 PODS:
-  - NexmoClient (2.1.0)
+  - NexmoClient (2.1.1.13)
+  - SwiftyCrypto (0.0.1)
+  - SwiftyJWT (0.0.3):
+    - SwiftyCrypto (~> 0.0.1)
 
 DEPENDENCIES:
   - NexmoClient
+  - SwiftyJWT (= 0.0.3)
 
 SPEC REPOS:
-  "https://RastriginSergey:fe8b0618bfdd61b3da97b57da511d64c0522605f@github.com/Vonage/PrivateCocoapodsSpecs":
+  "https://RastriginSergey:bf7c01201bb66884ede188847a5473e3093ef2c9@github.com/Vonage/PrivateCocoapodsSpecs":
     - NexmoClient
+  trunk:
+    - SwiftyCrypto
+    - SwiftyJWT
 
 SPEC CHECKSUMS:
-  NexmoClient: fd540aee8ddd0f44b236f0c24b2212001a96fec3
+  NexmoClient: 9f239f5bf438999adbdbd0842d97515eca649079
+  SwiftyCrypto: ab59cdb153a7ca99b657fa8d9ebd2ebbd7694bbe
+  SwiftyJWT: e46e8457138c6567a1a9ff05a6efc8ef678c1187
 
-PODFILE CHECKSUM: 58efa5a61458cea8a8a8b30561c2fabc5ced696f
+PODFILE CHECKSUM: 83c3c3f6ec6c8d5437d9ffeb10a2ef4d03a283f2
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.0
