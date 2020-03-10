@@ -51,7 +51,6 @@ static NSString * const USERNAME = @"username";
     NSString *applicationId = varsDictionary[APPLICATION_ID];
     NSString *username = varsDictionary[USERNAME];
     NSString *userToken = [JWTGenerator generateTokenWithPrivateKey:privateKey applicationId:applicationId username:username];
-    NSLog(@"%@", userToken);
     return @[[self.class argumentNameFor:LoginViewController.npeNameLaunchArgument], envName,
              [self.class argumentNameFor:LoginViewController.userTokenLaunchArgument], userToken];
 }
