@@ -3,7 +3,7 @@ Dotenv.load('config.env')
 
 platform :ios, '10.2'
 
-source "https //github.com/cocoapods/specs.git"
+source "https://github.com/cocoapods/specs.git"
 source "https://RastriginSergey:#{ENV['GITHUB_TOKEN']}@github.com/Vonage/PrivateCocoapodsSpecs"
 
 CLIENT_VERSION = ENV['CLIENT_VERSION']
