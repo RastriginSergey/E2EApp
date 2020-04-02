@@ -527,7 +527,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rastrigin.E2EApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rastrigin.sergei.E2EApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Rastrigin Test Profile";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -550,7 +550,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rastrigin.E2EAppUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rastrigin.sergei.E2EAppUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
@@ -567,9 +567,9 @@
 			baseConfigurationReference = 65B8AF7CD9189398FD1E73C8 /* Pods-E2EApp-E2EAppUITests.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PR6C39UQ38;
 				INFOPLIST_FILE = E2EAppUITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
@@ -578,9 +578,9 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.rastrigin.E2EAppUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rastrigin.sergei.E2EAppUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Rastrigin Test Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "E2EAppUITests/E2EAppUITests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
